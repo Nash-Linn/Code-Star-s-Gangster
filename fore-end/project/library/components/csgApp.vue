@@ -1,7 +1,7 @@
 <template>
-  <csgApp />
+  <csgLayout />
 </template>
 <script setup lang="ts">
-import csgApp from '@lib/components/csgApp.vue'
+import csgLayout from '@lib/layout/csgLayout.vue'
 </script>
 <style></style>

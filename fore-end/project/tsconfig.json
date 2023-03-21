@@ -6,6 +6,7 @@
   "moduleResolution": "node",
   "strict": true,
   "jsx": "preserve",
+  "allowJs": true,
   "sourceMap": true,
   "skipLibCheck": true,
   "resolveJsonModule": true,
@@ -13,17 +14,19 @@
   "lib": ["esnext", "dom"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
     }
   },
   "include": [
     "env.d.ts", 
+    "types/**/*.ts", 
     "src/**/*", 
     "src/**/*.vue",
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
+    "library/**/*.vue",
     "*.ts" 
   ],
   "references": [

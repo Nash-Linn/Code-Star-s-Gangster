@@ -9,7 +9,17 @@ export default defineConfig({
   plugins: [vue(), vueJsx()],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      "@lib": fileURLToPath(new URL('./library', import.meta.url) ),
     }
-  }
+  },
+  css: {
+    // css预处理器
+    preprocessorOptions: {
+      less: {
+        charset: false,
+        additionalData: '@import "./library/style/global.less";',
+      },
+    },
+  },
 })

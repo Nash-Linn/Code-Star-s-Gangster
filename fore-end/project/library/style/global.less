@@ -1,0 +1,51 @@
+@import './variables.less';
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: none;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  margin: 0px;
+  padding: 0px;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  color: #333;
+  -webkit-text-size-adjust: 100% !important;
+  -moz-text-size-adjust: 100% !important;
+  text-size-adjust: 100% !important;
+
+  font-size: @base-font-size;
+}
+
+a {
+  text-decoration: none;
+}
+
+input {
+  border: none; //去除边框
+  outline: none; //可以去除点击input时的border
+}
+
+@keyframes scaleBig {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+// swiper5张背景图的动画
+.animate-img {
+  animation: scaleBig 3s linear 1s forwards;
+}
