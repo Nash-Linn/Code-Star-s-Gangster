@@ -5,10 +5,11 @@ import App from './App.vue'
 import router from './router'
 
 import registerCsg from '../library/components/common/index'
-
-import './assets/main.css'
+import {setupCsg} from '../library/setup'
 
 const app = createApp(App)
+
+setupCsg(app)
 
 app.use(createPinia())
 app.use(router)
