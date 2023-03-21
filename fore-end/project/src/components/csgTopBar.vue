@@ -20,19 +20,20 @@ import csgTopBarAvatar from './csgTopBarAvatar.vue'
 <style scoped lang="less">
 .topbar {
   width: 100%;
-  height: 50px;
+  height: @top-bar-height;
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
-
+  background-color: #fff;
   .topbar-content {
     height: 100%;
-    width: 1300px;
+    width: @base-page-width;
     margin: 0 auto;
     display: flex;
+    padding: 0 @base-padding;
 
     align-items: center;
-
     .left {
       width: 300px;
+      display: flex;
       .left-item {
         height: 100%;
         cursor: pointer;
@@ -47,7 +48,7 @@ import csgTopBarAvatar from './csgTopBarAvatar.vue'
     }
 
     .right {
-      width: 300px;
+      width: 500px;
 
       display: flex;
 

@@ -1,17 +1,15 @@
 <template>
-  <div class="csg-popover-wrap">
-    <div
-      class="reference"
-      @mouseenter="handleMouseenter"
-      @mouseleave="handleMouseleave"
-      @click="handleClick"
-    >
+  <div class="csg-popover-wrap" @mouseenter="handleMouseenter" @mouseleave="handleMouseleave">
+    <div class="reference" @click="handleClick" v-click-outside="handleClickOut">
       <slot name="reference">
         <div class="placeholer">按钮</div>
       </slot>
 
-      <div v-if="popovershow" class="pop-content">
-        <slot>我是弹出层</slot>
+      <div v-show="popovershow" class="pop-content">
+        <div class="trigger"></div>
+        <slot
+          ><div :style="`width:${props.width};`">{{ props.content }}</div></slot
+        >
       </div>
     </div>
   </div>
@@ -20,10 +18,13 @@
 import { ref } from 'vue'
 interface Props {
   trigger?: string
+  content?: string
+  width?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  trigger: 'click'
+  trigger: 'hover',
+  width: '100px'
 })
 
 const popovershow = ref(false)
@@ -33,6 +34,7 @@ const handleMouseenter = () => {
     popovershow.value = true
   }
 }
+
 const handleMouseleave = () => {
   if (props.trigger == 'hover') {
     popovershow.value = false
@@ -42,6 +44,12 @@ const handleMouseleave = () => {
 const handleClick = () => {
   if (props.trigger == 'click') {
     popovershow.value = true
+  }
+}
+
+const handleClickOut = () => {
+  if (props.trigger == 'click' && popovershow.value) {
+    popovershow.value = false
   }
 }
 </script>
@@ -63,15 +71,23 @@ const handleClick = () => {
 
 .pop-content {
   position: absolute;
-  width: 200px;
-  height: 300px;
-  margin-top: 5px;
   left: 50%;
   transform: translateX(-50%);
+  margin-top: 5px;
   background-color: #fff;
-  padding: 10px;
+  padding: @base-padding;
   box-shadow: 0px 1px 3px @base-box-shadow;
+  border-radius: @base-border-radius;
   z-index: 9999;
   cursor: auto;
+}
+
+.trigger {
+  width: 100%;
+  height: 20px;
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 </style>
