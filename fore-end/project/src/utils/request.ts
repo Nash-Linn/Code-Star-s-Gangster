@@ -33,4 +33,20 @@ const CODE_MESSAGE = {
   504: '网关超时',
 }
 
+
+/**
+ * @description axios初始化
+ */
+const instance = axios.create({
+  baseURL,
+  timeout: requestTimeout,
+  headers: {
+    'Content-Type': contentType,
+  },
+})
+
+
+
+
+
 export {}

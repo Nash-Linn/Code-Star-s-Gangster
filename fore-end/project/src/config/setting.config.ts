@@ -1,8 +1,12 @@
-export default{
-    // token名称
-    tokenName: 'token',
-    // token在localStorage、sessionStorage、cookie存储的key的名称
-    tokenTableName: 'csg-token',
-    // token存储位置localStorage sessionStorage cookie
-    storage: 'localStorage',
+// token名称
+const tokenName  =   'token'
+// token在localStorage、sessionStorage、cookie存储的key的名称
+const tokenTableName = 'csg-token'
+// token存储位置localStorage sessionStorage cookie
+const storage = 'localStorage'
+
+export{
+    tokenName,
+    tokenTableName,
+    storage,
 }

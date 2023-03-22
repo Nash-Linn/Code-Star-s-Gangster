@@ -6,6 +6,7 @@ import registerCsg from '../library/components/common/index'
 import {setupCsg} from '../library/setup'
 import { setupStore } from '@/stores/index'
 
+
 const app = createApp(App)
 
 setupCsg(app)
