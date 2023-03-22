@@ -8,14 +8,18 @@ import {
   statusName,
   successCode,
 } from '@/config/index'
-
+import qs from 'qs'
 import { isArray } from '@/utils/validate'
 // 操作正常Code数组
 const codeVerificationArray = isArray(successCode)
   ? [...successCode]
   : [...[successCode]]
 
-const CODE_MESSAGE = {
+interface CODE_MESSAGE {
+  [propName:number]:string
+}
+
+const CODE_MESSAGE:CODE_MESSAGE = {
   200: '服务器成功返回请求数据',
   201: '新建或修改数据成功',
   202: '一个请求已经进入后台排队(异步任务)',
@@ -45,8 +49,89 @@ const instance = axios.create({
   },
 })
 
+/**
+ * axios请求拦截器配置
+ * @param config
+ * @returns {any}
+ */
+const requestConf = (config:any) => {
+  const userStore = useUserStore()
+  const { token } = userStore
+ 
+  if (token) config.headers['Authorization'] = `Bearer ${token}`
+
+  if (
+    config.data &&
+    config.headers['Content-Type'] ===
+      'application/x-www-form-urlencoded;charset=UTF-8'
+  ){
+    config.data = qs.stringify(config.data)
+  }
+  return config
+}
+/**
+ * @description axios请求拦截器
+ */
+instance.interceptors.request.use(requestConf, (error) => {
+  return Promise.reject(error)
+})
 
 
+/**
+ * axios响应拦截器
+ * @param config 请求配置
+ * @param data response数据
+ * @param status HTTP status
+ * @param statusText HTTP status text
+ * @returns {Promise<*|*>}
+ */
 
+interface HandleDataConf{
+  config:any
+  data:any
+  status:any
+  statusText:any
+}
 
-export {}
+const handleData = async ({ config, data, status, statusText }:HandleDataConf) => {
+  // 若data.code存在，覆盖默认code
+  let code:number = data && data[statusName] ? data[statusName] : status
+  // 若code属于操作正常code，则status修改为200
+  if (codeVerificationArray.indexOf(data[statusName]) + 1) code = 200
+  switch (code) {
+    case 200:
+      return data
+    case 401:
+      break
+    case 402:
+      break
+    case 403:
+      break
+  }
+  // 异常处理
+  // 若data.msg存在，覆盖默认提醒消息
+  const errMsg = `${
+    data && data[messageName]
+      ? data[messageName]
+      : CODE_MESSAGE[code]
+      ? CODE_MESSAGE[code]
+      : statusText
+  }`
+  //可写错误弹窗等
+  return Promise.reject(data)
+}
+
+/**
+ * @description axios响应拦截器
+ */
+instance.interceptors.response.use(
+  (response) => handleData(response),
+  (error) => {
+    const { response } = error
+    if (response === undefined) {
+      return {}
+    } else return handleData(response)
+  }
+)
+
+export default instance
