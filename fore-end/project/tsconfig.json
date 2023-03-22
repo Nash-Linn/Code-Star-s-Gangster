@@ -1,22 +1,27 @@
 {
+  //继承配置
   "extends": "@vue/tsconfig/tsconfig.web.json",
-  "compilerOptions": {"target": "esnext",
-  "module": "esnext",
-  "useDefineForClassFields": true,
-  "moduleResolution": "node",
-  "strict": true,
-  "jsx": "preserve",
-  "allowJs": true,
-  "sourceMap": true,
-  "skipLibCheck": true,
-  "resolveJsonModule": true,
-  "esModuleInterop": true,
-  "lib": ["esnext", "dom"],
-    "baseUrl": ".",
-    "paths": {
+  //编译选项
+  "compilerOptions": {
+    "target": "esnext", //指定ECMAScript目标版本 
+    "module": "esnext", //设置程序的模块系统
+    "useDefineForClassFields": true,
+    "moduleResolution": "node", //模块解析策略。默认使用node的模块解析策略
+    "strict": true, //启用所有严格类型检查选项
+    "jsx": "preserve", //preserve模式,在preserve模式下生成代码中会保留JSX以供后续的转换操作使用
+    "allowJs": true, // 允许编译器编译JS，JSX文件
+    "sourceMap": true, //生成目标文件的sourceMap文件
+    "skipLibCheck": true,  //忽略所有的声明文件（ *.d.ts）的类型检查
+    "resolveJsonModule": true, //允许导入扩展名为“.json”的模块
+    "esModuleInterop": true,  //允许module.exports=xxx 导出，由import from 导入.因为很多老的js库使用了commonjs的导出方式，并且没有导出default属性
+    //TS需要引用的库，即声明文件，es5 默认引用dom、es5、scripthost,如需要使用es的高级版本特性，通常都需要配置，如es8的数组新特性需要引入"ES2019.Array",
+    "lib": ["esnext", "dom"],
+    "baseUrl": ".",  //解析非相对模块的基地址，默认是当前目录
+    "paths": {  //模块名到基于 baseUrl的路径映射的列表
       "@/*": ["./src/*"],
     }
   },
+  //指定一个文件glob匹配模式列表
   "include": [
     "env.d.ts", 
     "types/**/*.ts", 
@@ -29,6 +34,8 @@
     "library/**/*.vue",
     "*.ts" 
   ],
+  // 一个对象的数组，指明要引用的工程。
+  // 每个引用的path属性都可以指向到包含tsconfig.json文件的目录，或者直接指向到配置文件本身（名字是任意的）
   "references": [
     {
       "path": "./tsconfig.node.json"
