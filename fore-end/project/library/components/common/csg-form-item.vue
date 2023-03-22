@@ -1,8 +1,12 @@
 <template>
   <div class="csg-from-item-wrap">
-    <label class="csg-from-item-label" :style="`width:${props.labelwidth};`" :for="props.for">{{
-      props.label
-    }}</label>
+    <label
+      v-if="props.label"
+      class="csg-from-item-label"
+      :style="`width:${props.labelwidth};`"
+      :for="props.for"
+      >{{ props.label }}</label
+    >
     <div class="csg-from-item">
       <slot></slot>
     </div>

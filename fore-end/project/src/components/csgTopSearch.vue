@@ -55,6 +55,8 @@ input {
     align-items: center;
 
     color: #fff;
+    cursor: pointer;
+    user-select: none;
   }
 }
 </style>
