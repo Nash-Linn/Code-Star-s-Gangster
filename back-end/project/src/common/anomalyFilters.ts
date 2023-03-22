@@ -17,13 +17,15 @@ export class AnomalyFilters implements ExceptionFilter {
 
     const response = ctx.getResponse<Response>();
 
-    const status = exception.getStatus();
+    const code = exception.getStatus();
 
-    response.status(status).json({
+    const res = exception.getResponse();
+
+    response.status(code).json({
       success: false,
       time: new Date(),
-      data: exception,
-      status,
+      msg: res,
+      code,
       path: request.url,
     });
   }

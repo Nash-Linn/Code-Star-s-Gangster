@@ -14,7 +14,7 @@
 </template>
 <script setup lang="ts">
 interface Props {
-  label: string
+  label?: string
   for?: string
   labelwidth?: string
 }
@@ -25,7 +25,7 @@ const props = defineProps<Props>()
 .csg-from-item-wrap {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 18px;
 
   .csg-from-item-label {
     margin-right: 10px;

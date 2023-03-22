@@ -20,7 +20,7 @@ export class ResponseInterceptor<T> implements NestInterceptor {
       map((data) => {
         return {
           data,
-          status: 200,
+          code: 200,
           message: '成功',
           success: true,
         };
