@@ -30,26 +30,23 @@ export class UsersService {
   }
 
   async login(createUserDto: CreateUserDto) {
-    const count: number = await this.users.count({
+    const user = await this.users.findOne({
       where: {
         usercode: Like(createUserDto.usercode),
-        password: Like(createUserDto.password),
       },
     });
-    if (count) {
-      const res = { data: '登录成功' };
-      return res;
-    } else {
-      const count: number = await this.users.count({
-        where: {
-          usercode: Like(createUserDto.usercode),
-        },
-      });
-      if (count) {
-        throw new HttpException('密码错误', HttpStatus.BAD_REQUEST);
+    if (user) {
+      if (user.password == createUserDto.password) {
+        const res = {
+          data: '登录成功',
+          token: '',
+        };
+        return res;
       } else {
-        throw new HttpException('不存在该用户', HttpStatus.BAD_REQUEST);
+        throw new HttpException('密码错误', HttpStatus.BAD_REQUEST);
       }
+    } else {
+      throw new HttpException('不存在该用户', HttpStatus.BAD_REQUEST);
     }
   }
 
