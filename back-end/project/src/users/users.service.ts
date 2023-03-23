@@ -29,14 +29,14 @@ export class UsersService {
     }
   }
 
-  async login(createUserDto: CreateUserDto) {
+  async login(loginData) {
     const user = await this.users.findOne({
       where: {
-        usercode: Like(createUserDto.usercode),
+        usercode: Like(loginData.usercode),
       },
     });
     if (user) {
-      if (user.password == createUserDto.password) {
+      if (user.password == loginData.password) {
         const res = {
           data: '登录成功',
           token: '',
@@ -54,8 +54,14 @@ export class UsersService {
     return `This action returns all users`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(usercode: string) {
+    const user = await this.users.findOne({
+      where: {
+        usercode: Like(usercode),
+      },
+    });
+    const { password, ...rest } = user;
+    return rest;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

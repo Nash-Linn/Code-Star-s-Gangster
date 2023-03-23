@@ -21,18 +21,18 @@ export class UsersController {
   }
 
   @Post('/login')
-  login(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.login(createUserDto);
+  login(@Body() loginData) {
+    return this.usersService.login(loginData);
+  }
+
+  @Get(':usercode')
+  findOne(@Param('usercode') usercode: string) {
+    return this.usersService.findOne(usercode);
   }
 
   @Get()
   findAll() {
     return this.usersService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
   }
 
   @Patch(':id')
