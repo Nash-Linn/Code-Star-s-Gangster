@@ -29,27 +29,6 @@ export class UsersService {
     }
   }
 
-  async login(loginData) {
-    const user = await this.users.findOne({
-      where: {
-        usercode: Like(loginData.usercode),
-      },
-    });
-    if (user) {
-      if (user.password == loginData.password) {
-        const res = {
-          data: '登录成功',
-          token: '',
-        };
-        return res;
-      } else {
-        throw new HttpException('密码错误', HttpStatus.BAD_REQUEST);
-      }
-    } else {
-      throw new HttpException('不存在该用户', HttpStatus.BAD_REQUEST);
-    }
-  }
-
   findAll() {
     return `This action returns all users`;
   }

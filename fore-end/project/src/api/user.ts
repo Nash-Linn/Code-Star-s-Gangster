@@ -10,7 +10,7 @@ export function create(data:any) {
 
 export  function login(data:any) {
   return request({
-    url: '/users/login',
+    url: '/auth/login',
     method: 'post',
     data,
   })
