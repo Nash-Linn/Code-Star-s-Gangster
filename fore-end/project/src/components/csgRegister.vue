@@ -20,7 +20,7 @@
 </template>
 <script setup lang="ts">
 import { reactive } from 'vue'
-import md5 from 'md5'
+import { encryptcode } from '@/utils/encryp'
 import { isBlank } from '@/utils/validate'
 import { create } from '@api/user'
 
@@ -62,7 +62,7 @@ const handleRegister = () => {
   let createdata: RegisterData = {
     username: registerData.username,
     usercode: registerData.usercode,
-    password: md5(registerData.password)
+    password: encryptcode(registerData.password)
   }
   Create(createdata)
 }

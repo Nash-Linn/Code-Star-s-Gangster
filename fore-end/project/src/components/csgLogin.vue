@@ -14,9 +14,9 @@
 </template>
 <script setup lang="ts">
 import { reactive } from 'vue'
-import md5 from 'md5'
 import { isBlank } from '@/utils/validate'
 import { login } from '@api/user'
+import { encryptcode } from '@/utils/encryp'
 
 interface LoginData {
   usercode: string
@@ -47,7 +47,7 @@ const handleLogin = () => {
 
   let data: LoginData = {
     usercode: loginData.usercode,
-    password: md5(loginData.password)
+    password: encryptcode(loginData.password)
   }
   Login(data)
 }
