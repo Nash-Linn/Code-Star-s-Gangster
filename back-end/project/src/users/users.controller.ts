@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -23,10 +24,11 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(ClassSerializerInterceptor) //拦截不想抛出的参数
-  @Get('/getUserInfo/:usercode')
-  findOne(@Param('usercode') usercode: string) {
-    return this.usersService.findOne(usercode);
+  @Get('/getUserInfo')
+  findOne(@Req() req) {
+    return this.usersService.findOne(req.user.usercode);
   }
 
   @Get()

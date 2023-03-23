@@ -43,5 +43,10 @@ const props = withDefaults(defineProps<Props>(), {
   .desc {
     color: #fff;
   }
+
+  img {
+    width: 100%;
+    height: auto;
+  }
 }
 </style>

@@ -6,7 +6,6 @@
     <csg-form-item>
       <csg-input label="密码" type="password" v-model="loginData.password" />
     </csg-form-item>
-
     <div class="button-wrap">
       <csg-button class="login-button" @click="handleLogin"> 立即登录 </csg-button>
     </div>
@@ -15,8 +14,12 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { isBlank } from '@/utils/validate'
-import { login } from '@api/user'
 import { encryptcode } from '@/utils/encryp'
+import { useUserStore } from '@stores/modules/user'
+
+const emits = defineEmits(['success'])
+
+const userStore = useUserStore()
 
 interface LoginData {
   usercode: string
@@ -40,7 +43,7 @@ const verify = () => {
   return flag
 }
 
-const handleLogin = () => {
+const handleLogin = async () => {
   if (!verify()) {
     return
   }
@@ -49,16 +52,10 @@ const handleLogin = () => {
     usercode: loginData.usercode,
     password: encryptcode(loginData.password)
   }
-  Login(data)
-}
-
-//登录
-const Login = async (data: LoginData) => {
-  await login(data).then((res: any) => {
-    if (res.code == 200) {
-      console.log('成功')
-    }
-  })
+  await userStore.login(data)
+  if (userStore.getToken) {
+    emits('success')
+  }
 }
 </script>
 <style scope lang="less">

@@ -32,6 +32,9 @@ export class Users {
   @Column({ type: 'varchar', length: 255 })
   desc: string;
 
+  @Column()
+  roles: string;
+
   @CreateDateColumn({ type: 'timestamp' })
   createTime: Date;
 }

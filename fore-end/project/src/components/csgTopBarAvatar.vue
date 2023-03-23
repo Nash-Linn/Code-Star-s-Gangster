@@ -1,7 +1,7 @@
 <template>
   <div>
     <csg-popover>
-      <template #reference> <csg-avatar /></template>
+      <template #reference> <csg-avatar :imgurl="avatar" /></template>
       <div class="content">
         <div class="title">登录后可发表文章</div>
         <!-- <div class="button" @click="handleLogin">立即登录</div> -->
@@ -18,7 +18,7 @@
           <div>登录</div>
         </template>
         <template #content>
-          <div class="csg-login-wrap"><csgLogin /></div>
+          <div class="csg-login-wrap"><csgLogin @success="hanleLoginSuccess" /></div>
         </template>
       </csg-dialog>
 
@@ -36,9 +36,9 @@
 <script setup lang="ts">
 import csgLogin from './csgLogin.vue'
 import csgRegister from './csgRegister.vue'
-
-import { ref } from 'vue'
-
+import { useUserStore } from '@/stores/modules/user'
+import { ref, reactive, computed } from 'vue'
+const userStore = useUserStore()
 const loginDialogVisible = ref<boolean>(false)
 
 const handleLogin = () => {
@@ -50,6 +50,22 @@ const registerDialogVisible = ref<boolean>(false)
 const handleRegister = () => {
   registerDialogVisible.value = true
 }
+
+const hanleLoginSuccess = () => {
+  loginDialogVisible.value = false
+}
+
+const userInfo = reactive({
+  username: userStore.getUsername,
+  avatar: userStore.getUsername
+})
+
+const avatar = computed(() => {
+  if (userStore.getToken && !userInfo.avatar) {
+    return 'src/assets/avatar/avatar.png'
+  }
+  return userInfo.avatar
+})
 </script>
 <style lang="less" scoped>
 .content {
