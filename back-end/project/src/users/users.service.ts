@@ -60,8 +60,8 @@ export class UsersService {
         usercode: Like(usercode),
       },
     });
-    const { password, ...rest } = user;
-    return rest;
+
+    return user;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

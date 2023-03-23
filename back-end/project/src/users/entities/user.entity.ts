@@ -6,6 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Users {
@@ -21,6 +22,7 @@ export class Users {
   @Column({ type: 'varchar', length: 255 })
   usercode: string;
 
+  @Exclude()
   @Column({ type: 'varchar', length: 255 })
   password: string;
 
