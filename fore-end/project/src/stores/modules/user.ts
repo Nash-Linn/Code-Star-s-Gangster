@@ -75,12 +75,14 @@ export const useUserStore = defineStore('user', {
             avatar,
             roles,
             usercode,
+            [tokenName]: token
           },
         } = await getUserInfo()
         username && this.setUsername(username)
         usercode && this.setUsercode(usercode)
         avatar && this.setAvatar(avatar)
         roles && this.setRoles(roles)
+        token && this.setToken(token)
       },
   }
 })

@@ -25,14 +25,8 @@ export  function login(data:{
 
 export  function getUserInfo() {
   return request({
-    url: '/users/getUserInfo',
+    url: '/auth/profile',
     method: 'get',
   })
 }
 
-export  function refreshToken() {
-  return request({
-    url: '/auth/refreshToken',
-    method: 'get',
-  })
-}

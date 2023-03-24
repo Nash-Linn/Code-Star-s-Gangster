@@ -3,11 +3,18 @@
     <header class="header">
       <csgTopBar />
     </header>
-    <div class="content"></div>
+    <div class="content">
+      <router-view />
+    </div>
   </div>
 </template>
 <script setup lang="ts">
 import csgTopBar from '@/components/csgTopBar.vue'
+import { useUserStore } from '@/stores/modules/user'
+
+const { getUserInfo } = useUserStore()
+
+getUserInfo()
 </script>
 <style scoped lang="less">
 .layout {

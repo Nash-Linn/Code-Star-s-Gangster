@@ -24,13 +24,6 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(ClassSerializerInterceptor) //拦截不想抛出的参数
-  @Get('/getUserInfo')
-  findOne(@Req() req) {
-    return this.usersService.findOne(req.user.usercode);
-  }
-
   @Get()
   findAll() {
     return this.usersService.findAll();

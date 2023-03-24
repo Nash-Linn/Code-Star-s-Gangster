@@ -39,7 +39,6 @@ export class UsersService {
         usercode: Like(usercode),
       },
     });
-
     return user;
   }
 

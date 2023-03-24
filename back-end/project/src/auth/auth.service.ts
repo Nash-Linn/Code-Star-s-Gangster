@@ -30,4 +30,14 @@ export class AuthService {
       access_token: this.jwtService.sign(payload),
     };
   }
+
+  async getProfile(user: any) {
+    const findUser = await this.usersService.findOne(user.usercode);
+    const payload = { usercode: findUser.usercode, id: findUser.id };
+    const { password, ...rest } = findUser;
+    return {
+      ...rest,
+      access_token: this.jwtService.sign(payload),
+    };
+  }
 }

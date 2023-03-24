@@ -10,7 +10,7 @@ import {
 } from '@/config/index'
 import qs from 'qs'
 import { isArray } from '@/utils/validate'
-import { refreshToken } from '@/api/user'
+import { getToken } from './token'
 
 
 // 操作正常Code数组
@@ -40,43 +40,6 @@ const CODE_MESSAGE:CODE_MESSAGE = {
   504: '网关超时',
 }
 
-/**
- * 刷新刷新令牌
- * @param config 过期请求配置
- * @returns {any} 返回结果
- */
-let refreshToking = false
-let requests:Function[] = []
-
-const tryRefreshToken = async (config:any) => {
-  if (!refreshToking) {
-    refreshToking = true
-    try {
-      const {
-        data: { token },
-      } = await refreshToken()
-      if (token) {
-        const { setToken } = useUserStore()
-        setToken(token)
-        // 已经刷新了token，将所有队列中的请求进行重试
-        requests.forEach((cb) => cb(token))
-        requests = []
-        return instance(requestConf(config))
-      }
-    } catch (error) {
-      console.error('refreshToken error =>', error)
-    } finally {
-      refreshToking = false
-    }
-  } else {
-    return new Promise((resolve) => {
-      // 将resolve放进队列，用一个函数形式来保存，等token刷新后直接执行
-      requests.push(() => {
-        resolve(instance(requestConf(config)))
-      })
-    })
-  }
-}
 
 
 
@@ -97,9 +60,9 @@ const instance = axios.create({
  * @returns {any}
  */
 const requestConf = (config:any) => {
-  const userStore = useUserStore()
-  const { token } = userStore
- 
+  
+  const token =  getToken()
+
   if (token) config.headers['Authorization'] = `Bearer ${token}`
 
   if (
@@ -144,7 +107,7 @@ const handleData = async ({ config, data, status, statusText }:HandleDataConf) =
     case 200:
       return data
     case 401:
-      return await tryRefreshToken(config)
+      break
     case 402:
       break
     case 403:

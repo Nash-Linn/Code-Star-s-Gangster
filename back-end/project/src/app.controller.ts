@@ -18,7 +18,7 @@ export class AppController {
 
   @UseGuards(AuthGuard('jwt')) //校验登录的装饰器
   @Get('/auth/profile')
-  getProfile(@Request() req) {
-    return req.user;
+  async getProfile(@Request() req) {
+    return this.authService.getProfile(req.user);
   }
 }
