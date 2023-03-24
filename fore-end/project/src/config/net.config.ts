@@ -18,7 +18,7 @@ function evnFunc():string {
         baseUrl = 'http://localhost:8080/' 
       break
     case 'produce':
-      baseUrl = 'http://localhost:8080/' 
+      baseUrl = 'http://101.34.111.220:8080/' 
       break
     default:
       baseUrl = 'http://localhost:8080/' 

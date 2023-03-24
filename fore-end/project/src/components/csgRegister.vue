@@ -22,7 +22,7 @@
 import { reactive } from 'vue'
 import { encryptcode } from '@/utils/encryp'
 import { isBlank } from '@/utils/validate'
-import { create } from '@api/user'
+import { create } from '@/api/user'
 
 interface RegisterData {
   username: string

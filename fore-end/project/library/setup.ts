@@ -9,6 +9,8 @@ export function setupCsg(app:any) {
     const keys = Object.keys(Plugins);
     // 执行批量替换操作
     for (const path of keys) {
-      Plugins[path].setup(app)
+     ( Plugins[path] as {
+      setup:Function
+     }).setup(app)
     }
 }
