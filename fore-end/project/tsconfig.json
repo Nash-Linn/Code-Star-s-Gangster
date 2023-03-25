@@ -15,16 +15,17 @@
     "resolveJsonModule": true, //允许导入扩展名为“.json”的模块
     "esModuleInterop": true,  //允许module.exports=xxx 导出，由import from 导入.因为很多老的js库使用了commonjs的导出方式，并且没有导出default属性
     //TS需要引用的库，即声明文件，es5 默认引用dom、es5、scripthost,如需要使用es的高级版本特性，通常都需要配置，如es8的数组新特性需要引入"ES2019.Array",
-    "lib": ["esnext", "dom"],
+    "lib": ["esnext", "dom","es2022"],
     "baseUrl": ".",  //解析非相对模块的基地址，默认是当前目录
     "paths": {  //模块名到基于 baseUrl的路径映射的列表
       "@/*": ["./src/*"],
+      "@lib/*": ["./library/*"],
     }
   },
   //指定一个文件glob匹配模式列表
   "include": [
     "env.d.ts", 
-    "types/**/*.ts", 
+    "types/*.ts", 
     "src/**/*", 
     "src/**/*.vue",
     "src/**/*.ts",
@@ -32,6 +33,7 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "library/**/*.vue",
+    "library/**/*.ts",
     "*.ts" 
   ],
   // 一个对象的数组，指明要引用的工程。

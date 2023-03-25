@@ -1,8 +1,9 @@
-import { ref, computed } from 'vue'
+import { ref, computed} from 'vue'
 import { defineStore } from 'pinia'
 import { tokenName } from '@/config'
 import { getUserInfo, login } from '@/api/user'
 import { getToken, removeToken, setToken } from '@/utils/token'
+import csgMessage from '@lib/components/functionComponents/csgMessage'
 
 interface State{
   token:string
@@ -17,7 +18,7 @@ export const useUserStore = defineStore('user', {
     token:'',
     username:'',
     usercode:'',
-    avatar:'',
+    avatar:'src/assets/avatar/avatar.png',
     roles:[]
   }),
   getters:{
@@ -52,10 +53,20 @@ export const useUserStore = defineStore('user', {
       * @param {*} userInfo
       */
      async login(userInfo:{usercode:string,password:string}) {
-        const {
-          data: { [tokenName]: token },
-        } = await login(userInfo)
-        this.afterLogin(token)
+       await login(userInfo).then(res=>{
+          const {
+            data: { [tokenName]: token },
+          } = res
+          this.afterLogin(token)
+        }).catch(
+          err =>{
+            csgMessage({
+              type:'danger',
+              message:err.msg
+            })
+          }
+        )
+    
       },
 
       /**
@@ -84,5 +95,16 @@ export const useUserStore = defineStore('user', {
         roles && this.setRoles(roles)
         token && this.setToken(token)
       },
+
+
+      //退出登录
+      logout(){
+        this.setUsername('')
+        this.setUsercode('')
+        this.setAvatar('src/assets/avatar/avatar.png')
+        this.setRoles([])
+        this.setToken('')
+        removeToken()
+      }
   }
 })

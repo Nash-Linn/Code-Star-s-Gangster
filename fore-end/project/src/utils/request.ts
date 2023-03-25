@@ -1,5 +1,5 @@
-import { useUserStore } from '@/stores/modules/user'
 import axios from 'axios'
+
 import {
   baseURL,
   contentType,
@@ -11,7 +11,6 @@ import {
 import qs from 'qs'
 import { isArray } from '@/utils/validate'
 import { getToken } from './token'
-
 
 // 操作正常Code数组
 const codeVerificationArray = isArray(successCode)
@@ -90,7 +89,6 @@ instance.interceptors.request.use(requestConf, (error) => {
  * @param statusText HTTP status text
  * @returns {Promise<*|*>}
  */
-
 interface HandleDataConf{
   config:any
   data:any
@@ -98,7 +96,7 @@ interface HandleDataConf{
   statusText:any
 }
 
-const handleData = async ({ config, data, status, statusText }:HandleDataConf) => {
+const handleData = async ({ config ,data, status, statusText }:HandleDataConf) => {
   // 若data.code存在，覆盖默认code
   let code:number = data && data[statusName] ? data[statusName] : status
   // 若code属于操作正常code，则status修改为200
@@ -122,6 +120,7 @@ const handleData = async ({ config, data, status, statusText }:HandleDataConf) =
       ? CODE_MESSAGE[code]
       : statusText
   }`
+
   //可写错误弹窗等
   return Promise.reject(data)
 }

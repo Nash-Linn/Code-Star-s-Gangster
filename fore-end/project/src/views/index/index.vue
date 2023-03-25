@@ -1,10 +1,10 @@
 <template>
   <div class="index">
     首页
-    <csg-message type="warn" />
+    <!-- <csg-message type="danger" /> -->
   </div>
 </template>
-<script setup lang="ts"></script>
+<script setup></script>
 <style lang="less" scoped>
 .index {
   width: 100%;

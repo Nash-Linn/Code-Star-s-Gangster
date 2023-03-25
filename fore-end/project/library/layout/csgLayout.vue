@@ -11,10 +11,12 @@
 <script setup lang="ts">
 import csgTopBar from '@/components/csgTopBar.vue'
 import { useUserStore } from '@/stores/modules/user'
-
+import { getToken } from '@/utils/token'
 const { getUserInfo } = useUserStore()
 
-getUserInfo()
+if (getToken()) {
+  getUserInfo()
+}
 </script>
 <style scoped lang="less">
 .layout {

@@ -16,6 +16,9 @@ import { reactive } from 'vue'
 import { isBlank } from '@/utils/validate'
 import { encryptcode } from '@/utils/encryp'
 import { useUserStore } from '@/stores/modules/user'
+import { inject } from 'vue'
+
+const $csgMessage = inject('$csgMessage') as Function
 
 const emits = defineEmits(['success'])
 
@@ -54,6 +57,10 @@ const handleLogin = async () => {
   }
   await userStore.login(data)
   if (userStore.getToken) {
+    $csgMessage({
+      type: 'success',
+      message: '成功'
+    })
     emits('success')
   }
 }

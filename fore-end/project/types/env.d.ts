@@ -6,7 +6,7 @@ declare module '*.vue' {
 	const component: DefineComponent<{}, {}, any>;
 	export default component;
 }
- 
+
 // 环境变量 TypeScript的智能提示
 interface ImportMetaEnv {
 	VITE_APP_TITLE: string;

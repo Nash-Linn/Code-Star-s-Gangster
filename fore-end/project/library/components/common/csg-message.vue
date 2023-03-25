@@ -1,5 +1,11 @@
 <template>
-  <div class="csg-message-wrap" :class="messageStyle">
+  <div
+    ref="csgMessage"
+    class="csg-message-wrap"
+    :class="messageStyle"
+    @mouseover="handleMouseover"
+    @mouseleave="handleMouseleave"
+  >
     <span v-if="props.type == 'success'" class="icon">
       <svg
         t="1679648847096"
@@ -18,7 +24,7 @@
         ></path>
       </svg>
     </span>
-    <span v-if="props.type == 'warn'" class="icon">
+    <span v-else-if="props.type == 'warn'" class="icon">
       <svg
         t="1679649980444"
         class="icon"
@@ -38,20 +44,61 @@
         ></path>
       </svg>
     </span>
-
+    <span v-else-if="props.type == 'danger'" class="icon">
+      <svg
+        t="1679657128371"
+        class="icon"
+        viewBox="0 0 1024 1024"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        p-id="1957"
+        data-spm-anchor-id="a313x.7781069.0.i7"
+        width="20"
+        height="20"
+      >
+        <path
+          d="M512 64c126.677333 3.328 232.192 47.146667 316.501333 131.498667C912.853333 279.808 956.672 385.28 960 512c-3.328 126.677333-47.146667 232.192-131.498667 316.501333C744.192 912.853333 638.72 956.672 512 960c-126.677333-3.328-232.192-47.146667-316.501333-131.498667C111.146667 744.192 67.328 638.72 64 512c3.328-126.677333 47.146667-232.192 131.498667-316.501333C279.808 111.146667 385.28 67.328 512 64z m0 394.026667L407.978667 354.005333a37.802667 37.802667 0 0 0-27.477334-11.989333 37.034667 37.034667 0 0 0-27.008 11.52c-7.68 7.637333-11.52 16.64-11.477333 26.965333 0 10.368 4.010667 19.541333 11.989333 27.52L458.026667 512l-104.021334 104.021333a37.802667 37.802667 0 0 0-11.989333 27.477334c0 10.325333 3.84 19.328 11.52 27.008 7.637333 7.68 16.64 11.52 26.965333 11.477333a37.930667 37.930667 0 0 0 27.52-11.989333L512 565.973333l104.021333 104.021334c10.666667 9.984 22.954667 13.184 36.992 9.514666a34.773333 34.773333 0 0 0 26.453334-26.496 37.205333 37.205333 0 0 0-9.472-36.992L565.973333 512l104.021334-104.021333a37.802667 37.802667 0 0 0 11.989333-27.477334 37.034667 37.034667 0 0 0-11.52-27.008 36.778667 36.778667 0 0 0-26.965333-11.477333 37.930667 37.930667 0 0 0-27.52 11.989333L512 458.026667z"
+          fill="#d20f0f"
+          p-id="1958"
+          data-spm-anchor-id="a313x.7781069.0.i4"
+          class=""
+        ></path>
+      </svg>
+    </span>
+    <span v-else class="icon"
+      ><svg
+        t="1679657331496"
+        class="icon"
+        viewBox="0 0 1024 1024"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        p-id="2387"
+        width="200"
+        height="200"
+      >
+        <path
+          d="M512 64c126.677333 3.328 232.192 47.146667 316.501333 131.498667C912.853333 279.808 956.672 385.28 960 512c-3.328 126.677333-47.146667 232.192-131.498667 316.501333C744.192 912.853333 638.72 956.672 512 960c-126.677333-3.328-232.192-47.146667-316.501333-131.498667C111.146667 744.192 67.328 638.72 64 512c3.328-126.677333 47.146667-232.192 131.498667-316.501333C279.808 111.146667 385.28 67.328 512 64z m66.986667 275.029333c17.365333 0 31.701333-5.205333 43.008-15.530666 11.349333-10.325333 17.024-24.149333 17.024-41.472 0-17.365333-5.674667-31.189333-17.024-41.514667-11.306667-10.325333-25.472-15.488-42.453334-15.488-17.024 0-31.189333 5.162667-42.538666 15.488-11.306667 10.325333-16.981333 24.149333-16.981334 41.514667 0 17.322667 5.674667 31.146667 16.981334 41.472 11.349333 10.325333 25.344 15.530667 42.026666 15.530666z m12.032 359.978667c0-4.010667 0.341333-9.344 0.981333-16a91.264 91.264 0 0 0 0-18.986667l-52.992 60.970667c-5.333333 5.973333-10.837333 10.666667-16.512 13.994667-5.674667 3.370667-10.496 4.352-14.506667 3.029333-5.973333-2.688-8.661333-7.338667-7.978666-13.994667l87.978666-276.992c3.328-18.688 0.341333-34.688-8.96-48.042666-9.344-13.312-24.32-21.333333-45.013333-23.978667-23.338667 0.682667-48.853333 10.496-76.501333 29.525333a288.384 288.384 0 0 0-72.533334 72.490667v15.018667a91.178667 91.178667 0 0 0 0 18.986666l52.992-61.013333c5.333333-5.973333 10.837333-10.666667 16.512-13.994667 5.674667-3.328 10.197333-4.352 13.525334-2.986666 6.656 3.328 9.002667 8.661333 6.997333 16l-87.04 276.010666c-4.650667 16.64-2.304 31.488 7.04 44.501334 9.344 13.013333 25.685333 21.845333 48.981333 26.453333 33.365333-0.64 61.354667-10.282667 84.010667-28.970667 22.656-18.645333 43.648-42.666667 63.018667-71.978666v-0.042667z"
+          fill="#0fa1a1"
+          p-id="2388"
+        ></path>
+      </svg>
+    </span>
     <span class="message">
       {{ props.message }}
     </span>
   </div>
 </template>
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 interface Props {
   type: string
   message?: string
   showtime?: number
 }
 
+const csgMessage = ref()
+
+var timer: any = null
 const props = withDefaults(defineProps<Props>(), {
   type: 'default',
   message: '默认信息',
@@ -80,6 +127,24 @@ const messageStyle = computed(() => {
 
   return bgStyle
 })
+
+const handleMouseover = () => {
+  clearTimeout(timer)
+}
+
+const handleMouseleave = () => {
+  timer = setTimeout(() => {
+    let node = csgMessage.value.parentNode
+    node.parentNode.removeChild(node)
+  }, props.showtime)
+}
+
+onMounted(() => {
+  timer = setTimeout(() => {
+    let node = csgMessage.value.parentNode
+    node.parentNode.removeChild(node)
+  }, props.showtime)
+})
 </script>
 <style scoped lang="less">
 .success-bg {
@@ -89,15 +154,16 @@ const messageStyle = computed(() => {
   background-color: @base-warn-color-2 !important;
 }
 .danger-bg {
-  background-color: @base-danger-color !important;
+  background-color: @base-danger-color-2 !important;
 }
 .default-bg {
-  background-color: @base-color !important;
+  background-color: @base-color-2 !important;
 }
 .csg-message-wrap {
   background-color: @base-color;
   border-radius: @base-border-radius;
   position: absolute;
+  z-index: 99999;
   padding: 10px;
   top: 100px;
   left: 50%;

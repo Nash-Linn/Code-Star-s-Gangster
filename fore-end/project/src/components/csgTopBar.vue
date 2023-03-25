@@ -2,10 +2,12 @@
   <div class="topbar">
     <div class="topbar-content">
       <div class="left">
-        <div class="left-item">博客</div>
+        <div class="left-item">
+          <router-link to="/">博客</router-link>
+        </div>
       </div>
       <div class="center">
-        <csgTopBar />
+        <csgTopSearch />
       </div>
       <div class="right">
         <csgTopBarAvatar />
@@ -14,7 +16,7 @@
   </div>
 </template>
 <script setup>
-import csgTopBar from './csgTopSearch.vue'
+import csgTopSearch from './csgTopSearch.vue'
 import csgTopBarAvatar from './csgTopBarAvatar.vue'
 </script>
 <style scoped lang="less">
@@ -34,6 +36,7 @@ import csgTopBarAvatar from './csgTopBarAvatar.vue'
     .left {
       width: 300px;
       display: flex;
+      flex-shrink: 0;
       .left-item {
         height: 100%;
         cursor: pointer;
@@ -48,10 +51,9 @@ import csgTopBarAvatar from './csgTopBarAvatar.vue'
     }
 
     .right {
-      width: 500px;
-
+      flex-shrink: 0;
+      width: 300px;
       display: flex;
-
       justify-content: flex-end;
     }
   }

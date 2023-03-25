@@ -17,7 +17,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 interface Props {
-  trigger?: string
+  trigger?: 'click' | 'hover'
   content?: string
   width?: string
 }
