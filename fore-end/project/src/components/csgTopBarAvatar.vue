@@ -30,23 +30,8 @@
     </csg-popover>
 
     <teleport to="body">
-      <csg-dialog v-model="loginDialogVisible">
-        <template #title>
-          <div>登录</div>
-        </template>
-        <template #content>
-          <div class="csg-login-wrap"><csgLogin @success="hanleLoginSuccess" /></div>
-        </template>
-      </csg-dialog>
-
-      <csg-dialog v-model="registerDialogVisible">
-        <template #title>
-          <div>注册</div>
-        </template>
-        <template #content>
-          <div class="csg-login-wrap"><csgRegister /></div>
-        </template>
-      </csg-dialog>
+      <csgLogin v-model="loginDialogVisible" />
+      <csgRegister v-model="registerDialogVisible" />
     </teleport>
   </div>
 </template>
@@ -64,14 +49,10 @@ const handleLogin = () => {
   loginDialogVisible.value = true
 }
 
-const registerDialogVisible = ref<boolean>(false)
+const registerDialogVisible = ref<boolean>(true)
 
 const handleRegister = () => {
   registerDialogVisible.value = true
-}
-
-const hanleLoginSuccess = () => {
-  loginDialogVisible.value = false
 }
 
 const userInfo = reactive({

@@ -15,11 +15,12 @@
 <script setup lang="ts">
 interface Props {
   label?: string
+  //绑定 label 和 表单组件
   for?: string
   labelwidth?: string
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {})
 </script>
 <style scoped lang="less">
 .csg-from-item-wrap {

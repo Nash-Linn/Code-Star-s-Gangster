@@ -1,28 +1,50 @@
 <template>
-  <div class="login-wrap">
-    <csg-form-item>
-      <csg-input label="账号" v-model="loginData.usercode" />
-    </csg-form-item>
-    <csg-form-item>
-      <csg-input label="密码" type="password" v-model="loginData.password" />
-    </csg-form-item>
-    <div class="button-wrap">
-      <csg-button class="login-button" @click="handleLogin"> 立即登录 </csg-button>
-    </div>
-  </div>
+  <csg-dialog v-model="dialogVisible">
+    <template #title>
+      <div>登录</div>
+    </template>
+    <template #content>
+      <div class="login-wrap">
+        <csg-form-item>
+          <csg-input label="账号" v-model="loginData.usercode" />
+        </csg-form-item>
+        <csg-form-item>
+          <csg-input label="密码" type="password" v-model="loginData.password" />
+        </csg-form-item>
+        <div class="button-wrap">
+          <csg-button class="login-button" @click="handleLogin"> 立即登录 </csg-button>
+        </div>
+      </div>
+    </template>
+  </csg-dialog>
 </template>
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { isBlank } from '@/utils/validate'
 import { encryptcode } from '@/utils/encryp'
 import { useUserStore } from '@/stores/modules/user'
-import { inject } from 'vue'
+import { ref, inject, computed } from 'vue'
 
 const $csgMessage = inject('$csgMessage') as Function
 
-const emits = defineEmits(['success'])
+const emits = defineEmits(['update:modelValue'])
 
 const userStore = useUserStore()
+
+interface Props {
+  modelValue: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: false
+})
+
+const dialogVisible = computed({
+  get: () => props.modelValue || false,
+  set: (val) => {
+    emits('update:modelValue', val)
+  }
+})
 
 interface LoginData {
   usercode: string
@@ -61,13 +83,14 @@ const handleLogin = async () => {
       type: 'success',
       message: '成功'
     })
-    emits('success')
+    dialogVisible.value = false
   }
 }
 </script>
 <style scope lang="less">
 .login-wrap {
   width: 100%;
+  margin-top: 20px;
 }
 .button-wrap {
   width: 100%;

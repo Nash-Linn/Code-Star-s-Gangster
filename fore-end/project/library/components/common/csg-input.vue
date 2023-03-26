@@ -1,6 +1,12 @@
 <template>
   <div :class="inputStyle">
-    <input class="csg-input-inner" :type="props.type" v-model="value" required="true" />
+    <input
+      :id="props.formId"
+      class="csg-input-inner"
+      :type="props.type"
+      v-model="value"
+      placeholder=" "
+    />
     <span v-if="props.label" class="csg-input-label">{{ props.label }}</span>
   </div>
 </template>
@@ -13,6 +19,7 @@ interface Props {
   size?: string
   type?: string
   label?: string
+  formId?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -83,7 +90,7 @@ const inputStyle = computed(() => {
     transition: 0.5s;
   }
 
-  .csg-input-inner:valid,
+  .csg-input-inner:not(:placeholder-shown),
   .csg-input-inner:focus {
     border-color: @base-color;
   }
@@ -127,7 +134,7 @@ const inputStyle = computed(() => {
     transition: 0.5s;
   }
 
-  .csg-input-inner:valid ~ .csg-input-label,
+  .csg-input-inner:not(:placeholder-shown) ~ .csg-input-label,
   .csg-input-inner:focus ~ .csg-input-label {
     color: @base-color;
     transform: translate(21px, -50%);
@@ -137,7 +144,7 @@ const inputStyle = computed(() => {
     border-left: 1px solid @base-color;
     border-right: 1px solid @base-color;
   }
-  .csg-input-inner:valid,
+  .csg-input-inner:not(:placeholder-shown),
   .csg-input-inner:focus {
     border-color: @base-color;
   }
