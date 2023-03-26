@@ -20,11 +20,13 @@ interface Props {
   type?: string
   label?: string
   formId?: string
+  required?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   size: 'normal',
-  type: 'text'
+  type: 'text',
+  required: false
 })
 
 const value = computed({
@@ -60,6 +62,10 @@ const inputStyle = computed(() => {
     style = style + ' csg-input-wrap'
   }
 
+  if (props.required) {
+    style = style + ' required'
+  }
+
   return style
 })
 </script>
@@ -74,6 +80,21 @@ const inputStyle = computed(() => {
 
 .size-small {
   height: 30px !important;
+}
+
+.required {
+  position: relative;
+
+  &::before {
+    display: block;
+    content: '*';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translate(-50%, calc(-50% + 3px));
+    font-size: 20px;
+    color: red;
+  }
 }
 
 .csg-input-wrap {

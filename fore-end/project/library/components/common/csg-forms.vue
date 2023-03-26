@@ -4,49 +4,43 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, watchEffect } from 'vue'
-interface Props {
-  model?: object
-  rules?: object
+import { isBlank } from '@/utils/validate'
+import { ref } from 'vue'
+
+interface Rule {
+  required?: boolean
+  message: string
+  trigger: string
+  validator?: Function
 }
 
-const props = defineProps<Props>()
+interface Model {
+  [propName: string]: any
+}
+
+interface Props {
+  model?: Model
+  rules?: {
+    [key: string]: Rule[]
+  }
+}
+
+const props = withDefaults(defineProps<Props>(), {})
 
 const csgForm = ref()
 
-watchEffect(() => {
-  let form = csgForm.value
-  for (let key in props.rules) {
-    let dom = form?.querySelector(`.csg-from-item #${key}`)
-    console.log('dom', dom)
-    // dom.setAttribute('required', 'true')
-  }
-})
-
-const required = () => {
-  let form = csgForm.value
-  console.log('form', form)
-  for (let key in props.rules) {
-    console.log('key', key)
-    let dom = document.querySelectorAll(`.csg-from-item #${key}`)[0]
-    console.log('dom', dom)
-    // dom.setAttribute('required', 'true')
-  }
-}
-
 const verify = () => {
   for (let key in props.rules) {
-    let dom = document.querySelectorAll(`.csg-from-item #${key}`)[0]
-    dom.setAttribute('failCheck', 'true')
+    let dom = document.querySelector(`.csg-from-item #${key}`) as HTMLElement
+    let rule: Rule[] = props.rules[key]
+    for (let item of rule) {
+      if (item.required && isBlank((props.model as Model)[key])) {
+        dom?.setAttribute('failCheck', 'true')
+        dom?.setAttribute('failMsg', item.message)
+      }
+    }
   }
 }
-
-onMounted(async () => {
-  // setTimeout(() => {
-  //   required()
-  // }, 20)
-  // required()
-})
 
 defineExpose({
   verify

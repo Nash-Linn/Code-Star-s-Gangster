@@ -4,7 +4,6 @@
       <slot name="reference">
         <div class="placeholer">按钮</div>
       </slot>
-
       <div v-show="popovershow" class="pop-content">
         <div class="trigger"></div>
         <slot
@@ -76,7 +75,7 @@ const handleClickOut = () => {
   margin-top: 5px;
   background-color: #fff;
   padding: @base-padding;
-  box-shadow: 0px 1px 3px @base-box-shadow;
+  box-shadow: @base-box-shadow;
   border-radius: @base-border-radius;
   z-index: 9999;
   cursor: auto;

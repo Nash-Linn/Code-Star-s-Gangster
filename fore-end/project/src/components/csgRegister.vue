@@ -7,16 +7,21 @@
       <div class="register-wrap">
         <csg-forms ref="formRef" :model="registerData" :rules="ruleValidate">
           <csg-form-item>
-            <csg-input formId="username" label="用户名" v-model="registerData.username" />
+            <csg-input formId="username" label="用户名" v-model="registerData.username" required />
           </csg-form-item>
           <csg-form-item>
-            <csg-input label="账号" v-model="registerData.usercode" />
+            <csg-input label="账号" v-model="registerData.usercode" required />
           </csg-form-item>
           <csg-form-item>
-            <csg-input label="密码" type="password" v-model="registerData.password" />
+            <csg-input label="密码" type="password" v-model="registerData.password" required />
           </csg-form-item>
           <csg-form-item>
-            <csg-input label="再次输入密码" type="password" v-model="registerData.repassword" />
+            <csg-input
+              label="再次输入密码"
+              type="password"
+              v-model="registerData.repassword"
+              required
+            />
           </csg-form-item>
         </csg-forms>
 
@@ -76,8 +81,25 @@ const ruleValidate = {
   username: [
     {
       required: true,
-      message: '请填写用户名',
-      trigger: 'blur'
+      message: '请填写用户名'
+    }
+  ],
+  usercode: [
+    {
+      required: true,
+      message: '请填写账号'
+    }
+  ],
+  password: [
+    {
+      required: true,
+      message: '请填写密码'
+    }
+  ],
+  repassword: [
+    {
+      required: true,
+      message: '请再次填写密码'
     }
   ]
 }
