@@ -8,7 +8,7 @@
 .index-wrap {
   width: 100%;
   height: 100%;
-  padding: 20px;
+  padding: @base-padding;
 
   .content {
     width: 100%;

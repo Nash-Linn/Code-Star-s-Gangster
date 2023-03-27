@@ -11,22 +11,30 @@
       </div>
       <div class="right">
         <csgTopBarAvatar />
-        <csg-button v-if="isOnlne" size="small" class="public">发布</csg-button>
+        <csg-button v-if="isOnlne" size="small" class="public" @click="goToPublishBlog"
+          >发布</csg-button
+        >
       </div>
     </div>
   </div>
 </template>
 <script setup>
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import csgTopSearch from './csgTopSearch.vue'
 import csgTopBarAvatar from './csgTopBarAvatar.vue'
 import { useUserStore } from '@/stores/modules/user'
 
 const userStore = useUserStore()
+const router = useRouter()
 
 const isOnlne = computed(() => {
   return userStore.getToken ? true : false
 })
+
+const goToPublishBlog = () => {
+  router.push('/publishBlog')
+}
 </script>
 <style scoped lang="less">
 .topbar {

@@ -47,7 +47,14 @@ const Routes =  [
       }
     ]
   },
- 
+  {
+    path: '/publishBlog',
+    name: 'PublishBlog',
+    component: ()=>import('@/views/publishBlog/index.vue'),
+    meta:{
+      auth:true
+    },
+  },
 ]
 
 
