@@ -10,13 +10,20 @@
             <csg-input formId="username" label="用户名" v-model="registerData.username" required />
           </csg-form-item>
           <csg-form-item>
-            <csg-input label="账号" v-model="registerData.usercode" required />
-          </csg-form-item>
-          <csg-form-item>
-            <csg-input label="密码" type="password" v-model="registerData.password" required />
+            <csg-input formId="usercode" label="账号" v-model="registerData.usercode" required />
           </csg-form-item>
           <csg-form-item>
             <csg-input
+              formId="password"
+              label="密码"
+              type="password"
+              v-model="registerData.password"
+              required
+            />
+          </csg-form-item>
+          <csg-form-item>
+            <csg-input
+              formId="repassword"
               label="再次输入密码"
               type="password"
               v-model="registerData.repassword"
@@ -77,29 +84,48 @@ const registerData = reactive<RegisterData>({
   repassword: ''
 })
 
+const validateRePass = (value: any, callback: any) => {
+  console.log('执行')
+  if (value != registerData.password) {
+    console.log('不一致')
+    callback('两次密码输入不一致,请重新输入')
+  } else {
+    console.log('一致')
+    callback()
+  }
+}
+
 const ruleValidate = {
   username: [
     {
       required: true,
-      message: '请填写用户名'
+      message: '请填写用户名',
+      trigger: 'blur'
     }
   ],
   usercode: [
     {
       required: true,
-      message: '请填写账号'
+      message: '请填写账号',
+      trigger: 'blur'
     }
   ],
   password: [
     {
       required: true,
-      message: '请填写密码'
+      message: '请填写密码',
+      trigger: 'blur'
     }
   ],
   repassword: [
     {
       required: true,
-      message: '请再次填写密码'
+      message: '请再次填写密码',
+      trigger: 'blur'
+    },
+    {
+      validator: validateRePass,
+      trigger: 'input'
     }
   ]
 }

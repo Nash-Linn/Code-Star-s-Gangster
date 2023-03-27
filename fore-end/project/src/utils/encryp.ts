@@ -4,7 +4,7 @@ const SALT = ['code','star','gangster']
 
 const addsalt = (password:string,salts:string[]):string=>{
   if(password.length < 3){
-    throw('需加密的编码不得小于三位')
+    return password
   }else{
     const star = salts[0]
     const mid = password.split('')

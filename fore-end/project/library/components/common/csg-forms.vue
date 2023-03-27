@@ -33,10 +33,39 @@ const verify = () => {
   for (let key in props.rules) {
     let dom = document.querySelector(`.csg-from-item #${key}`) as HTMLElement
     let rule: Rule[] = props.rules[key]
+    let requireIndex = rule.findIndex((item) => item.required)
+    let requireRule = rule.splice(requireIndex, 1)
+
+    rule.push(...requireRule)
+
     for (let item of rule) {
-      if (item.required && isBlank((props.model as Model)[key])) {
-        dom?.setAttribute('failCheck', 'true')
-        dom?.setAttribute('failMsg', item.message)
+      if (item.validator) {
+        let callback = (msg: any) => {
+          if (msg) {
+            dom?.setAttribute('failCheck', 'true')
+            dom?.setAttribute('failMsg', msg)
+          } else {
+            dom?.setAttribute('failCheck', 'false')
+          }
+        }
+        let eventValidator = function () {
+          item.validator!((props.model as Model)[key], callback)
+        }
+        eventValidator()
+        dom.addEventListener(item.trigger, eventValidator)
+      }
+
+      if (item.required) {
+        let eventRequired = function () {
+          if (isBlank((props.model as Model)[key])) {
+            dom?.setAttribute('failCheck', 'true')
+            dom?.setAttribute('failMsg', item.message)
+          } else {
+            dom?.setAttribute('failCheck', 'false')
+          }
+        }
+        eventRequired()
+        dom.addEventListener(item.trigger, eventRequired)
       }
     }
   }
