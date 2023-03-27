@@ -11,13 +11,22 @@
       </div>
       <div class="right">
         <csgTopBarAvatar />
+        <csg-button v-if="isOnlne" size="small" class="public">发布</csg-button>
       </div>
     </div>
   </div>
 </template>
 <script setup>
+import { computed } from 'vue'
 import csgTopSearch from './csgTopSearch.vue'
 import csgTopBarAvatar from './csgTopBarAvatar.vue'
+import { useUserStore } from '@/stores/modules/user'
+
+const userStore = useUserStore()
+
+const isOnlne = computed(() => {
+  return userStore.getToken ? true : false
+})
 </script>
 <style scoped lang="less">
 .topbar {
@@ -55,6 +64,11 @@ import csgTopBarAvatar from './csgTopBarAvatar.vue'
       width: 300px;
       display: flex;
       justify-content: flex-end;
+      align-items: center;
+
+      .public {
+        margin-left: 20px;
+      }
     }
   }
 }

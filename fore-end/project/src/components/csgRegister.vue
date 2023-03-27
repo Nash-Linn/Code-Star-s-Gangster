@@ -85,12 +85,9 @@ const registerData = reactive<RegisterData>({
 })
 
 const validateRePass = (value: any, callback: any) => {
-  console.log('执行')
   if (value != registerData.password) {
-    console.log('不一致')
     callback('两次密码输入不一致,请重新输入')
   } else {
-    console.log('一致')
     callback()
   }
 }
@@ -132,17 +129,15 @@ const ruleValidate = {
 
 const handleRegister = () => {
   if (!formRef.value.verify()) {
-    console.log('没过校验')
     return false
   }
 
-  console.log('通过校验')
   let createdata: RegisterData = {
     username: registerData.username,
     usercode: registerData.usercode,
     password: encryptcode(registerData.password)
   }
-  // Create(createdata)
+  Create(createdata)
 }
 
 //创建用户

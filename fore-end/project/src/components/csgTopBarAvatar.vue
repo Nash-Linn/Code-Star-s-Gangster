@@ -49,7 +49,7 @@ const handleLogin = () => {
   loginDialogVisible.value = true
 }
 
-const registerDialogVisible = ref<boolean>(true)
+const registerDialogVisible = ref<boolean>(false)
 
 const handleRegister = () => {
   registerDialogVisible.value = true
