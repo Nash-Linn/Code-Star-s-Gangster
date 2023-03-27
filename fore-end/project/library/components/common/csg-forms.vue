@@ -30,13 +30,11 @@ const props = withDefaults(defineProps<Props>(), {})
 const csgForm = ref()
 
 const verify = () => {
+  let requiredFlag = false
+  let validatorFlag = false
   for (let key in props.rules) {
     let dom = document.querySelector(`.csg-from-item #${key}`) as HTMLElement
     let rule: Rule[] = props.rules[key]
-    let requireIndex = rule.findIndex((item) => item.required)
-    let requireRule = rule.splice(requireIndex, 1)
-
-    rule.push(...requireRule)
 
     for (let item of rule) {
       if (item.validator) {
@@ -44,12 +42,16 @@ const verify = () => {
           if (msg) {
             dom?.setAttribute('failCheck', 'true')
             dom?.setAttribute('failMsg', msg)
+            validatorFlag = false
           } else {
             dom?.setAttribute('failCheck', 'false')
+            validatorFlag = true
           }
         }
         let eventValidator = function () {
-          item.validator!((props.model as Model)[key], callback)
+          if (!isBlank((props.model as Model)[key])) {
+            item.validator!((props.model as Model)[key], callback)
+          }
         }
         eventValidator()
         dom.addEventListener(item.trigger, eventValidator)
@@ -60,8 +62,10 @@ const verify = () => {
           if (isBlank((props.model as Model)[key])) {
             dom?.setAttribute('failCheck', 'true')
             dom?.setAttribute('failMsg', item.message)
+            requiredFlag = false
           } else {
             dom?.setAttribute('failCheck', 'false')
+            requiredFlag = true
           }
         }
         eventRequired()
@@ -69,6 +73,8 @@ const verify = () => {
       }
     }
   }
+
+  return requiredFlag && validatorFlag
 }
 
 defineExpose({

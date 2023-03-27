@@ -125,32 +125,18 @@ const ruleValidate = {
     },
     {
       validator: validateRePass,
-      trigger: 'input'
+      trigger: 'blur'
     }
   ]
 }
 
-const verify = () => {
-  let flag = true
-  for (let key in registerData) {
-    if (isBlank(registerData[key])) {
-      flag = false
-    }
-  }
-
-  if (registerData.password != registerData.repassword) {
-    flag = false
-  }
-
-  return flag
-}
-
 const handleRegister = () => {
-  // if (!verify()) {
-  //   return
-  // }
-  formRef.value.verify()
+  if (!formRef.value.verify()) {
+    console.log('没过校验')
+    return false
+  }
 
+  console.log('通过校验')
   let createdata: RegisterData = {
     username: registerData.username,
     usercode: registerData.usercode,
