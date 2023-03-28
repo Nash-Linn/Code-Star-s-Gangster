@@ -91,6 +91,7 @@ const handleLogout = () => {
     .title {
       font-size: @title-font-size;
       font-weight: bold;
+      white-space: nowrap;
     }
     .buttons {
       margin-top: 25px;

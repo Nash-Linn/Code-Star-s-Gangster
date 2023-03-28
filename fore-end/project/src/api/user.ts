@@ -20,7 +20,6 @@ export  function login(data:{
     url: '/auth/login',
     method: 'post',
     data,
-    showBackError:true
   })
 }
 
