@@ -1,42 +1,59 @@
 <template>
-  <div class="pulish-blog-wrap">
-    <div style="border: 1px solid #ccc">
+  <div class="container-wrap">
+    <csg-card class="base-info-wrap">
+      <csg-forms ref="formRef" :model="baseInfo" class="form-wrap">
+        <csg-form-item class="form-item" label="文章标题">
+          <csg-input formId="username" v-model="baseInfo.title" required />
+        </csg-form-item>
+        <csg-form-item class="form-item" label="文章封面">
+          <csg-upload type="pictureCard" @change="handleCoverChange" />
+        </csg-form-item>
+        <csg-form-item class="form-item" label="文章摘要">
+          <csg-textarea v-model="baseInfo.summary" type="textarea" />
+        </csg-form-item>
+      </csg-forms>
+      <div class="button-wrap">
+        <csg-button class="button" @click="handlePublish">发布</csg-button>
+      </div>
+    </csg-card>
+    <csg-card class="pulish-blog-wrap">
       <Toolbar
         style="border-bottom: 1px solid #ccc"
         :editor="editorRef"
         :defaultConfig="toolbarConfig"
       />
       <Editor
-        style="height: 500px"
+        style="height: 300px"
         v-model="valueHtml"
         :defaultConfig="editorConfig"
         @onCreated="handleCreated"
       />
-    </div>
-
-    <div>
-      <csg-button @click="handlePublish">发布</csg-button>
-    </div>
+    </csg-card>
   </div>
 </template>
 <script setup lang="ts">
-import '@wangeditor/editor/dist/css/style.css' // 引入 css
+import { reactive } from 'vue'
 
+import '@wangeditor/editor/dist/css/style.css' // 引入 css
 import { onBeforeUnmount, ref, shallowRef } from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import type { IToolbarConfig, IEditorConfig, IDomEditor } from '@wangeditor/editor'
 import { baseURL } from '@/config'
+
 // 编辑器实例，必须用 shallowRef
 const editorRef = shallowRef()
 
 // 内容 HTML
 const valueHtml = ref('')
 
-const toolbarConfig: Partial<IToolbarConfig> = {}
+const toolbarConfig: Partial<IToolbarConfig> = {
+  excludeKeys: ['group-video', 'fullScreen', 'undo', 'redo']
+}
+
 const editorConfig: Partial<IEditorConfig> = {
   placeholder: '请输入内容...',
   readOnly: false,
-  scroll: true,
+  scroll: false,
   MENU_CONF: {
     uploadImage: {}
   }
@@ -63,38 +80,6 @@ editorConfig.MENU_CONF!.uploadImage = {
   // 超时时间，默认为 10 秒
   timeout: 5 * 1000, // 5 秒
 
-  // 上传之前触发
-  onBeforeUpload(file: File) {
-    // file 选中的文件，格式如 { key: file }
-    console.log('file', file)
-    return file
-
-    // 可以 return
-    // 1. return file 或者 new 一个 file ，接下来将上传
-    // 2. return false ，不上传这个 file
-  },
-
-  // 上传进度的回调函数
-  onProgress(progress: number) {
-    // progress 是 0-100 的数字
-    console.log('progress', progress)
-  },
-
-  // 单个文件上传成功之后
-  onSuccess(file: File, res: any) {
-    console.log(`${file.name} 上传成功`, res)
-  },
-
-  // 单个文件上传失败
-  onFailed(file: File, res: any) {
-    console.log(`${file.name} 上传失败`, res)
-  },
-
-  // 上传错误，或者触发 timeout 超时
-  onError(file: File, err: any, res: any) {
-    console.log(`${file.name} 上传出错`, err, res)
-  },
-
   // 自定义插入图片
   customInsert(res: any, insertFn: InsertFnType) {
     const { url, alt, href } = res.data.data
@@ -113,14 +98,40 @@ const handleCreated = (editor: IDomEditor) => {
   editorRef.value = editor // 记录 editor 实例，重要！
 }
 
+const baseInfo = reactive({})
+
+const handleCoverChange = (val: any) => {
+  console.log('val', val)
+}
+
 const handlePublish = () => {
   console.log('valueHtml.value', valueHtml.value)
 }
 </script>
 <style scoped lang="less">
-.pulish-blog-wrap {
-  width: 100%;
-  height: 100%;
+.container-wrap {
   padding: @base-padding;
+}
+.base-info-wrap {
+  width: 100%;
+  padding: @base-padding;
+
+  .form-wrap {
+    width: 100%;
+  }
+}
+.pulish-blog-wrap {
+  margin-top: 20px;
+  width: 100%;
+  min-height: calc(@main-height - 340px);
+  padding: @base-padding;
+  padding-top: 0;
+}
+
+.button-wrap {
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
 }
 </style>

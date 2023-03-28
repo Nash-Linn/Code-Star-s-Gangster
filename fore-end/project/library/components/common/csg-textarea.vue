@@ -1,14 +1,14 @@
 <template>
   <div :class="inputStyle">
-    <input
+    <textarea
       :id="props.formId"
-      class="csg-input-inner"
-      :type="props.type"
+      class="csg-textarea-inner"
       v-model="value"
       placeholder=" "
+      :rows="props.rows"
     />
-    <span v-if="props.label" class="csg-input-label">{{ props.label }}</span>
-    <div class="csg-input-tip-icon">
+    <span v-if="props.label" class="csg-textarea-label">{{ props.label }}</span>
+    <div class="csg-textarea-tip-icon">
       <csg-popover>
         <template #reference>
           <div class="tip-icon-wrap" @mouseover="handleMouseoverTipIcon">
@@ -47,17 +47,17 @@ import { ref, computed } from 'vue'
 const emits = defineEmits(['update:modelValue'])
 interface Props {
   modelValue: any
-  size?: string
-  type?: string
   label?: string
   formId?: string
   required?: boolean
+  rows: number
+  cols: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  size: 'normal',
   type: 'text',
-  required: false
+  required: false,
+  rows: 3
 })
 
 const value = computed({
@@ -69,28 +69,11 @@ const value = computed({
 
 const inputStyle = computed(() => {
   let style: string
-  switch (props.size) {
-    case 'big':
-      style = 'size-big'
-      break
-
-    case 'normal':
-      style = 'size-normal'
-      break
-
-    case 'small':
-      style = 'size-small'
-      break
-
-    default:
-      style = 'size-normal'
-      break
-  }
 
   if (props.label) {
-    style = style + ' csg-input-wrap-havelabel'
+    style = ' csg-textarea-wrap-havelabel'
   } else {
-    style = style + ' csg-input-wrap'
+    style = ' csg-textarea-wrap'
   }
 
   if (props.required) {
@@ -107,18 +90,6 @@ const handleMouseoverTipIcon = () => {
 }
 </script>
 <style lang="less" scoped>
-.size-big {
-  height: 50px !important;
-}
-
-.size-normal {
-  height: 40px !important;
-}
-
-.size-small {
-  height: 30px !important;
-}
-
 .required {
   position: relative;
 
@@ -134,20 +105,35 @@ const handleMouseoverTipIcon = () => {
   }
 }
 
-.csg-input-inner {
+.csg-textarea-inner {
   position: relative;
   width: 100%;
   height: 100%;
+  padding: 10px 30px 10px 20px;
   border-radius: @base-border-radius;
   border: 1px solid @base-color-border;
-  padding: 0 30px 0 20px;
   transition: 0.5s;
+  resize: vertical;
+  outline: none;
+
+  //隐藏滚动条
+  &::-webkit-scrollbar {
+    width: 0 !important;
+  }
+  & {
+    -ms-overflow-style: none;
+  }
+  & {
+    overflow: -moz-scrollbars-none;
+  }
 }
 
-.csg-input-wrap {
+.csg-textarea-wrap {
   width: 100%;
-  .csg-input-inner:not(:placeholder-shown),
-  .csg-input-inner:focus {
+  display: flex;
+  align-items: center;
+  .csg-textarea-inner:not(:placeholder-shown),
+  .csg-textarea-inner:focus {
     border-color: @base-color;
   }
 
@@ -163,11 +149,13 @@ const handleMouseoverTipIcon = () => {
   }
 }
 
-.csg-input-wrap-havelabel {
+.csg-textarea-wrap-havelabel {
   position: relative;
   width: 100%;
+  display: flex;
+  align-items: center;
 
-  .csg-input-label {
+  .csg-textarea-label {
     position: absolute;
     top: 50%;
     left: 0;
@@ -178,8 +166,8 @@ const handleMouseoverTipIcon = () => {
     transition: 0.5s;
   }
 
-  .csg-input-inner:not(:placeholder-shown) ~ .csg-input-label,
-  .csg-input-inner:focus ~ .csg-input-label {
+  .csg-textarea-inner:not(:placeholder-shown) ~ .csg-textarea-label,
+  .csg-textarea-inner:focus ~ .csg-textarea-label {
     color: @base-color;
     transform: translate(21px, -50%);
     top: 0;
@@ -188,13 +176,13 @@ const handleMouseoverTipIcon = () => {
     border-left: 1px solid @base-color;
     border-right: 1px solid @base-color;
   }
-  .csg-input-inner:not(:placeholder-shown),
-  .csg-input-inner:focus {
+  .csg-textarea-inner:not(:placeholder-shown),
+  .csg-textarea-inner:focus {
     border-color: @base-color;
   }
 }
 
-.csg-input-tip-icon {
+.csg-textarea-tip-icon {
   display: none;
   width: 20px;
   height: 20px;
@@ -209,11 +197,11 @@ const handleMouseoverTipIcon = () => {
   color: @base-danger-color;
 }
 
-.csg-input-inner[failcheck='true'] ~ .csg-input-tip-icon {
+.csg-textarea-inner[failcheck='true'] ~ .csg-textarea-tip-icon {
   display: block;
 }
 
-.csg-input-inner[failcheck='false'] ~ .csg-input-tip-icon {
+.csg-textarea-inner[failcheck='false'] ~ .csg-textarea-tip-icon {
   display: none;
 }
 </style>

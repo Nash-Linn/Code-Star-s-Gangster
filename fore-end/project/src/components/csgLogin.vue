@@ -87,7 +87,7 @@ const handleLogin = async () => {
   }
 }
 </script>
-<style scope lang="less">
+<style scoped lang="less">
 .login-wrap {
   width: 100%;
   margin-top: 20px;

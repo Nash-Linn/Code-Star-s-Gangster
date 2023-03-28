@@ -11,7 +11,7 @@
 import { computed } from 'vue'
 interface Props {
   label: string
-  size?: string
+  size?: 'big' | 'normal' | 'small'
   type?: string
 }
 const props = withDefaults(defineProps<Props>(), {
@@ -63,15 +63,15 @@ const buttonStyle = computed(() => {
 </script>
 <style lang="less" scoped>
 .size-big {
-  height: 50px !important;
+  height: 45px !important;
 }
 
 .size-normal {
-  height: 40px !important;
+  height: 35px !important;
 }
 
 .size-small {
-  height: 30px !important;
+  height: 25px !important;
 }
 
 .success-bg {

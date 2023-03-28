@@ -30,6 +30,7 @@ const props = withDefaults(defineProps<Props>(), {})
 
   .csg-from-item-label {
     margin-right: 10px;
+    flex-shrink: 0;
   }
 
   .csg-from-item {

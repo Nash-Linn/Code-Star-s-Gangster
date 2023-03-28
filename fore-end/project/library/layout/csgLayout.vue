@@ -28,7 +28,7 @@ if (getToken()) {
 }
 .content {
   width: @base-page-width;
-  height: @main-height;
+  min-height: @main-height;
   margin: 0 auto;
 }
 </style>

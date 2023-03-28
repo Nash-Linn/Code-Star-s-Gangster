@@ -166,7 +166,7 @@ const Create = async (data: RegisterData) => {
     })
 }
 </script>
-<style scope lang="less">
+<style scoped lang="less">
 .register-wrap {
   margin-top: 20px;
   width: 100%;

@@ -6,13 +6,10 @@
 <script setup></script>
 <style lang="less" scoped>
 .index-wrap {
-  width: 100%;
-  height: 100%;
   padding: @base-padding;
-
   .content {
     width: 100%;
-    height: 100%;
+    min-height: @main-height;
     padding: @base-padding;
     border-radius: @base-border-radius;
     background-color: #fff;
