@@ -18,12 +18,24 @@
         </template>
       </div>
       <div class="input-extra">
-        <input class="input" type="file" :multiple="props.multiple" @change="handleFileChange" />
+        <input
+          class="input"
+          type="file"
+          title=""
+          :multiple="props.multiple"
+          @change="handleFileChange"
+        />
       </div>
     </div>
   </div>
   <div v-else class="csg-upload-wrap">
-    <input class="input" type="file" :multiple="props.multiple" @change="handleFileChange" />
+    <input
+      class="input"
+      type="file"
+      title=""
+      :multiple="props.multiple"
+      @change="handleFileChange"
+    />
     <slot><csg-button>上传文件</csg-button> </slot>
   </div>
 </template>
@@ -87,6 +99,7 @@ const handleDelete = (index: any) => {
   opacity: 0;
   width: 100%;
   height: 100%;
+  cursor: pointer;
 }
 .csg-upload-wrap {
   position: relative;

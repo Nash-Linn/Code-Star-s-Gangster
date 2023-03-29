@@ -55,6 +55,11 @@ const Routes =  [
       auth:true
     },
   },
+  {
+    path: '/test',
+    name: 'Test',
+    component: ()=>import('@/views/test/index.vue'),
+  },
 ]
 
 

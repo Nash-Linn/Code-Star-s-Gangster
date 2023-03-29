@@ -129,6 +129,7 @@ const handleMouseoverTipIcon = () => {
     left: 10px;
     top: 50%;
     transform: translate(-50%, calc(-50% + 3px));
+    z-index: 1;
     font-size: 20px;
     color: red;
   }

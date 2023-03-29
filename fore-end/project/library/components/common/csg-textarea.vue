@@ -97,6 +97,7 @@ const handleMouseoverTipIcon = () => {
     display: block;
     content: '*';
     position: absolute;
+    z-index: 1;
     left: 10px;
     top: 50%;
     transform: translate(-50%, calc(-50% + 3px));
@@ -130,6 +131,7 @@ const handleMouseoverTipIcon = () => {
 
 .csg-textarea-wrap {
   width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   .csg-textarea-inner:not(:placeholder-shown),
@@ -152,6 +154,7 @@ const handleMouseoverTipIcon = () => {
 .csg-textarea-wrap-havelabel {
   position: relative;
   width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
 
