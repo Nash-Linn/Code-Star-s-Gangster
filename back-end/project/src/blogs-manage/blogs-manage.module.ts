@@ -5,9 +5,11 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import env from '../config/env';
-console.log('env.staticDir', env.staticDir);
-const fileDir = env.staticDir + '\\blog_images\\';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Blogs } from './entities/blogs-manage.entity';
+import { BlogTags } from './entities/blog-tags.entity';
 
+const fileDir = env.staticDir + '\\blog_images\\';
 @Module({
   imports: [
     MulterModule.register({
@@ -22,6 +24,7 @@ const fileDir = env.staticDir + '\\blog_images\\';
         },
       }),
     }),
+    TypeOrmModule.forFeature([Blogs, BlogTags], 'cs_gangster'),
   ],
 
   controllers: [BlogsManageController],

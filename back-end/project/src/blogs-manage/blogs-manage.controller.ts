@@ -42,6 +42,14 @@ export class BlogsManageController {
 
   @Get('image/:url')
   getImage(@Res({ passthrough: true }) res: Response, @Param() params) {
-    return this.blogsManageService.getImage(res, params);
+    // return this.blogsManageService.getImage(res, params);
+    const url = envConfig.staticDir + params.url;
+    console.log('url--------------', url);
+    res.download(url);
+    return {
+      code: 200,
+      msg: '成功',
+      url,
+    };
   }
 }
