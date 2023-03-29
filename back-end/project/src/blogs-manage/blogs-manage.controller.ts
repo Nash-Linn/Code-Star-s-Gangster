@@ -10,6 +10,9 @@ import {
   UploadedFile,
   Res,
   StreamableFile,
+  UseGuards,
+  Request,
+  Query,
 } from '@nestjs/common';
 import {
   FilesInterceptor,
@@ -22,6 +25,7 @@ import { UpdateBlogsManageDto } from './dto/update-blogs-manage.dto';
 import envConfig from 'src/config/env';
 
 import { normalize } from 'path';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('blogsManage')
 export class BlogsManageController {
@@ -41,15 +45,20 @@ export class BlogsManageController {
   }
 
   @Get('image/:url')
-  getImage(@Res({ passthrough: true }) res: Response, @Param() params) {
-    // return this.blogsManageService.getImage(res, params);
-    const url = envConfig.staticDir + params.url;
-    console.log('url--------------', url);
-    res.download(url);
-    return {
-      code: 200,
-      msg: '成功',
-      url,
-    };
+  getImage(@Res() res: Response, @Param() params) {
+    console.log('params', params);
+    return this.blogsManageService.getImage(res, params);
+  }
+
+  @Post('create')
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FileInterceptor('file'))
+  create(@UploadedFile() file, @Request() req, @Body() body) {
+    return this.blogsManageService.create(req, file, body);
+  }
+
+  @Get('/getList')
+  getList(@Query() query: { keyWord: string; page: number; pageSize: number }) {
+    return this.blogsManageService.getBlogList(query);
   }
 }

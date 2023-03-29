@@ -6,6 +6,8 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { JwtStrategy } from './jwt.strategy';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Users } from 'src/users/entities/user.entity';
 
 @Module({
   imports: [
@@ -15,6 +17,7 @@ import { JwtStrategy } from './jwt.strategy';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '5h' },
     }),
+    TypeOrmModule.forFeature([Users], 'cs_gangster'),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],

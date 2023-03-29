@@ -29,13 +29,13 @@
 import { ref, reactive } from 'vue'
 
 import csgRichText from '@/components/csgRichText.vue'
-
+import { create } from '@/api/blogsManage/blogsManage'
 // 内容 HTML
 const valueHtml = ref('')
 
 const baseInfo = reactive({
   title: '',
-  cover: null,
+  cover: '',
   summary: ''
 })
 
@@ -44,10 +44,13 @@ const handleCoverChange = (val: any) => {
 }
 
 const handlePublish = () => {
-  console.log('valueHtml.value', valueHtml.value)
-  console.log('baseInfo.title', baseInfo.title)
-  console.log('baseInfo.cover', baseInfo.cover)
-  console.log('baseInfo.summary', baseInfo.summary)
+  const form = new FormData()
+  form.append('title', baseInfo.title)
+  form.append('summary', baseInfo.summary)
+  form.append('content', valueHtml.value)
+  form.append('file', baseInfo.cover)
+
+  create(form)
 }
 </script>
 <style scoped lang="less">

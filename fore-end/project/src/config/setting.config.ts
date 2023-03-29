@@ -7,6 +7,7 @@ const storage = 'localStorage'
   // 路由模式，是否为hash模式
 const isHashRouterMode = true
 
+
 export{
   tokenName,
   tokenTableName,

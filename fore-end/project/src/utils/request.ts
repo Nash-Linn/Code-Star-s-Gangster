@@ -64,6 +64,10 @@ const requestConf = (config:any) => {
 
   if (token) config.headers['Authorization'] = `Bearer ${token}`
 
+  if (Object.prototype.toString.call(config.data) == '[object FormData]') {
+    config.headers['Content-Type'] = 'multipart/form-data'
+  }
+
   if (
     config.data &&
     config.headers['Content-Type'] ===
