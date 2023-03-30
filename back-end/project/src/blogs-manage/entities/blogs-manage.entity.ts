@@ -36,6 +36,9 @@ export class Blogs {
   @Column({ type: 'text', select: false, comment: '文章正文' })
   content: string;
 
+  @Column({ type: 'tinyint', comment: '状态' })
+  status: number;
+
   @CreateDateColumn({ type: 'timestamp', comment: '创建时间' })
   createTime: Date;
 

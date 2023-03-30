@@ -33,6 +33,7 @@ export class BlogsManageService {
     data.title = body.title;
     data.summary = body.summary;
     data.content = body.content;
+    data.status = 1;
     if (file) {
       data.coverUrl = file.filename;
     }
@@ -53,6 +54,7 @@ export class BlogsManageService {
     const data = await this.blogs.find({
       where: {
         title: Like(`%${keyWord}%`),
+        status: 1,
       },
       order: {
         createTime: 'DESC',
@@ -60,7 +62,6 @@ export class BlogsManageService {
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
-    console.log('data', data);
     const total = await this.blogs.count({
       where: {
         title: Like(`%${keyWord}%`),

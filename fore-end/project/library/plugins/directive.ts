@@ -1,7 +1,7 @@
-export  function setup(app) {
+export  function setup(app:any) {
   const vClickOutside = {
-    mounted(el, binding) {
-        function eventHandler(e) {
+    mounted(el:any, binding:any) {
+        function eventHandler(e:any) {
             if (el.contains(e.target)) {
                 return false
             }
@@ -15,7 +15,7 @@ export  function setup(app) {
         // 添加事件监听
         document.addEventListener('click', eventHandler)
     },
-    beforeUnmount(el) {
+    beforeUnmount(el:any) {
         // 移除事件监听
         document.removeEventListener('click', el.__click_outside__)
         // 删除无用属性

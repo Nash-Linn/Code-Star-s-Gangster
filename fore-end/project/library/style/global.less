@@ -58,3 +58,14 @@ input {
   background-color: @base-divide-color;
   margin: 5px 0;
 }
+
+.underline {
+  background: linear-gradient(to right, #71d071, #bb3333) no-repeat right bottom;
+  background-size: 0px 2px;
+  transition: background-size 0.5s;
+
+  &:hover {
+    background-position-x: left;
+    background-size: 100% 2px;
+  }
+}

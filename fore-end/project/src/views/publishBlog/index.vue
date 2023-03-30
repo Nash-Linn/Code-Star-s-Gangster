@@ -26,10 +26,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, inject } from 'vue'
 
 import csgRichText from '@/components/csgRichText.vue'
 import { create } from '@/api/blogsManage/blogsManage'
+
+const $csgMessage = inject('$csgMessage') as Function
 // 内容 HTML
 const valueHtml = ref('')
 
@@ -50,7 +52,18 @@ const handlePublish = () => {
   form.append('content', valueHtml.value)
   form.append('file', baseInfo.cover)
 
-  create(form)
+  Create(form)
+}
+
+const Create = (data: any) => {
+  create(data).then((res) => {
+    if (res.code == 200) {
+      $csgMessage({
+        type: 'success',
+        message: '发布成功！'
+      })
+    }
+  })
 }
 </script>
 <style scoped lang="less">

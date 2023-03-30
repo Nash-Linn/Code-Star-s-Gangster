@@ -46,7 +46,6 @@ export class BlogsManageController {
 
   @Get('image/:url')
   getImage(@Res() res: Response, @Param() params) {
-    console.log('params', params);
     return this.blogsManageService.getImage(res, params);
   }
 

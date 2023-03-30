@@ -29,7 +29,9 @@ function envFunc(evn): Env {
   };
 }
 
-const env = 'dev';
+type envType = 'pro' | 'dev';
+
+const env: envType = 'dev';
 
 const Env = envFunc(env);
 export default {

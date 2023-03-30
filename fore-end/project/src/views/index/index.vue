@@ -1,11 +1,19 @@
 <template>
   <div class="index-wrap">
-    <div class="content">{{ blogList }}</div>
+    <csgBlogCard class="blog-card" v-for="(item, index) in blogList" :key="index" :data="item" />
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import csgBlogCard from '@/components/csgBlogCard.vue'
+
+import { onMounted, ref, inject } from 'vue'
 import { getList } from '@/api/blogsManage/blogsManage'
+
+const $sub = inject('$sub') as Function
+
+$sub('topbar-search', (val: string) => {
+  console.log('val', val)
+})
 
 const blogList: any = ref([])
 
@@ -24,13 +32,10 @@ onMounted(() => {
 </script>
 <style lang="less" scoped>
 .index-wrap {
+  width: 100%;
   padding: @base-padding;
-  .content {
-    width: 100%;
-    min-height: @main-height;
-    padding: @base-padding;
-    border-radius: @base-border-radius;
-    background-color: #fff;
+  .blog-card {
+    margin-bottom: 20px;
   }
 }
 </style>

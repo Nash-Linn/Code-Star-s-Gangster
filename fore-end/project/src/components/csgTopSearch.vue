@@ -1,15 +1,22 @@
 <template>
   <div class="csg-top-search-wrap">
     <div class="input-wrap">
-      <input type="text" />
+      <input type="text" v-model="searchKey" />
     </div>
     <div class="pre-icon"></div>
-    <div class="button">
+    <div class="button" @click="handleSearch">
       <div>搜索</div>
     </div>
   </div>
 </template>
-<script setup></script>
+<script setup>
+import { ref, inject } from 'vue'
+const searchKey = ref('')
+const $pub = inject('$pub')
+const handleSearch = () => {
+  $pub('topbar-search', searchKey.value)
+}
+</script>
 <style lang="less" scoped>
 input {
   border: none;

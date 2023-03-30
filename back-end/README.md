@@ -145,10 +145,13 @@ export class UsersService {
 
 
 
-## JWT
+## 返回指定字段
 
-引入
+    const fields: FindOptionsSelect<Account> = {
+        accountType: true
+    };
+    const list: Account[] = await this.repo.createQueryBuilder('a').setFindOptions({select: fields}).getMany();
+    // 这样listt每个记录，只有一个accountType字段
 
-```text
 
-```
+

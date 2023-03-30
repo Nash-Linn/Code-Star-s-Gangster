@@ -9,7 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Blogs } from './entities/blogs-manage.entity';
 import { BlogTags } from './entities/blog-tags.entity';
 
-const fileDir = env.staticDir + '\\blog_images\\';
+const fileDir = env.staticDir + '/blog_images/';
 @Module({
   imports: [
     MulterModule.register({

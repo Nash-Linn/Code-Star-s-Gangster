@@ -21,4 +21,9 @@ export class AppController {
   async getProfile(@Request() req) {
     return this.authService.getProfile(req.user);
   }
+
+  @Get()
+  hello() {
+    return "hello code start's gangster! ";
+  }
 }
