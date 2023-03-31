@@ -1,7 +1,7 @@
 <template>
   <div class="csg-top-bar-avatar-wrap">
     <csg-popover>
-      <template #reference> <csg-avatar :imgurl="avatar" /></template>
+      <template #reference> <csg-avatar :imgurl="userStore.getAvatar" desc="登录" /></template>
       <div class="content">
         <template v-if="loging">
           <div class="login-wrap">
@@ -54,18 +54,6 @@ const registerDialogVisible = ref<boolean>(false)
 const handleRegister = () => {
   registerDialogVisible.value = true
 }
-
-const userInfo = reactive({
-  username: userStore.getUsername,
-  avatar: userStore.getAvatar
-})
-
-const avatar = computed(() => {
-  if (!userStore.getToken) {
-    return ''
-  }
-  return userInfo.avatar
-})
 
 const loging = computed(() => {
   if (userStore.getToken) {

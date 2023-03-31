@@ -23,6 +23,9 @@ export class Blogs {
   @Column({ type: 'varchar', length: 20, comment: '作者用户名' })
   creatorString: string;
 
+  @Column({ type: 'varchar', comment: '作者头像' })
+  creatorAvatar: string;
+
   @Column({ type: 'varchar', length: 255, comment: '文章标题' })
   title: string;
 

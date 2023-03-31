@@ -12,7 +12,7 @@ import { getList } from '@/api/blogsManage/blogsManage'
 const $sub = inject('$sub') as Function
 
 $sub('topbar-search', (val: string) => {
-  console.log('val', val)
+  GetList({ keyWord: val })
 })
 
 const blogList: any = ref([])

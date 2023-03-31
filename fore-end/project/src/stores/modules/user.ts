@@ -18,7 +18,7 @@ export const useUserStore = defineStore('user', {
     token:'',
     username:'',
     usercode:'',
-    avatar:'src/assets/avatar/avatar.png',
+    avatar:'',
     roles:[]
   }),
   getters:{

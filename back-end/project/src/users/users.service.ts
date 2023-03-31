@@ -25,6 +25,7 @@ export class UsersService {
       data.username = createUserDto.username;
       data.usercode = createUserDto.usercode;
       data.password = createUserDto.password;
+      data.avatar = 'http://101.34.111.220:8080/static/common/imgs/avatar.png';
       return this.users.save(data);
     }
   }

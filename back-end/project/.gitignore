@@ -1,5 +1,6 @@
 # compiled output
 /dist
+/dist.zip
 **/node_modules
 /src/common/databaseKey.ts
 

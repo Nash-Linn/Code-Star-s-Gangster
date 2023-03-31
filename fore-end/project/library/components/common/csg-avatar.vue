@@ -24,7 +24,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  desc: '登录'
+  desc: ''
 })
 </script>
 <style lang="less" scoped>

@@ -1,5 +1,5 @@
 <template>
-  <div class="csg-blogs-card" @click="handleClickCard">
+  <csg-card class="csg-blogs-card" hover @click="handleClickCard">
     <div v-if="imgUrl" class="left">
       <img class="cover-img" :src="imgUrl" alt="" />
     </div>
@@ -17,7 +17,7 @@
         <div class="create-time">{{ parseTime(props.data.createTime) }}</div>
       </div>
     </div>
-  </div>
+  </csg-card>
 </template>
 <script setup lang="ts">
 import { computed } from 'vue'
@@ -56,8 +56,6 @@ const handleClickCard = () => {
 <style scoped lang="less">
 .csg-blogs-card {
   width: 100%;
-  background-color: #fff;
-  border-radius: @base-border-radius;
   padding: 10px;
   display: flex;
   cursor: pointer;

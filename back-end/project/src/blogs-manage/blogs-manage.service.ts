@@ -30,6 +30,7 @@ export class BlogsManageService {
     const data = new Blogs();
     data.creator = req.user.usercode;
     data.creatorString = req.user.username;
+    data.creatorAvatar = req.user.avatar;
     data.title = body.title;
     data.summary = body.summary;
     data.content = body.content;
