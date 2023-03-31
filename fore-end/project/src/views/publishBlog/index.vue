@@ -30,6 +30,9 @@ import { ref, reactive, inject } from 'vue'
 
 import csgRichText from '@/components/csgRichText.vue'
 import { create } from '@/api/blogsManage/blogsManage'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const $csgMessage = inject('$csgMessage') as Function
 // 内容 HTML
@@ -62,6 +65,8 @@ const Create = (data: any) => {
         type: 'success',
         message: '发布成功！'
       })
+
+      router.push(`/blogDetail/${res.data.id}`)
     }
   })
 }

@@ -72,4 +72,12 @@ export class BlogsManageService {
       total,
     };
   }
+
+  async getBlogDetail(params) {
+    return this.blogs
+      .createQueryBuilder('blogs')
+      .where('blogs.id = :id', { id: params.id })
+      .addSelect('blogs.content')
+      .getOne();
+  }
 }

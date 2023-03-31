@@ -60,4 +60,9 @@ export class BlogsManageController {
   getList(@Query() query: { keyWord: string; page: number; pageSize: number }) {
     return this.blogsManageService.getBlogList(query);
   }
+
+  @Get('/getBlogDetail/:id')
+  getBlogDetail(@Param() params) {
+    return this.blogsManageService.getBlogDetail(params);
+  }
 }

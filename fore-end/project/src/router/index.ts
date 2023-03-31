@@ -56,6 +56,11 @@ const Routes =  [
     },
   },
   {
+    path: '/blogDetail/:id',
+    name: 'BlogDetail',
+    component: ()=>import('@/views/blogDetail/index.vue'),
+  },
+  {
     path: '/test',
     name: 'Test',
     component: ()=>import('@/views/test/index.vue'),

@@ -35,7 +35,7 @@ onMounted(() => {
   width: 100%;
   padding: @base-padding;
   .blog-card {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
 }
 </style>

@@ -111,5 +111,11 @@ const handleClickEdit = () => {
   height: inherit;
   display: flex;
   flex-direction: column;
+
+  :deep(.w-e-scroll) {
+    div {
+      padding: 0;
+    }
+  }
 }
 </style>

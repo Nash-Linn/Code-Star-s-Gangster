@@ -1,5 +1,5 @@
 <template>
-  <div class="csg-blogs-card">
+  <div class="csg-blogs-card" @click="handleClickCard">
     <div v-if="imgUrl" class="left">
       <img class="cover-img" :src="imgUrl" alt="" />
     </div>
@@ -21,9 +21,14 @@
 </template>
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { baseURL } from '@/config'
 import { parseTime } from '@/utils/index'
+
+const router = useRouter()
+
 interface Data {
+  id: string
   creatorString: string
   title: string
   coverUrl: string
@@ -43,6 +48,10 @@ const imgUrl = computed(() => {
 
   return baseURL + 'blogsManage/image/' + props.data.coverUrl
 })
+
+const handleClickCard = () => {
+  router.push(`/blogDetail/${props.data.id}`)
+}
 </script>
 <style scoped lang="less">
 .csg-blogs-card {
@@ -51,13 +60,20 @@ const imgUrl = computed(() => {
   border-radius: @base-border-radius;
   padding: 10px;
   display: flex;
+  cursor: pointer;
 
   .left {
+    width: 160px;
+    height: 90px;
+    border-radius: @base-border-radius;
+    border: 1px solid @base-color-border;
     margin-right: 20px;
+
     .cover-img {
       width: 160px;
       height: 90px;
       border-radius: @base-border-radius;
+      border: none;
     }
   }
 
