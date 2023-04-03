@@ -8,7 +8,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { BlogTags } from './blog-tags.entity';
-
+import { Users } from 'src/users/entities/user.entity';
 @Entity()
 export class Blogs {
   @Generated('uuid')
@@ -39,7 +39,7 @@ export class Blogs {
   @Column({ type: 'text', select: false, comment: '文章正文' })
   content: string;
 
-  @Column({ type: 'tinyint', comment: '状态' })
+  @Column({ type: 'varchar', length: 1, default: 1, comment: '状态' })
   status: number;
 
   @CreateDateColumn({ type: 'timestamp', comment: '创建时间' })

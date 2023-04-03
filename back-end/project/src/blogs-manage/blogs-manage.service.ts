@@ -34,7 +34,6 @@ export class BlogsManageService {
     data.title = body.title;
     data.summary = body.summary;
     data.content = body.content;
-    data.status = 1;
     if (file) {
       data.coverUrl = file.filename;
     }

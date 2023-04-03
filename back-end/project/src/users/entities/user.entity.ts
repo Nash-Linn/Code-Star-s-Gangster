@@ -16,14 +16,20 @@ export class Users {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 255, comment: '用户名' })
+  @Column({ type: 'varchar', length: 255, nullable: false, comment: '用户名' })
   username: string;
 
-  @Column({ type: 'varchar', length: 255, comment: '账号' })
+  @Column({ type: 'varchar', length: 255, nullable: false, comment: '账号' })
   usercode: string;
 
   @Exclude()
-  @Column({ type: 'varchar', length: 255, select: false, comment: '密码' })
+  @Column({
+    type: 'varchar',
+    length: 255,
+    nullable: false,
+    select: false,
+    comment: '密码',
+  })
   password: string;
 
   @Column({ type: 'varchar', length: 255, comment: '头像' })
