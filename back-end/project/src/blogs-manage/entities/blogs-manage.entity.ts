@@ -6,6 +6,8 @@ import {
   Generated,
   PrimaryGeneratedColumn,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { BlogTags } from './blog-tags.entity';
 import { Users } from 'src/users/entities/user.entity';
@@ -16,15 +18,6 @@ export class Blogs {
 
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column({ type: 'varchar', length: 20, comment: '作者账号' })
-  creator: string;
-
-  @Column({ type: 'varchar', length: 20, comment: '作者用户名' })
-  creatorString: string;
-
-  @Column({ type: 'varchar', comment: '作者头像' })
-  creatorAvatar: string;
 
   @Column({ type: 'varchar', length: 255, comment: '文章标题' })
   title: string;
@@ -47,4 +40,10 @@ export class Blogs {
 
   @OneToMany(() => BlogTags, (tags) => tags.blogId)
   tags: BlogTags[];
+
+  @ManyToOne(() => Users, (users) => users.id, {
+    cascade: true,
+  })
+  @JoinColumn({ name: 'creatorId' })
+  creator: Users;
 }

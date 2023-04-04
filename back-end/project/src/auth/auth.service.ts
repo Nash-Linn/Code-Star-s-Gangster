@@ -45,7 +45,6 @@ export class AuthService {
   }
 
   async getProfile(user: any) {
-    console.log('user', user);
     const findUser = await this.usersService.findOne(user.usercode);
     const payload = {
       usercode: findUser.usercode,

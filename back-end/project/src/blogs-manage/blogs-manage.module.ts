@@ -8,7 +8,7 @@ import env from '../config/env';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Blogs } from './entities/blogs-manage.entity';
 import { BlogTags } from './entities/blog-tags.entity';
-
+import { Users } from 'src/users/entities/user.entity';
 const fileDir = env.staticDir + '/blog_images/';
 @Module({
   imports: [
@@ -24,7 +24,7 @@ const fileDir = env.staticDir + '/blog_images/';
         },
       }),
     }),
-    TypeOrmModule.forFeature([Blogs, BlogTags], 'cs_gangster'),
+    TypeOrmModule.forFeature([Blogs, BlogTags, Users], 'cs_gangster'),
   ],
 
   controllers: [BlogsManageController],

@@ -9,6 +9,7 @@ import { Like, Repository } from 'typeorm';
 import { CreateBlogsManageDto } from './dto/create-blogs-manage.dto';
 import { UpdateBlogsManageDto } from './dto/update-blogs-manage.dto';
 import { Blogs } from './entities/blogs-manage.entity';
+import { Users } from 'src/users/entities/user.entity';
 @Injectable()
 export class BlogsManageService {
   constructor(
@@ -28,9 +29,8 @@ export class BlogsManageService {
 
   async create(req, file, body) {
     const data = new Blogs();
-    data.creator = req.user.usercode;
-    data.creatorString = req.user.username;
-    data.creatorAvatar = req.user.avatar;
+    data.creator = req.user.id;
+
     data.title = body.title;
     data.summary = body.summary;
     data.content = body.content;
@@ -51,17 +51,28 @@ export class BlogsManageService {
     const page = query.page ? query.page : 1;
     const pageSize = query.pageSize ? query.pageSize : 10;
     const keyWord = query.keyWord ? query.keyWord : '';
-    const data = await this.blogs.find({
-      where: {
-        title: Like(`%${keyWord}%`),
-        status: 1,
-      },
-      order: {
-        createTime: 'DESC',
-      },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-    });
+
+    const data = await this.blogs
+      .createQueryBuilder('blogs')
+      .leftJoinAndSelect(Users, 'users', 'blogs.creator = users.id')
+      .select(
+        `
+          blogs.title as title,
+          blogs.coverUrl as coverUrl,
+          blogs.summary as summary,
+          blogs.status as status,
+          blogs.createTime as createTime,
+          users.usercode as usercode,
+          users.username as username,
+          users.avatar as avatar,
+      `,
+      )
+      .where('blogs.title LIKE :keyWord', { keyWord: `%${keyWord}%` })
+      .orderBy('blogs.createTime', 'DESC')
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getRawMany();
+
     const total = await this.blogs.count({
       where: {
         title: Like(`%${keyWord}%`),

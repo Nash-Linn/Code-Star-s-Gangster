@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { Blogs } from 'src/blogs-manage/entities/blogs-manage.entity';
 
 @Entity()
 export class Users {
@@ -38,9 +39,9 @@ export class Users {
   @Column({ type: 'varchar', length: 255, comment: '备注' })
   desc: string;
 
-  @Column({ comment: '角色' })
+  @Column({ select: false, comment: '角色' })
   roles: string;
 
-  @CreateDateColumn({ type: 'timestamp', comment: '创建时间' })
+  @CreateDateColumn({ select: false, type: 'timestamp', comment: '创建时间' })
   createTime: Date;
 }
