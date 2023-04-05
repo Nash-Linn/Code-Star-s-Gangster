@@ -57,14 +57,10 @@ export class BlogsManageService {
       .leftJoinAndSelect(Users, 'users', 'blogs.creator = users.id')
       .select(
         `
-          blogs.title as title,
-          blogs.coverUrl as coverUrl,
-          blogs.summary as summary,
-          blogs.status as status,
-          blogs.createTime as createTime,
-          users.usercode as usercode,
-          users.username as username,
-          users.avatar as avatar,
+          blogs.*,
+          users.usercode as creatorCode,
+          users.username as creatorName,
+          users.avatar as creatorAvatar
       `,
       )
       .where('blogs.title LIKE :keyWord', { keyWord: `%${keyWord}%` })
@@ -87,8 +83,16 @@ export class BlogsManageService {
   async getBlogDetail(params) {
     return this.blogs
       .createQueryBuilder('blogs')
+      .leftJoinAndSelect(Users, 'users', 'blogs.creator = users.id')
+      .select(
+        `
+          blogs.*,
+          users.usercode as creatorCode,
+          users.username as creatorName,
+          users.avatar as creatorAvatar
+      `,
+      )
       .where('blogs.id = :id', { id: params.id })
-      .addSelect('blogs.content')
-      .getOne();
+      .getRawOne();
   }
 }

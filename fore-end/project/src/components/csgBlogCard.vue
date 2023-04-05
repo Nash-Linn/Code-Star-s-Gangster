@@ -13,7 +13,7 @@
         <span class="summary">{{ props.data.summary }}</span>
       </div>
       <div class="bottom">
-        <div class="creator">{{ props.data.creatorString }}</div>
+        <div class="creator">{{ props.data.creatorName }}</div>
         <div class="create-time">{{ parseTime(props.data.createTime) }}</div>
       </div>
     </div>
@@ -29,7 +29,7 @@ const router = useRouter()
 
 interface Data {
   id: string
-  creatorString: string
+  creatorName: string
   title: string
   coverUrl: string
   summary: string

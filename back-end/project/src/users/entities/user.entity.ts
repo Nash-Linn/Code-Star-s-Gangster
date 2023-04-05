@@ -36,8 +36,11 @@ export class Users {
   @Column({ type: 'varchar', length: 255, comment: '头像' })
   avatar: string;
 
-  @Column({ type: 'varchar', length: 255, comment: '备注' })
-  desc: string;
+  @Column({ type: 'varchar', length: 1, comment: '性别' })
+  gender: string;
+
+  @Column({ type: 'varchar', length: 255, comment: '简介' })
+  intro: string;
 
   @Column({ select: false, comment: '角色' })
   roles: string;

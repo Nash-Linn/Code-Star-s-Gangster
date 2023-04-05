@@ -40,7 +40,7 @@ const GetBlogDetail = async (id) => {
     blogInfo.content = res.data.content
     blogInfo.title = res.data.title
     blogInfo.createTime = res.data.createTime
-    blogInfo.creatorName = res.data.creatorString
+    blogInfo.creatorName = res.data.creatorName
     blogInfo.creatorAvatar = res.data.creatorAvatar
   })
 }

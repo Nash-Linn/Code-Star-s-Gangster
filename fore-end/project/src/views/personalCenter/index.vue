@@ -14,7 +14,7 @@ import menus from './components/menus.vue'
 <style scoped lang="less">
 .personal-center-wrap {
   width: 100%;
-  height: 100%;
+  min-height: @main-height;
   padding: @base-padding;
 
   display: flex;
@@ -22,7 +22,6 @@ import menus from './components/menus.vue'
   .left {
     flex-shrink: 0;
     width: 200px;
-    height: 100%;
     background-color: #fff;
     border-radius: @base-border-radius;
     margin-right: 20px;
@@ -31,7 +30,6 @@ import menus from './components/menus.vue'
 
   .right {
     width: 100%;
-    height: 100%;
     background-color: #fff;
     border-radius: @base-border-radius;
     padding: @base-padding;
