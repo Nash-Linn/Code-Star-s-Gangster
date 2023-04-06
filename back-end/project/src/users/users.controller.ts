@@ -11,10 +11,12 @@ import {
   ClassSerializerInterceptor,
   UseGuards,
   Req,
+  UploadedFile,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -24,18 +26,21 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
-
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  update(@Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.updateInfo(updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Post('updateAvatar')
+  @UseInterceptors(FileInterceptor('file'))
+  updateAvatar(@Body('usercode') usercode: string, @UploadedFile() file) {
+    return this.usersService.updateAvatar(usercode, file);
+  }
+
+  @Get('getUserInfo')
+  @UseGuards(AuthGuard('jwt'))
+  getUserInfo(@Req() req) {
+    console.log('req', req.user);
+    return this.usersService.getUserInfo(req.user.usercode);
   }
 }

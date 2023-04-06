@@ -1,7 +1,7 @@
 import { ref, computed} from 'vue'
 import { defineStore } from 'pinia'
 import { tokenName } from '@/config'
-import { getUserInfo, login } from '@/api/user'
+import { profile, login } from '@/api/user'
 import { getToken, removeToken, setToken } from '@/utils/token'
 import csgMessage from '@lib/components/functionComponents/csgMessage'
 
@@ -80,20 +80,28 @@ export const useUserStore = defineStore('user', {
         }
       },
       async getUserInfo() {
-        const {
-          data: {
-            username,
-            avatar,
-            roles,
-            usercode,
-            [tokenName]: token
-          },
-        } = await getUserInfo()
-        username && this.setUsername(username)
-        usercode && this.setUsercode(usercode)
-        avatar && this.setAvatar(avatar)
-        roles && this.setRoles(roles)
-        token && this.setToken(token)
+        try {
+          const {
+            data: {
+              username,
+              avatar,
+              roles,
+              usercode,
+              [tokenName]: token
+            },
+          } = await profile()
+          username && this.setUsername(username)
+          usercode && this.setUsercode(usercode)
+          avatar && this.setAvatar(avatar)
+          roles && this.setRoles(roles)
+          token && this.setToken(token)
+        } catch (error:any) {
+          console.log('error',error)
+          if(!error.success){
+            removeToken()
+          }
+        }
+       
       },
 
 

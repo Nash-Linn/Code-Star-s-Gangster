@@ -117,6 +117,11 @@ const handleMouseoverTipIcon = () => {
   resize: vertical;
   outline: none;
 
+  font-size: 14px;
+  font-size: @base-font-size;
+  font-family: '微软雅黑';
+  color: #333333;
+
   //隐藏滚动条
   &::-webkit-scrollbar {
     width: 0 !important;

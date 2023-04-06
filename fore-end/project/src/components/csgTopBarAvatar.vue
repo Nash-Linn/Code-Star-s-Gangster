@@ -1,7 +1,7 @@
 <template>
   <div class="csg-top-bar-avatar-wrap">
     <csg-popover>
-      <template #reference> <csg-avatar :imgurl="userStore.getAvatar" desc="登录" /></template>
+      <template #reference> <csg-avatar :imgurl="avatar" desc="登录" /></template>
       <div class="content">
         <template v-if="loging">
           <div class="login-wrap">
@@ -41,6 +41,7 @@ import csgRegister from './csgRegister.vue'
 import { useUserStore } from '@/stores/modules/user'
 import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { baseURL } from '@/config'
 const router = useRouter()
 const userStore = useUserStore()
 const loginDialogVisible = ref<boolean>(false)
@@ -61,6 +62,10 @@ const loging = computed(() => {
   } else {
     return false
   }
+})
+
+const avatar = computed(() => {
+  return baseURL + userStore.getAvatar
 })
 
 const handleLogout = () => {

@@ -23,10 +23,26 @@ export  function login(data:{
   })
 }
 
-export  function getUserInfo() {
+export  function profile() {
   return request({
     url: '/auth/profile',
     method: 'get',
+  })
+}
+
+export  function getUserInfo() {
+  return request({
+    url: '/users/getUserInfo',
+    method: 'get',
+  })
+}
+
+
+export  function updateAvatar(data:any) {
+  return request({
+    url: '/users/updateAvatar',
+    method: 'post',
+    data
   })
 }
 

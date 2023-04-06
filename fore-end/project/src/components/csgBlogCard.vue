@@ -46,7 +46,7 @@ const imgUrl = computed(() => {
     return ''
   }
 
-  return baseURL + 'blogsManage/image/' + props.data.coverUrl
+  return baseURL + '/blogsManage/image/' + props.data.coverUrl
 })
 
 const handleClickCard = () => {

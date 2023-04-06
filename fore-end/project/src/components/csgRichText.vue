@@ -62,7 +62,7 @@ const editorConfig: Partial<IEditorConfig> = {
 type InsertFnType = (url: string, alt: string, href: string) => void
 
 editorConfig.MENU_CONF!.uploadImage = {
-  server: baseURL + 'blogsManage/uploadfile',
+  server: baseURL + '/blogsManage/uploadfile',
   // form-data fieldName ，默认值 'wangeditor-uploaded-image'
   fieldName: 'file',
 
