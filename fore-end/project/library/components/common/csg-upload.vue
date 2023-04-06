@@ -14,7 +14,7 @@
     <div class="delete-wrap">
       <div v-for="(item, index) in src" :key="index" class="preview">
         <template v-if="item">
-          <div class="delete" @click="handleDelete(index)"></div>
+          <div class="delete" @click="handleDelete(item, index)"></div>
         </template>
       </div>
       <div class="input-extra">
@@ -28,7 +28,8 @@
       </div>
     </div>
   </div>
-  <div v-else class="csg-upload-wrap">
+  <div v-else class="csg-upload-button-wrap">
+    <slot><csg-button>上传文件</csg-button> </slot>
     <input
       class="input"
       type="file"
@@ -36,7 +37,6 @@
       :multiple="props.multiple"
       @change="handleFileChange"
     />
-    <slot><csg-button>上传文件</csg-button> </slot>
   </div>
 </template>
 <script setup lang="ts">
@@ -70,12 +70,15 @@ const handleFileChange = (event: Event) => {
         emits('exceed')
         return
       }
+
       fileList.value.push(item)
-      let reader = new FileReader()
-      reader.readAsDataURL(item)
-      reader.onload = function (e: Event) {
-        //成功读取文件
-        src.value.push((e.target as FileReader).result)
+      if (item.type.search('image') != -1) {
+        let reader = new FileReader()
+        reader.readAsDataURL(item)
+        reader.onload = function (e: Event) {
+          //成功读取文件
+          src.value.push((e.target as FileReader).result)
+        }
       }
 
       emits('change', {
@@ -86,9 +89,11 @@ const handleFileChange = (event: Event) => {
   }
 }
 
-const handleDelete = (index: any) => {
+const handleDelete = (item: any, index: any) => {
   fileList.value.splice(index, 1)
-  src.value.splice(index, 1)
+  if (item.type.search('image') != -1) {
+    src.value.splice(index, 1)
+  }
   emits('change', {
     fileList: toRaw(fileList.value)
   })
@@ -215,6 +220,17 @@ const handleDelete = (index: any) => {
       left: 50%;
       transform: translate(-50%, -50%);
     }
+  }
+}
+
+.csg-upload-button-wrap {
+  position: relative;
+  .input {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
   }
 }
 </style>

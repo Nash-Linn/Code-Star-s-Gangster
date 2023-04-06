@@ -57,7 +57,12 @@ export class BlogsManageService {
       .leftJoinAndSelect(Users, 'users', 'blogs.creator = users.id')
       .select(
         `
-          blogs.*,
+          blogs.id,
+          blogs.title,
+          blogs.coverUrl,
+          blogs.summary,
+          blogs.status,
+          blogs.createTime,
           users.usercode as creatorCode,
           users.username as creatorName,
           users.avatar as creatorAvatar
