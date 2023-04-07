@@ -30,21 +30,54 @@ export class UsersService {
     }
   }
 
-  findAll() {
-    return `This action returns all users`;
-  }
-
-  async findOne(usercode: string) {
-    const user = await this.users.findOne({
-      where: {
-        usercode: Like(usercode),
-      },
-    });
+  async getUserInfo(usercode: string) {
+    console.log('usercode', usercode);
+    const user = await this.users
+      .createQueryBuilder('users')
+      .select(
+        `
+        users.usercode ,
+        users.username ,
+        users.avatar,
+        users.intro
+    `,
+      )
+      .where('users.usercode = :usercode', { usercode: usercode })
+      .getRawOne();
     return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async getProfile(usercode: string) {
+    const user = await this.users
+      .createQueryBuilder('users')
+      .select(
+        `
+        users.usercode ,
+        users.username ,
+        users.avatar
+    `,
+      )
+      .where('users.usercode = :usercode', { usercode: usercode })
+      .getRawOne();
+
+    return user;
+  }
+
+  async updateAvatar(usercode: string, file: any) {
+    const fileUrl = file.destination + file.filename;
+    const res = await this.users
+      .createQueryBuilder('users')
+      .update()
+      .set({ avatar: fileUrl })
+      .where('usercode = :usercode', { usercode: usercode })
+      .execute();
+
+    return res;
+  }
+
+  updateInfo(updateUserDto: UpdateUserDto) {
+    console.log('updateUserDto', updateUserDto);
+    return `This action updates a  user`;
   }
 
   remove(id: number) {

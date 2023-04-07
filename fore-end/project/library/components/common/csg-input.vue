@@ -143,6 +143,11 @@ const handleMouseoverTipIcon = () => {
   border: 1px solid @base-color-border;
   padding: 0 30px 0 20px;
   transition: 0.5s;
+
+  font-size: 14px;
+  font-size: @base-font-size;
+  font-family: '微软雅黑';
+  color: #333333;
 }
 
 .csg-input-wrap {

@@ -26,12 +26,32 @@
   </div>
 </template>
 <script setup lang="ts">
+import { inject } from 'vue'
 import { useUserStore } from '@/stores/modules/user'
+import { updateAvatar } from '@/api/user'
+
+const $csgMessage = inject('$csgMessage') as Function
 
 const userStore = useUserStore()
 
 const handleChange = (val: any) => {
-  console.log('val', val)
+  const form = new FormData()
+  form.append('usercode', userStore.getUsercode)
+  form.append('file', val.file)
+  UpdateAvatar(form)
+}
+
+//更新头像
+const UpdateAvatar = (data: any) => {
+  updateAvatar(data).then((res) => {
+    console.log('res', res)
+    if (res.success) {
+      $csgMessage({
+        type: 'success',
+        message: '成功'
+      })
+    }
+  })
 }
 </script>
 <style lang="less" scoped>
