@@ -2,7 +2,11 @@
 /dist
 /dist.zip
 **/node_modules
+
+
+
 /src/common/databaseKey.ts
+/src/common/ftpKey.ts
 
 # Logs
 logs
