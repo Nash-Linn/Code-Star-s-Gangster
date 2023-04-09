@@ -32,15 +32,19 @@ export class UsersController {
   }
 
   @Post('updateAvatar')
+  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('file'))
-  updateAvatar(@Body('usercode') usercode: string, @UploadedFile() file) {
-    return this.usersService.updateAvatar(usercode, file);
+  updateAvatar(
+    @Req() req,
+    @Body('usercode') usercode: string,
+    @UploadedFile() file,
+  ) {
+    return this.usersService.updateAvatar(req.user.usercode, file);
   }
 
   @Get('getUserInfo')
   @UseGuards(AuthGuard('jwt'))
   getUserInfo(@Req() req) {
-    console.log('req', req.user);
     return this.usersService.getUserInfo(req.user.usercode);
   }
 }
