@@ -1,10 +1,12 @@
+import { join } from 'path';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from './entities/user.entity';
 import { Like, Repository } from 'typeorm';
-
+import { ftpPut } from 'src/utils/ftp';
+import env from 'src/config/env';
 @Injectable()
 export class UsersService {
   constructor(
@@ -64,14 +66,17 @@ export class UsersService {
   }
 
   async updateAvatar(usercode: string, file: any) {
-    const fileUrl = file.destination + file.filename;
+    const fileUrl = join(file.destination, file.filename);
+    const storeUrl = join('avatars/', file.filename);
+    if (env.envType == 'dev') {
+      ftpPut(fileUrl, `/static/avatars/${file.filename}`);
+    }
     const res = await this.users
       .createQueryBuilder('users')
       .update()
-      .set({ avatar: fileUrl })
+      .set({ avatar: storeUrl })
       .where('usercode = :usercode', { usercode: usercode })
       .execute();
-
     return res;
   }
 

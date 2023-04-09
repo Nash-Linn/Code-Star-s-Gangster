@@ -8,8 +8,8 @@ import { diskStorage } from 'multer';
 import env from '../config/env';
 import { extname, join } from 'path';
 
-const fileDir = env.staticDir + '/avatars/';
-
+const fileDir = join(env.staticDir, 'avatars');
+console.log('fileDir', fileDir);
 @Module({
   imports: [
     MulterModule.register({

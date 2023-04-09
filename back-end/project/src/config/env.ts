@@ -31,11 +31,11 @@ function envFunc(evn): Env {
 
 type envType = 'pro' | 'dev';
 
-const env: envType = 'pro';
+const env: envType = 'dev';
 
 const Env = envFunc(env);
 export default {
-  env: env,
+  envType: env,
   baseURL: Env.baseUrl,
   staticDir: Env.staticDir,
 };
