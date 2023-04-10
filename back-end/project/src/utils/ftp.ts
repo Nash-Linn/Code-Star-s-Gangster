@@ -1,16 +1,10 @@
 import * as ftp from 'ftp';
-import ftpKey from 'src/common/ftpKey';
 import * as path from 'path';
 import * as fs from 'fs';
+import ftpConfig from 'src/config/ftpConfig';
 
 const client = new ftp();
-const config = {
-  host: '101.34.111.220',
-  port: '21',
-  user: 'csgRoot',
-  password: ftpKey.csgRoot,
-  keepalive: 10000,
-};
+const config = ftpConfig.config_pro;
 
 export function ftpConnect() {
   return new Promise((resolve, reject) => {

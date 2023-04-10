@@ -6,7 +6,7 @@
 
 
 /src/common/databaseKey.ts
-/src/common/ftpKey.ts
+/src/config/ftpConfig.ts
 
 # Logs
 logs
