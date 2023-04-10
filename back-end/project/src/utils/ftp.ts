@@ -42,9 +42,8 @@ export function ftpCwd(dirpath): Promise<any> {
   });
 }
 
-//将文件上传到ftp目标地址
-
-async function put(currentFile, targetFilePath) {
+//将本地文件上传到ftp目标地址
+async function putLocalFile(currentFile, targetFilePath) {
   const dirpath = path.dirname(targetFilePath);
   const fileName = path.basename(targetFilePath);
 
@@ -61,29 +60,85 @@ async function put(currentFile, targetFilePath) {
   });
 }
 
-//下载文件
-async function get(filePath) {
-  const dirpath = path.dirname(filePath);
-  const fileName = path.basename(filePath);
-  await ftpCwd(dirpath);
+//将文件上传到ftp目标地址
+async function putFileBuffer(currentFile, targetFilePath) {
+  const dirpath = path.dirname(targetFilePath);
+  const fileName = path.basename(targetFilePath);
+  const { err, dir } = await ftpCwd(dirpath);
+  if (err) {
+    return Promise.resolve({ err });
+  }
   return new Promise((resolve, reject) => {
-    client.get(fileName, (err, rs) => {
-      const ws = fs.createWriteStream(fileName);
-      rs.pipe(ws);
+    client.put(currentFile.buffer, fileName, (err) => {
       resolve({ err: err });
     });
   });
 }
 
-export async function ftpPut(currentFile, targetFilePath) {
+export async function ftpPutLocalFile(currentFile, targetFilePath) {
   ftpConnect().then((res) => {
     if (res == 'ready') {
       return new Promise((resolve, reject) => {
-        put(currentFile, targetFilePath).then((res) => {
+        putLocalFile(currentFile, targetFilePath).then((res) => {
           client.end();
           resolve(res);
         });
       });
     }
   });
+}
+
+export async function ftpPutFile(currentFile, targetFilePath) {
+  ftpConnect().then((res) => {
+    if (res == 'ready') {
+      return new Promise((resolve, reject) => {
+        putFileBuffer(currentFile, targetFilePath).then((res) => {
+          client.end();
+          resolve(res);
+        });
+      });
+    }
+  });
+}
+
+//下载文件
+export async function ftpGet(filePath): Promise<any> {
+  const filePathFormate = path.normalize(filePath).replace(/\\/g, '/');
+  const dirpath = path.dirname(filePathFormate);
+
+  const fileName = path.basename(filePath);
+  await ftpCwd(dirpath);
+
+  return new Promise((resolve, reject) => {
+    client.get(fileName, (err, rs) => {
+      // const ws = fs.createWriteStream(fileName);
+      // rs.pipe(ws);
+      resolve({ err, rs });
+    });
+  });
+}
+
+export async function ftpGetFile(filePath) {
+  return new Promise((resolve, reject) => {
+    ftpConnect().then((res) => {
+      if (res == 'ready') {
+        ftpGet(filePath).then((res) => {
+          if (res.err) {
+            reject(res.err);
+          } else if (res.rs) {
+            resolve(res.rs);
+          }
+          client.end();
+        });
+      }
+    });
+  });
+}
+
+export function dealFileNameAddDate(file) {
+  const name = file.originalname.split('.')[0];
+  const fileName = `${
+    name + '(' + new Date().getTime() + ')' + path.extname(file.originalname)
+  }`;
+  return fileName;
 }

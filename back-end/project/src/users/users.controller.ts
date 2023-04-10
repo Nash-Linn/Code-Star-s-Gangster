@@ -12,7 +12,10 @@ import {
   UseGuards,
   Req,
   UploadedFile,
+  Res,
+  StreamableFile,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -40,6 +43,11 @@ export class UsersController {
     @UploadedFile() file,
   ) {
     return this.usersService.updateAvatar(req.user.usercode, file);
+  }
+
+  @Get('getAvatar/:path')
+  getAvatar(@Res({ passthrough: true }) res: Response, @Param() param) {
+    return this.usersService.getAvatar(res, param.path);
   }
 
   @Get('getUserInfo')

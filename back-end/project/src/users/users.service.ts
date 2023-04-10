@@ -1,12 +1,18 @@
 import { join } from 'path';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  HttpStatus,
+  StreamableFile,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from './entities/user.entity';
 import { Like, Repository } from 'typeorm';
-import { ftpPut } from 'src/utils/ftp';
-import env from 'src/config/env';
+import { zip } from 'compressing';
+import { ftpPutFile, dealFileNameAddDate, ftpGetFile } from 'src/utils/ftp';
+import * as fs from 'fs';
 @Injectable()
 export class UsersService {
   constructor(
@@ -66,11 +72,9 @@ export class UsersService {
   }
 
   async updateAvatar(usercode: string, file: any) {
-    const fileUrl = join(file.destination, file.filename);
-    const storeUrl = join('avatars/', file.filename);
-    if (env.envType == 'dev') {
-      ftpPut(fileUrl, `/static/avatars/${file.filename}`);
-    }
+    const fileName = dealFileNameAddDate(file);
+    const storeUrl = join('avatars', fileName);
+    ftpPutFile(file, `/static/avatars/${fileName}`);
     const res = await this.users
       .createQueryBuilder('users')
       .update()
@@ -78,6 +82,19 @@ export class UsersService {
       .where('usercode = :usercode', { usercode: usercode })
       .execute();
     return res;
+  }
+
+  async getAvatar(res, path) {
+    const filePath = join('static', 'avatars', path);
+    const rs = (await ftpGetFile(filePath)) as any;
+
+    // res.setHeader('Content-Type', 'application/json');
+    // res.setHeader(
+    //   'Content-Disposition',
+    //   `attachment;filename = ${encodeURIComponent('test.js')}`,
+    // );
+
+    // return rs;
   }
 
   updateInfo(updateUserDto: UpdateUserDto) {
