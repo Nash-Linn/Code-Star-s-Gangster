@@ -17,7 +17,7 @@ export class Users {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 255, nullable: false, comment: '用户名' })
+  @Column({ type: 'varchar', length: 255, nullable: false, comment: '昵称' })
   username: string;
 
   @Column({ type: 'varchar', length: 255, nullable: false, comment: '账号' })

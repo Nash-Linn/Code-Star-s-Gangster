@@ -7,7 +7,7 @@
       <div class="register-wrap">
         <csg-forms ref="formRef" :model="registerData" :rules="ruleValidate">
           <csg-form-item>
-            <csg-input formId="username" label="用户名" v-model="registerData.username" required />
+            <csg-input formId="username" label="昵称" v-model="registerData.username" required />
           </csg-form-item>
           <csg-form-item>
             <csg-input formId="usercode" label="账号" v-model="registerData.usercode" required />
@@ -96,7 +96,7 @@ const ruleValidate = {
   username: [
     {
       required: true,
-      message: '请填写用户名',
+      message: '请填写昵称',
       trigger: 'blur'
     }
   ],

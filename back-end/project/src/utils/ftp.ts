@@ -34,6 +34,33 @@ export function ftpConnect(): Promise<any> {
   });
 }
 
+// let status: any;
+
+// client.on('ready', () => {
+//   status = 'ready';
+// });
+// client.on('close', () => {
+//   status = 'close';
+// });
+// client.on('end', () => {
+//   status = 'end';
+// });
+// client.on('error', (err) => {
+//   status = 'error';
+//   console.log('err=============', err);
+//   throw err;
+// });
+
+// export function ftpConnect(): Promise<any> {
+//   return new Promise(async (resolve, reject) => {
+//     await client.connect(config);
+//     resolve({
+//       status,
+//       client,
+//     });
+//   });
+// }
+
 export function ftpList() {
   return new Promise((resolve, reject) => {
     client.list((err, files) => {
@@ -125,7 +152,7 @@ export async function ftpGet(filePath): Promise<any> {
   });
 }
 
-export async function ftpGetFile(filePath, response) {
+export async function ftpGetFile(filePath, response): Promise<any> {
   return new Promise((resolve, reject) => {
     ftpConnect().then((connectRes) => {
       if (connectRes.status == 'ready') {
@@ -162,4 +189,24 @@ export function dealFileNameAddDate(file) {
     name + '_' + new Date().getTime() + path.extname(file.originalname)
   }`;
   return fileName;
+}
+
+export function dealContentType(filePath) {
+  let contentType;
+  const ext = path.extname(filePath);
+  switch (ext) {
+    case '.png':
+      contentType = 'image/png';
+      break;
+    case '.jpg':
+    case '.jpeg':
+      contentType = 'image/jpeg';
+      break;
+
+    default:
+      contentType = 'application/octet-stream';
+      break;
+  }
+
+  return contentType;
 }

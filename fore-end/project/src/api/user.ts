@@ -37,6 +37,17 @@ export  function getUserInfo() {
   })
 }
 
+export  function updateUserInfo(data:{
+  username:string
+  intro?:string
+}) {
+  return request({
+    url: '/users/updateUserInfo',
+    method: 'post',
+    data
+  })
+}
+
 
 export  function updateAvatar(data:any) {
   return request({

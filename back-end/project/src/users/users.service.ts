@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join, extname } from 'path';
 import {
   Injectable,
   HttpException,
@@ -10,13 +10,11 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from './entities/user.entity';
 import { Like, Repository } from 'typeorm';
-import { zip } from 'compressing';
 import {
   ftpPutFile,
   dealFileNameAddDate,
   ftpGetFile,
-  ftpConnect,
-  ftpCwd,
+  dealContentType,
 } from 'src/utils/ftp';
 import * as fs from 'fs';
 @Injectable()
@@ -33,7 +31,7 @@ export class UsersService {
       },
     });
     if (count) {
-      throw new HttpException('用户名已存在', HttpStatus.BAD_REQUEST);
+      throw new HttpException('用户已存在', HttpStatus.BAD_REQUEST);
     } else {
       const data = new Users();
       data.username = createUserDto.username;
@@ -45,7 +43,6 @@ export class UsersService {
   }
 
   async getUserInfo(usercode: string) {
-    console.log('usercode', usercode);
     const user = await this.users
       .createQueryBuilder('users')
       .select(
@@ -79,30 +76,37 @@ export class UsersService {
 
   async updateAvatar(usercode: string, file: any) {
     const fileName = dealFileNameAddDate(file);
-    const storeUrl = join('avatars', fileName);
     ftpPutFile(file, `/static/avatars/${fileName}`);
     const res = await this.users
       .createQueryBuilder('users')
       .update()
-      .set({ avatar: storeUrl })
+      .set({ avatar: fileName })
       .where('usercode = :usercode', { usercode: usercode })
       .execute();
     return res;
   }
 
   async getAvatar(response, filename) {
+    response.setHeader('Content-Type', dealContentType(filename));
     response.setHeader(
       'Content-Disposition',
       `attachment; filename=${encodeURIComponent(filename)}`,
     );
-
     const filePath = join('static', 'avatars', filename);
     await ftpGetFile(filePath, response);
   }
 
-  updateInfo(updateUserDto: UpdateUserDto) {
-    console.log('updateUserDto', updateUserDto);
-    return `This action updates a  user`;
+  async updateUserInfo(usercode, updateUserDto: UpdateUserDto) {
+    const res = await this.users
+      .createQueryBuilder('users')
+      .update()
+      .set({
+        username: updateUserDto.username,
+        intro: updateUserDto.intro,
+      })
+      .where('usercode = :usercode', { usercode: usercode })
+      .execute();
+    return res;
   }
 
   remove(id: number) {

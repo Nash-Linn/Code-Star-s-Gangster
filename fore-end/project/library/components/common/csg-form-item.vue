@@ -26,11 +26,12 @@ const props = withDefaults(defineProps<Props>(), {})
 .csg-from-item-wrap {
   display: flex;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 
   .csg-from-item-label {
     margin-right: 10px;
     flex-shrink: 0;
+    font-weight: bold;
   }
 
   .csg-from-item {

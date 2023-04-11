@@ -30,11 +30,6 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @Patch(':id')
-  update(@Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.updateInfo(updateUserDto);
-  }
-
   @Post('updateAvatar')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('file'))
@@ -47,7 +42,6 @@ export class UsersController {
   }
 
   @Get('getAvatar/:filename')
-  @Header('Content-Type', 'application/octet-stream;charset=utf-8')
   getAvatar(@Res() res: Response, @Param() param) {
     return this.usersService.getAvatar(res, param.filename);
   }
@@ -56,5 +50,11 @@ export class UsersController {
   @UseGuards(AuthGuard('jwt'))
   getUserInfo(@Req() req) {
     return this.usersService.getUserInfo(req.user.usercode);
+  }
+
+  @Post('updateUserInfo')
+  @UseGuards(AuthGuard('jwt'))
+  update(@Req() req, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.updateUserInfo(req.user.usercode, updateUserDto);
   }
 }
