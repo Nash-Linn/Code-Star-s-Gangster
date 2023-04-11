@@ -11,7 +11,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from './entities/user.entity';
 import { Like, Repository } from 'typeorm';
 import { zip } from 'compressing';
-import { ftpPutFile, dealFileNameAddDate, ftpGetFile } from 'src/utils/ftp';
+import {
+  ftpPutFile,
+  dealFileNameAddDate,
+  ftpGetFile,
+  ftpConnect,
+  ftpCwd,
+} from 'src/utils/ftp';
 import * as fs from 'fs';
 @Injectable()
 export class UsersService {
@@ -84,17 +90,14 @@ export class UsersService {
     return res;
   }
 
-  async getAvatar(res, path) {
-    const filePath = join('static', 'avatars', path);
-    const rs = (await ftpGetFile(filePath)) as any;
+  async getAvatar(response, filename) {
+    response.setHeader(
+      'Content-Disposition',
+      `attachment; filename=${encodeURIComponent(filename)}`,
+    );
 
-    // res.setHeader('Content-Type', 'application/json');
-    // res.setHeader(
-    //   'Content-Disposition',
-    //   `attachment;filename = ${encodeURIComponent('test.js')}`,
-    // );
-
-    // return rs;
+    const filePath = join('static', 'avatars', filename);
+    await ftpGetFile(filePath, response);
   }
 
   updateInfo(updateUserDto: UpdateUserDto) {

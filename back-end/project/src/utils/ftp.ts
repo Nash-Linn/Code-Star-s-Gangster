@@ -6,16 +6,25 @@ import ftpConfig from 'src/config/ftpConfig';
 const client = new ftp();
 const config = ftpConfig.config_pro;
 
-export function ftpConnect() {
+export function ftpConnect(): Promise<any> {
   return new Promise((resolve, reject) => {
     client.on('ready', () => {
-      resolve('ready');
+      resolve({
+        status: 'ready',
+        client,
+      });
     });
     client.on('close', () => {
-      resolve('close');
+      resolve({
+        status: 'close',
+        client,
+      });
     });
     client.on('end', () => {
-      resolve('end');
+      resolve({
+        status: 'end',
+        client,
+      });
     });
     client.on('error', (err) => {
       reject(err);
@@ -77,7 +86,7 @@ async function putFileBuffer(currentFile, targetFilePath) {
 
 export async function ftpPutLocalFile(currentFile, targetFilePath) {
   ftpConnect().then((res) => {
-    if (res == 'ready') {
+    if (res.status == 'ready') {
       return new Promise((resolve, reject) => {
         putLocalFile(currentFile, targetFilePath).then((res) => {
           client.end();
@@ -90,7 +99,7 @@ export async function ftpPutLocalFile(currentFile, targetFilePath) {
 
 export async function ftpPutFile(currentFile, targetFilePath) {
   ftpConnect().then((res) => {
-    if (res == 'ready') {
+    if (res.status == 'ready') {
       return new Promise((resolve, reject) => {
         putFileBuffer(currentFile, targetFilePath).then((res) => {
           client.end();
@@ -111,24 +120,36 @@ export async function ftpGet(filePath): Promise<any> {
 
   return new Promise((resolve, reject) => {
     client.get(fileName, (err, rs) => {
-      // const ws = fs.createWriteStream(fileName);
-      // rs.pipe(ws);
       resolve({ err, rs });
     });
   });
 }
 
-export async function ftpGetFile(filePath) {
+export async function ftpGetFile(filePath, response) {
   return new Promise((resolve, reject) => {
-    ftpConnect().then((res) => {
-      if (res == 'ready') {
+    ftpConnect().then((connectRes) => {
+      if (connectRes.status == 'ready') {
         ftpGet(filePath).then((res) => {
           if (res.err) {
             reject(res.err);
           } else if (res.rs) {
-            resolve(res.rs);
+            const readStream = res.rs;
+            let chunk = '';
+            readStream.on('readable', function () {
+              while (null != (chunk = readStream.read())) {
+                response.write(chunk);
+              }
+            });
+            readStream.on('close', function () {
+              response.end();
+              client.end();
+            });
+
+            resolve({
+              readStream,
+              client: connectRes.client,
+            });
           }
-          client.end();
         });
       }
     });
@@ -138,7 +159,7 @@ export async function ftpGetFile(filePath) {
 export function dealFileNameAddDate(file) {
   const name = file.originalname.split('.')[0];
   const fileName = `${
-    name + '(' + new Date().getTime() + ')' + path.extname(file.originalname)
+    name + '_' + new Date().getTime() + path.extname(file.originalname)
   }`;
   return fileName;
 }

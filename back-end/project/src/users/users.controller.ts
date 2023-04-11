@@ -14,6 +14,7 @@ import {
   UploadedFile,
   Res,
   StreamableFile,
+  Header,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { UsersService } from './users.service';
@@ -45,9 +46,10 @@ export class UsersController {
     return this.usersService.updateAvatar(req.user.usercode, file);
   }
 
-  @Get('getAvatar/:path')
-  getAvatar(@Res({ passthrough: true }) res: Response, @Param() param) {
-    return this.usersService.getAvatar(res, param.path);
+  @Get('getAvatar/:filename')
+  @Header('Content-Type', 'application/octet-stream;charset=utf-8')
+  getAvatar(@Res() res: Response, @Param() param) {
+    return this.usersService.getAvatar(res, param.filename);
   }
 
   @Get('getUserInfo')
