@@ -33,10 +33,19 @@ export class Users {
   })
   password: string;
 
-  @Column({ type: 'varchar', length: 255, comment: '头像' })
+  @Column({
+    type: 'varchar',
+    default: 'avatar.png',
+    length: 255,
+    comment: '头像',
+  })
   avatar: string;
 
-  @Column({ type: 'varchar', length: 1, comment: '性别' })
+  @Column({
+    type: 'varchar',
+    length: 1,
+    comment: '性别',
+  })
   gender: string;
 
   @Column({ type: 'varchar', length: 255, comment: '简介' })

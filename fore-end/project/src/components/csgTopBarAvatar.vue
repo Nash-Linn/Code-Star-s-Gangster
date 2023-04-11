@@ -65,7 +65,10 @@ const loging = computed(() => {
 })
 
 const avatar = computed(() => {
-  return baseURL + `/users/getAvatar/${userStore.getAvatar}`
+  if (userStore.getAvatar) {
+    return baseURL + `/users/getAvatar/${userStore.getAvatar}`
+  }
+  return ''
 })
 
 const handleLogout = () => {

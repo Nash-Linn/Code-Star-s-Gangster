@@ -109,7 +109,7 @@ export const useUserStore = defineStore('user', {
       logout(){
         this.setUsername('')
         this.setUsercode('')
-        this.setAvatar('src/assets/avatar/avatar.png')
+        this.setAvatar('')
         this.setRoles([])
         this.setToken('')
         removeToken()
