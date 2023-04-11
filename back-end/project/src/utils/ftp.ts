@@ -21,6 +21,7 @@ export function ftpConnect(): Promise<any> {
       });
     });
     client.on('end', () => {
+      client.removeAllListeners();
       resolve({
         status: 'end',
         client,
@@ -33,33 +34,6 @@ export function ftpConnect(): Promise<any> {
     client.connect(config);
   });
 }
-
-// let status: any;
-
-// client.on('ready', () => {
-//   status = 'ready';
-// });
-// client.on('close', () => {
-//   status = 'close';
-// });
-// client.on('end', () => {
-//   status = 'end';
-// });
-// client.on('error', (err) => {
-//   status = 'error';
-//   console.log('err=============', err);
-//   throw err;
-// });
-
-// export function ftpConnect(): Promise<any> {
-//   return new Promise(async (resolve, reject) => {
-//     await client.connect(config);
-//     resolve({
-//       status,
-//       client,
-//     });
-//   });
-// }
 
 export function ftpList() {
   return new Promise((resolve, reject) => {
@@ -171,7 +145,6 @@ export async function ftpGetFile(filePath, response): Promise<any> {
               response.end();
               client.end();
             });
-
             resolve({
               readStream,
               client: connectRes.client,
