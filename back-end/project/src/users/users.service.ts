@@ -1,10 +1,5 @@
 import { join, extname } from 'path';
-import {
-  Injectable,
-  HttpException,
-  HttpStatus,
-  StreamableFile,
-} from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -16,7 +11,7 @@ import {
   ftpGetFile,
   dealContentType,
 } from 'src/utils/ftp';
-import * as fs from 'fs';
+
 @Injectable()
 export class UsersService {
   constructor(

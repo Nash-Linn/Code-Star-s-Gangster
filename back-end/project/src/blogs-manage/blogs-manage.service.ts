@@ -3,6 +3,8 @@ import {
   UploadedFile,
   StreamableFile,
   Inject,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
@@ -10,6 +12,13 @@ import { CreateBlogsManageDto } from './dto/create-blogs-manage.dto';
 import { UpdateBlogsManageDto } from './dto/update-blogs-manage.dto';
 import { Blogs } from './entities/blogs-manage.entity';
 import { Users } from 'src/users/entities/user.entity';
+import {
+  dealContentType,
+  dealFileNameAddDate,
+  ftpGetFile,
+  ftpPutFile,
+} from 'src/utils/ftp';
+import { join, resolve } from 'path';
 @Injectable()
 export class BlogsManageService {
   constructor(
@@ -17,14 +26,39 @@ export class BlogsManageService {
     @InjectRepository(Blogs, 'cs_gangster')
     private readonly blogs: Repository<Blogs>,
   ) {}
-  getImage(res, params) {
-    const url = this.fileDir + params.url;
-    res.download(url);
-    return {
-      code: 200,
-      msg: '成功',
-      url,
-    };
+
+  async uploadImage(usercode: string, file: any) {
+    return new Promise((resolve, reject) => {
+      const fileName = dealFileNameAddDate(file);
+      ftpPutFile(file, `/static/blog_images/${usercode}/${fileName}`)
+        .then((res: any) => {
+          if (res.success) {
+            resolve({
+              errno: 0, // 注意：值是数字，不能是字符串
+              data: {
+                url: fileName, // 图片 src ，必须
+                alt: '', // 图片描述文字，非必须
+                href: fileName, // 图片的链接，非必须
+              },
+            });
+          }
+        })
+        .catch(() => {
+          reject({
+            errno: 1, // 注意：值是数字，不能是字符串
+          });
+        });
+    });
+  }
+
+  async getImage(response, usercode, filename) {
+    response.setHeader('Content-Type', dealContentType(filename));
+    response.setHeader(
+      'Content-Disposition',
+      `attachment; filename=${encodeURIComponent(filename)}`,
+    );
+    const filePath = join('static', 'blog_images', usercode, filename);
+    await ftpGetFile(filePath, response);
   }
 
   async create(req, file, body) {

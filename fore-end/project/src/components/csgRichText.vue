@@ -21,7 +21,10 @@ import { onBeforeUnmount, ref, shallowRef } from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import type { IToolbarConfig, IEditorConfig, IDomEditor } from '@wangeditor/editor'
 import { baseURL } from '@/config'
+import { getToken } from '@/utils/token'
+import { useUserStore } from '@/stores/modules/user'
 
+const userStore = useUserStore()
 const emits = defineEmits(['update:modelValue'])
 
 interface Props {
@@ -35,6 +38,7 @@ const props = withDefaults(defineProps<Props>(), {
   readonly: false
 })
 
+const token = getToken()
 // 内容 HTML
 const valueHtml = computed({
   get: () => props.modelValue || '',
@@ -66,6 +70,9 @@ editorConfig.MENU_CONF!.uploadImage = {
   // form-data fieldName ，默认值 'wangeditor-uploaded-image'
   fieldName: 'file',
 
+  // // 小于该值就插入 base64 格式（而不上传），默认为 0
+  // base64LimitSize: 10 * 1024, // 5kb
+
   // 单个文件的最大体积限制，默认为 2M
   maxFileSize: 1 * 1024 * 1024, // 1M
 
@@ -77,12 +84,19 @@ editorConfig.MENU_CONF!.uploadImage = {
 
   // 将 meta 拼接到 url 参数中，默认 false
   metaWithUrl: false,
+
+  // 自定义增加 http  header
+  headers: {
+    Authorization: `Bearer ${token}`
+  },
   // 超时时间，默认为 10 秒
   timeout: 5 * 1000, // 5 秒
 
   // 自定义插入图片
   customInsert(res: any, insertFn: InsertFnType) {
-    const { url, alt, href } = res.data.data
+    let { url, alt, href } = res.data.data
+    url = baseURL + `/blogsManage/image/${userStore.getUsercode}/` + url
+
     insertFn(url, alt, href)
   }
 }

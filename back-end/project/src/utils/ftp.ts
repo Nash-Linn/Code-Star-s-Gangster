@@ -2,9 +2,20 @@ import * as ftp from 'ftp';
 import * as path from 'path';
 import * as fs from 'fs';
 import ftpConfig from 'src/config/ftpConfig';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 const client = new ftp();
 const config = ftpConfig.config_pro;
+
+client.on('close', () => {
+  client.removeAllListeners();
+});
+client.on('end', () => {
+  client.removeAllListeners();
+});
+client.on('error', (err) => {
+  console.log('err', err);
+});
 
 export function ftpConnect(): Promise<any> {
   return new Promise((resolve, reject) => {
@@ -13,22 +24,6 @@ export function ftpConnect(): Promise<any> {
         status: 'ready',
         client,
       });
-    });
-    client.on('close', () => {
-      resolve({
-        status: 'close',
-        client,
-      });
-    });
-    client.on('end', () => {
-      client.removeAllListeners();
-      resolve({
-        status: 'end',
-        client,
-      });
-    });
-    client.on('error', (err) => {
-      reject(err);
     });
 
     client.connect(config);
@@ -75,12 +70,21 @@ async function putFileBuffer(currentFile, targetFilePath) {
   const dirpath = path.dirname(targetFilePath);
   const fileName = path.basename(targetFilePath);
   const { err, dir } = await ftpCwd(dirpath);
-  if (err) {
-    return Promise.resolve({ err });
-  }
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
+    if (err && err.code == 550) {
+      client.mkdir(dirpath, (err) => {
+        if (err) {
+          reject(err);
+        }
+      });
+      await ftpCwd(dirpath);
+    }
     client.put(currentFile.buffer, fileName, (err) => {
-      resolve({ err: err });
+      if (err) {
+        reject({ success: false });
+      } else {
+        resolve({ success: true });
+      }
     });
   });
 }
@@ -99,29 +103,39 @@ export async function ftpPutLocalFile(currentFile, targetFilePath) {
 }
 
 export async function ftpPutFile(currentFile, targetFilePath) {
-  ftpConnect().then((res) => {
-    if (res.status == 'ready') {
-      return new Promise((resolve, reject) => {
-        putFileBuffer(currentFile, targetFilePath).then((res) => {
-          client.end();
-          resolve(res);
-        });
-      });
-    }
+  return new Promise((resolve, reject) => {
+    ftpConnect().then((res) => {
+      if (res.status == 'ready') {
+        putFileBuffer(currentFile, targetFilePath)
+          .then((res: any) => {
+            if (res.success) {
+              resolve(res);
+            }
+          })
+          .catch((err) => {
+            reject(err);
+          })
+          .finally(() => {
+            client.end();
+          });
+      }
+    });
   });
 }
 
 //下载文件
 export async function ftpGet(filePath): Promise<any> {
-  const filePathFormate = path.normalize(filePath).replace(/\\/g, '/');
-  const dirpath = path.dirname(filePathFormate);
-
-  const fileName = path.basename(filePath);
-  await ftpCwd(dirpath);
-
   return new Promise((resolve, reject) => {
-    client.get(fileName, (err, rs) => {
-      resolve({ err, rs });
+    const filePathFormate = transformPath(filePath);
+    const dirpath = path.dirname(filePathFormate);
+    const fileName = path.basename(filePath);
+    ftpCwd(dirpath);
+    client.get(fileName, (err, readerStream) => {
+      if (err) {
+        reject({ success: false });
+      } else {
+        resolve({ success: true, readerStream });
+      }
     });
   });
 }
@@ -130,27 +144,28 @@ export async function ftpGetFile(filePath, response): Promise<any> {
   return new Promise((resolve, reject) => {
     ftpConnect().then((connectRes) => {
       if (connectRes.status == 'ready') {
-        ftpGet(filePath).then((res) => {
-          if (res.err) {
-            reject(res.err);
-          } else if (res.rs) {
-            const readStream = res.rs;
-            let chunk = '';
-            readStream.on('readable', function () {
-              while (null != (chunk = readStream.read())) {
-                response.write(chunk);
-              }
-            });
-            readStream.on('close', function () {
-              response.end();
-              client.end();
-            });
-            resolve({
-              readStream,
-              client: connectRes.client,
-            });
-          }
-        });
+        ftpGet(filePath)
+          .then((res) => {
+            if (res.success) {
+              const readStream = res.readerStream;
+              let chunk = '';
+              readStream.on('readable', function () {
+                while (null != (chunk = readStream.read())) {
+                  response.write(chunk);
+                }
+              });
+              readStream.on('end', function () {
+                response.end();
+                client.end();
+                resolve({
+                  succcess: true,
+                });
+              });
+            }
+          })
+          .catch((err) => {
+            reject(err);
+          });
       }
     });
   });
@@ -183,3 +198,7 @@ export function dealContentType(filePath) {
 
   return contentType;
 }
+
+const transformPath = (originPath) => {
+  return path.normalize(originPath).replace(/\\/g, '/');
+};

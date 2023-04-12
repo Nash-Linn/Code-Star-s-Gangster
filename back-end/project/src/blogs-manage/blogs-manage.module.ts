@@ -11,21 +11,7 @@ import { BlogTags } from './entities/blog-tags.entity';
 import { Users } from 'src/users/entities/user.entity';
 const fileDir = env.staticDir + '/blog_images/';
 @Module({
-  imports: [
-    MulterModule.register({
-      storage: diskStorage({
-        destination: fileDir,
-        filename: (req, file, callback) => {
-          const name = file.originalname.split('.')[0];
-          const fileName = `${
-            name + '(' + new Date().getTime() + ')' + extname(file.originalname)
-          }`;
-          return callback(null, fileName);
-        },
-      }),
-    }),
-    TypeOrmModule.forFeature([Blogs, BlogTags, Users], 'cs_gangster'),
-  ],
+  imports: [TypeOrmModule.forFeature([Blogs, BlogTags, Users], 'cs_gangster')],
 
   controllers: [BlogsManageController],
   providers: [
