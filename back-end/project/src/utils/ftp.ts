@@ -7,19 +7,19 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 const client = new ftp();
 const config = ftpConfig.config_pro;
 
-client.on('close', () => {
-  client.removeAllListeners();
-});
-client.on('end', () => {
-  client.removeAllListeners();
-});
-client.on('error', (err) => {
-  console.log('err', err);
-});
+// client.on('close', () => {
+//   console.log('close');
+// });
+// client.on('end', () => {
+//   console.log('end');
+// });
+// client.on('error', (err) => {
+//   console.log('err', err);
+// });
 
 export function ftpConnect(): Promise<any> {
   return new Promise((resolve, reject) => {
-    client.on('ready', () => {
+    client.once('ready', () => {
       resolve({
         status: 'ready',
         client,
@@ -30,6 +30,7 @@ export function ftpConnect(): Promise<any> {
   });
 }
 
+//获取文件列表
 export function ftpList() {
   return new Promise((resolve, reject) => {
     client.list((err, files) => {
@@ -47,28 +48,18 @@ export function ftpCwd(dirpath): Promise<any> {
   });
 }
 
-//将本地文件上传到ftp目标地址
-async function putLocalFile(currentFile, targetFilePath) {
+//将文件上传到ftp目标地址
+async function putFile(currentFile, targetFilePath) {
   const dirpath = path.dirname(targetFilePath);
   const fileName = path.basename(targetFilePath);
 
-  const rs = fs.createReadStream(currentFile);
-  const { err, dir } = await ftpCwd(dirpath);
-  if (err) {
-    return Promise.resolve({ err });
+  let readStream;
+  if (typeof currentFile == 'string') {
+    readStream = fs.createReadStream(currentFile);
+  } else {
+    readStream = currentFile.buffer;
   }
 
-  return new Promise((resolve, reject) => {
-    client.put(rs, fileName, (err) => {
-      resolve({ err: err });
-    });
-  });
-}
-
-//将文件上传到ftp目标地址
-async function putFileBuffer(currentFile, targetFilePath) {
-  const dirpath = path.dirname(targetFilePath);
-  const fileName = path.basename(targetFilePath);
   const { err, dir } = await ftpCwd(dirpath);
   return new Promise(async (resolve, reject) => {
     if (err && err.code == 550) {
@@ -79,26 +70,18 @@ async function putFileBuffer(currentFile, targetFilePath) {
       });
       await ftpCwd(dirpath);
     }
-    client.put(currentFile.buffer, fileName, (err) => {
-      if (err) {
-        reject({ success: false });
-      } else {
-        resolve({ success: true });
-      }
-    });
-  });
-}
-
-export async function ftpPutLocalFile(currentFile, targetFilePath) {
-  ftpConnect().then((res) => {
-    if (res.status == 'ready') {
-      return new Promise((resolve, reject) => {
-        putLocalFile(currentFile, targetFilePath).then((res) => {
-          client.end();
-          resolve(res);
-        });
+    client.put(readStream, fileName, (err) => {
+      client.once('end', () => {
+        if (err) {
+          reject({ success: false });
+        } else {
+          resolve({ success: true });
+        }
+        client.removeAllListeners();
       });
-    }
+
+      client.end();
+    });
   });
 }
 
@@ -106,7 +89,7 @@ export async function ftpPutFile(currentFile, targetFilePath) {
   return new Promise((resolve, reject) => {
     ftpConnect().then((res) => {
       if (res.status == 'ready') {
-        putFileBuffer(currentFile, targetFilePath)
+        putFile(currentFile, targetFilePath)
           .then((res: any) => {
             if (res.success) {
               resolve(res);
@@ -114,9 +97,6 @@ export async function ftpPutFile(currentFile, targetFilePath) {
           })
           .catch((err) => {
             reject(err);
-          })
-          .finally(() => {
-            client.end();
           });
       }
     });
@@ -155,11 +135,14 @@ export async function ftpGetFile(filePath, response): Promise<any> {
                 }
               });
               readStream.on('end', function () {
-                response.end();
-                client.end();
-                resolve({
-                  succcess: true,
+                client.once('end', () => {
+                  response.end();
+                  resolve({
+                    succcess: true,
+                  });
+                  client.removeAllListeners();
                 });
+                client.end();
               });
             }
           })
@@ -171,6 +154,7 @@ export async function ftpGetFile(filePath, response): Promise<any> {
   });
 }
 
+//为文件名增加时间戳
 export function dealFileNameAddDate(file) {
   const name = file.originalname.split('.')[0];
   const fileName = `${
@@ -179,6 +163,7 @@ export function dealFileNameAddDate(file) {
   return fileName;
 }
 
+//处理返回的 contentType
 export function dealContentType(filePath) {
   let contentType;
   const ext = path.extname(filePath);
@@ -199,6 +184,7 @@ export function dealContentType(filePath) {
   return contentType;
 }
 
+//转换路径格式
 const transformPath = (originPath) => {
   return path.normalize(originPath).replace(/\\/g, '/');
 };
