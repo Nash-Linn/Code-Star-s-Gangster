@@ -48,7 +48,6 @@ export class BlogsManageService {
 
   async create(req, file, body) {
     const data = new Blogs();
-    console.log('req', req);
     data.creator = req.user.id;
 
     data.title = body.title;

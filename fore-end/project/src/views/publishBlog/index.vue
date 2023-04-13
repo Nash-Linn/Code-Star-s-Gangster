@@ -21,7 +21,7 @@
       </div>
     </csg-card>
     <csg-card>
-      <csgRichText v-model:model-value="valueHtml" class="pulish-blog-wrap" />
+      <csgRichText v-model:model-value="baseInfo.content" class="pulish-blog-wrap" />
     </csg-card>
   </div>
 </template>
@@ -31,28 +31,51 @@ import { ref, reactive, inject } from 'vue'
 import csgRichText from '@/components/csgRichText.vue'
 import { create } from '@/api/blogsManage/blogsManage'
 import { useRouter } from 'vue-router'
+import { isBlank } from '@/utils/validate'
 
 const router = useRouter()
 
 const $csgMessage = inject('$csgMessage') as Function
 // 内容 HTML
-const valueHtml = ref('')
 
 const baseInfo = reactive({
   title: '',
   cover: '',
-  summary: ''
+  summary: '',
+  content: ''
 })
 
 const handleCoverChange = (val: any) => {
   baseInfo.cover = val.file
 }
 
+const verify = () => {
+  if (isBlank(baseInfo.title)) {
+    $csgMessage({
+      type: 'danger',
+      message: '请输入标题'
+    })
+    return false
+  }
+  if (baseInfo.content == '<p><br></p>') {
+    $csgMessage({
+      type: 'danger',
+      message: '请输入内容'
+    })
+    return false
+  }
+
+  return true
+}
+
 const handlePublish = () => {
+  if (!verify()) {
+    return
+  }
   const form = new FormData()
   form.append('title', baseInfo.title)
   form.append('summary', baseInfo.summary)
-  form.append('content', valueHtml.value)
+  form.append('content', baseInfo.content)
   form.append('file', baseInfo.cover)
 
   Create(form)

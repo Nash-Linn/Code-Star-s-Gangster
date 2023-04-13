@@ -3,8 +3,10 @@
     <header class="header">
       <csgTopBar />
     </header>
-    <div class="content">
-      <router-view />
+    <div class="content-wrap">
+      <div class="content">
+        <router-view />
+      </div>
     </div>
   </div>
 </template>
@@ -20,15 +22,22 @@ if (getToken()) {
 </script>
 <style scoped lang="less">
 .layout {
-  background-color: @base-background-color;
+  position: relative;
 }
 .header {
-  position: relative;
+  width: 100%;
+  position: fixed;
   z-index: 9999;
+}
+
+.content-wrap {
+  position: relative;
+  top: @top-bar-height;
+  background-color: @base-background-color;
+  min-height: @main-height;
 }
 .content {
   width: @base-page-width;
-  min-height: @main-height;
   margin: 0 auto;
 }
 </style>

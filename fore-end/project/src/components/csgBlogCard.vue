@@ -13,8 +13,10 @@
         <span class="summary">{{ props.data.summary }}</span>
       </div>
       <div class="bottom">
-        <div class="creator">{{ props.data.creatorName }}</div>
-        <div class="create-time">{{ parseTime(props.data.createTime) }}</div>
+        <div class="bottom-left">{{ parseTime(props.data.createTime) }}</div>
+        <div class="bottom-right">
+          <slot name="bottom-right">{{ props.data.creatorName }}</slot>
+        </div>
       </div>
     </div>
   </csg-card>
@@ -105,11 +107,7 @@ const handleClickCard = () => {
     .bottom {
       height: 18px;
       display: flex;
-      justify-content: flex-end;
-
-      .creator {
-        margin-right: 20px;
-      }
+      justify-content: space-between;
     }
   }
 }

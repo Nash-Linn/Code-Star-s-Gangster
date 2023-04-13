@@ -5,7 +5,7 @@
       class="csg-input-inner"
       :type="props.type"
       v-model="value"
-      placeholder=" "
+      :placeholder="props.placeholder"
     />
     <span v-if="props.label" class="csg-input-label">{{ props.label }}</span>
     <div class="csg-input-tip-icon">
@@ -39,6 +39,9 @@
         </div>
       </csg-popover>
     </div>
+    <div class="suffix-icon">
+      <slot name="suffix" />
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -52,12 +55,14 @@ interface Props {
   label?: string
   formId?: string
   required?: boolean
+  placeholder?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   size: 'normal',
   type: 'text',
-  required: false
+  required: false,
+  placeholder: ' '
 })
 
 const value = computed({
@@ -151,6 +156,7 @@ const handleMouseoverTipIcon = () => {
 }
 
 .csg-input-wrap {
+  position: relative;
   width: 100%;
   .csg-input-inner:not(:placeholder-shown),
   .csg-input-inner:focus {
@@ -221,5 +227,13 @@ const handleMouseoverTipIcon = () => {
 
 .csg-input-inner[failcheck='false'] ~ .csg-input-tip-icon {
   display: none;
+}
+
+.suffix-icon {
+  width: 30px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 </style>

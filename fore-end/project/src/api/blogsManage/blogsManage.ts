@@ -17,6 +17,14 @@ export function getList(params:any) {
   })
 }
 
+export function getMyBlogList(params:any) {
+  return request({
+    url: '/blogsManage/getMyBlogList',
+    method: 'get',
+    params,
+  })
+}
+
 export function getBlogDetail(id:string) {
   return request({
     url: `/blogsManage/getBlogDetail/${id}`,
