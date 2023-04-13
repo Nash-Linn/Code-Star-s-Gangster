@@ -12,6 +12,17 @@ export function create(data:{
   })
 }
 
+export function alterPassword(data:{
+  password:string
+  newPassword:string
+}) {
+  return request({
+    url: '/users/alterPassword',
+    method: 'post',
+    data,
+  })
+}
+
 export  function login(data:{
   usercode:string
   password:string

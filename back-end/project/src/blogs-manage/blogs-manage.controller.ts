@@ -3,30 +3,20 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   UseInterceptors,
   UploadedFile,
   Res,
-  StreamableFile,
   UseGuards,
   Request,
   Query,
   HttpStatus,
   HttpException,
 } from '@nestjs/common';
-import {
-  FilesInterceptor,
-  FileInterceptor,
-} from '@nestjs/platform-express/multer';
+import { FileInterceptor } from '@nestjs/platform-express/multer';
 import { Response } from 'express';
 import { BlogsManageService } from './blogs-manage.service';
-import { CreateBlogsManageDto } from './dto/create-blogs-manage.dto';
-import { UpdateBlogsManageDto } from './dto/update-blogs-manage.dto';
-import envConfig from 'src/config/env';
 
-import { normalize } from 'path';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('blogsManage')
@@ -53,6 +43,11 @@ export class BlogsManageController {
     );
   }
 
+  @Get('cover/:filename')
+  getCover(@Res() res: Response, @Param() params) {
+    return this.blogsManageService.getCover(res, params.filename);
+  }
+
   @Post('create')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('file'))
@@ -60,12 +55,21 @@ export class BlogsManageController {
     return this.blogsManageService.create(req, file, body);
   }
 
-  @Get('/getList')
+  @Get('getList')
   getList(@Query() query: { keyWord: string; page: number; pageSize: number }) {
     return this.blogsManageService.getBlogList(query);
   }
 
-  @Get('/getBlogDetail/:id')
+  @Get('getMyBlogList')
+  @UseGuards(AuthGuard('jwt'))
+  getMyBlogList(
+    @Request() req,
+    @Query() query: { keyWord: string; page: number; pageSize: number },
+  ) {
+    return this.blogsManageService.getMyBlogList(req, query);
+  }
+
+  @Get('getBlogDetail/:id')
   getBlogDetail(@Param() params) {
     return this.blogsManageService.getBlogDetail(params);
   }

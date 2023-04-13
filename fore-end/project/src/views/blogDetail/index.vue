@@ -25,6 +25,7 @@ import { getBlogDetail } from '@/api/blogsManage/blogsManage'
 import { useRoute } from 'vue-router'
 import csgRichText from '@/components/csgRichText.vue'
 import { parseTime } from '@/utils'
+import { baseURL } from '@/config'
 
 const route = useRoute()
 const blogInfo = reactive({
@@ -41,7 +42,7 @@ const GetBlogDetail = async (id) => {
     blogInfo.title = res.data.title
     blogInfo.createTime = res.data.createTime
     blogInfo.creatorName = res.data.creatorName
-    blogInfo.creatorAvatar = res.data.creatorAvatar
+    blogInfo.creatorAvatar = baseURL + `/users/getAvatar/${res.data.creatorAvatar}`
   })
 }
 

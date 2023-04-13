@@ -13,7 +13,7 @@
 
         <template v-if="isEdit">
           <csg-forms ref="formRef" :model="baseInfo" :rules="ruleValidate">
-            <csg-form-item label="账号">
+            <csg-form-item label="昵称">
               <csg-input formId="username" v-model="baseInfo.username" required />
             </csg-form-item>
             <csg-form-item label="简介">

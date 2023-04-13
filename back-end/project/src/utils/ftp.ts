@@ -4,21 +4,12 @@ import * as fs from 'fs';
 import ftpConfig from 'src/config/ftpConfig';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-const client = new ftp();
 const config = ftpConfig.config_pro;
-
-// client.on('close', () => {
-//   console.log('close');
-// });
-// client.on('end', () => {
-//   console.log('end');
-// });
-// client.on('error', (err) => {
-//   console.log('err', err);
-// });
 
 export function ftpConnect(): Promise<any> {
   return new Promise((resolve, reject) => {
+    const client = new ftp();
+
     client.once('ready', () => {
       resolve({
         status: 'ready',
@@ -31,7 +22,7 @@ export function ftpConnect(): Promise<any> {
 }
 
 //获取文件列表
-export function ftpList() {
+export function ftpList(client) {
   return new Promise((resolve, reject) => {
     client.list((err, files) => {
       resolve({ err: err, files: files });
@@ -40,7 +31,7 @@ export function ftpList() {
 }
 
 //切换目录
-export function ftpCwd(dirpath): Promise<any> {
+export function ftpCwd(client, dirpath): Promise<any> {
   return new Promise((resolve, reject) => {
     client.cwd(dirpath, (err, dir) => {
       resolve({ err: err, dir: dir });
@@ -49,7 +40,7 @@ export function ftpCwd(dirpath): Promise<any> {
 }
 
 //将文件上传到ftp目标地址
-async function putFile(currentFile, targetFilePath) {
+async function putFile(client, currentFile, targetFilePath) {
   const dirpath = path.dirname(targetFilePath);
   const fileName = path.basename(targetFilePath);
 
@@ -60,7 +51,7 @@ async function putFile(currentFile, targetFilePath) {
     readStream = currentFile.buffer;
   }
 
-  const { err, dir } = await ftpCwd(dirpath);
+  const { err, dir } = await ftpCwd(client, dirpath);
   return new Promise(async (resolve, reject) => {
     if (err && err.code == 550) {
       client.mkdir(dirpath, (err) => {
@@ -68,7 +59,7 @@ async function putFile(currentFile, targetFilePath) {
           reject(err);
         }
       });
-      await ftpCwd(dirpath);
+      await ftpCwd(client, dirpath);
     }
     client.put(readStream, fileName, (err) => {
       client.once('end', () => {
@@ -78,6 +69,7 @@ async function putFile(currentFile, targetFilePath) {
           resolve({ success: true });
         }
         client.removeAllListeners();
+        client.destroy();
       });
 
       client.end();
@@ -89,7 +81,7 @@ export async function ftpPutFile(currentFile, targetFilePath) {
   return new Promise((resolve, reject) => {
     ftpConnect().then((res) => {
       if (res.status == 'ready') {
-        putFile(currentFile, targetFilePath)
+        putFile(res.client, currentFile, targetFilePath)
           .then((res: any) => {
             if (res.success) {
               resolve(res);
@@ -104,12 +96,12 @@ export async function ftpPutFile(currentFile, targetFilePath) {
 }
 
 //下载文件
-export async function ftpGet(filePath): Promise<any> {
+async function ftpGet(client, filePath): Promise<any> {
   return new Promise((resolve, reject) => {
     const filePathFormate = transformPath(filePath);
     const dirpath = path.dirname(filePathFormate);
     const fileName = path.basename(filePath);
-    ftpCwd(dirpath);
+    ftpCwd(client, dirpath);
     client.get(fileName, (err, readerStream) => {
       if (err) {
         reject({ success: false });
@@ -124,9 +116,17 @@ export async function ftpGetFile(filePath, response): Promise<any> {
   return new Promise((resolve, reject) => {
     ftpConnect().then((connectRes) => {
       if (connectRes.status == 'ready') {
-        ftpGet(filePath)
+        const client = connectRes.client;
+        ftpGet(client, filePath)
           .then((res) => {
             if (res.success) {
+              const filename = path.basename(filePath);
+              response.setHeader('Content-Type', dealContentType(filename));
+              response.setHeader(
+                'Content-Disposition',
+                `attachment; filename=${encodeURIComponent(filename)}`,
+              );
+
               const readStream = res.readerStream;
               let chunk = '';
               readStream.on('readable', function () {
@@ -141,6 +141,7 @@ export async function ftpGetFile(filePath, response): Promise<any> {
                     succcess: true,
                   });
                   client.removeAllListeners();
+                  client.destroy();
                 });
                 client.end();
               });

@@ -11,6 +11,7 @@ import {
   ftpGetFile,
   dealContentType,
 } from 'src/utils/ftp';
+import { alterPasswordDto } from './dto/alter-password.dto';
 
 @Injectable()
 export class UsersService {
@@ -57,9 +58,11 @@ export class UsersService {
       .createQueryBuilder('users')
       .select(
         `
+        users.id,
         users.usercode ,
         users.username ,
-        users.avatar
+        users.avatar,
+        users.roles
     `,
       )
       .where('users.usercode = :usercode', { usercode: usercode })
@@ -81,11 +84,6 @@ export class UsersService {
   }
 
   async getAvatar(response, filename) {
-    response.setHeader('Content-Type', dealContentType(filename));
-    response.setHeader(
-      'Content-Disposition',
-      `attachment; filename=${encodeURIComponent(filename)}`,
-    );
     const filePath = join('static', 'avatars', filename);
     await ftpGetFile(filePath, response);
   }
@@ -101,6 +99,31 @@ export class UsersService {
       .where('usercode = :usercode', { usercode: usercode })
       .execute();
     return res;
+  }
+
+  async alterPassword(usercode: string, body: alterPasswordDto) {
+    const user = await this.users
+      .createQueryBuilder('users')
+      .select(
+        `
+        users.usercode,
+        users.password
+      `,
+      )
+      .where('usercode = :usercode', { usercode: usercode })
+      .getRawOne();
+
+    if (user.password == body.password) {
+      const res = await this.users
+        .createQueryBuilder('users')
+        .update()
+        .set({ password: body.newPassword })
+        .where('usercode = :usercode', { usercode: usercode })
+        .execute();
+      return res;
+    } else {
+      throw new HttpException('原密码错误', HttpStatus.BAD_REQUEST);
+    }
   }
 
   remove(id: number) {

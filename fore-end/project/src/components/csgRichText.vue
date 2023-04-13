@@ -20,7 +20,7 @@ import '@wangeditor/editor/dist/css/style.css' // 引入 css
 import { onBeforeUnmount, ref, shallowRef } from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import type { IToolbarConfig, IEditorConfig, IDomEditor } from '@wangeditor/editor'
-import { baseURL } from '@/config'
+import { baseURL, requestTimeout } from '@/config'
 import { getToken } from '@/utils/token'
 import { useUserStore } from '@/stores/modules/user'
 
@@ -90,7 +90,7 @@ editorConfig.MENU_CONF!.uploadImage = {
     Authorization: `Bearer ${token}`
   },
   // 超时时间，默认为 10 秒
-  timeout: 5 * 1000, // 5 秒
+  timeout: requestTimeout,
 
   // 自定义插入图片
   customInsert(res: any, insertFn: InsertFnType) {

@@ -1,28 +1,13 @@
-import {
-  Injectable,
-  UploadedFile,
-  StreamableFile,
-  Inject,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
-import { CreateBlogsManageDto } from './dto/create-blogs-manage.dto';
-import { UpdateBlogsManageDto } from './dto/update-blogs-manage.dto';
 import { Blogs } from './entities/blogs-manage.entity';
 import { Users } from 'src/users/entities/user.entity';
-import {
-  dealContentType,
-  dealFileNameAddDate,
-  ftpGetFile,
-  ftpPutFile,
-} from 'src/utils/ftp';
-import { join, resolve } from 'path';
+import { dealFileNameAddDate, ftpGetFile, ftpPutFile } from 'src/utils/ftp';
+import { join } from 'path';
 @Injectable()
 export class BlogsManageService {
   constructor(
-    @Inject('fileDir') private readonly fileDir: string,
     @InjectRepository(Blogs, 'cs_gangster')
     private readonly blogs: Repository<Blogs>,
   ) {}
@@ -52,24 +37,27 @@ export class BlogsManageService {
   }
 
   async getImage(response, usercode, filename) {
-    response.setHeader('Content-Type', dealContentType(filename));
-    response.setHeader(
-      'Content-Disposition',
-      `attachment; filename=${encodeURIComponent(filename)}`,
-    );
     const filePath = join('static', 'blog_images', usercode, filename);
+    await ftpGetFile(filePath, response);
+  }
+
+  async getCover(response, filename) {
+    const filePath = join('static', 'blog_cover', filename);
     await ftpGetFile(filePath, response);
   }
 
   async create(req, file, body) {
     const data = new Blogs();
+    console.log('req', req);
     data.creator = req.user.id;
 
     data.title = body.title;
     data.summary = body.summary;
     data.content = body.content;
     if (file) {
-      data.coverUrl = file.filename;
+      const fileName = dealFileNameAddDate(file);
+      ftpPutFile(file, `/static/blog_cover/${fileName}`);
+      data.coverUrl = fileName;
     }
     const res = await this.blogs.save(data);
     return {
@@ -113,6 +101,51 @@ export class BlogsManageService {
         title: Like(`%${keyWord}%`),
       },
     });
+    return {
+      data,
+      total,
+    };
+  }
+
+  async getMyBlogList(
+    req,
+    query: {
+      keyWord: string;
+      page: number;
+      pageSize: number;
+    },
+  ) {
+    const page = query.page ? query.page : 1;
+    const pageSize = query.pageSize ? query.pageSize : 10;
+    const keyWord = query.keyWord ? query.keyWord : '';
+
+    const data = await this.blogs
+      .createQueryBuilder('blogs')
+      .leftJoinAndSelect(Users, 'users', 'blogs.creator = users.id')
+      .select(
+        `
+          blogs.id,
+          blogs.title,
+          blogs.coverUrl,
+          blogs.summary,
+          blogs.status,
+          blogs.createTime,
+          users.usercode as creatorCode,
+          users.username as creatorName,
+          users.avatar as creatorAvatar
+      `,
+      )
+      .where('blogs.creatorId = :creatorId', { creatorId: req.user.id })
+      .andWhere('blogs.title LIKE :keyWord', { keyWord: `%${keyWord}%` })
+      .orderBy('blogs.createTime', 'DESC')
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getRawMany();
+
+    const total = await this.blogs
+      .createQueryBuilder('blogs')
+      .where('blogs.creatorId = :creatorId', { creatorId: req.user.id })
+      .getCount();
     return {
       data,
       total,

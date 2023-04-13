@@ -21,13 +21,20 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { alterPasswordDto } from './dto/alter-password.dto';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post('/create')
+  @Post('create')
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
+  }
+
+  @Post('alterPassword')
+  @UseGuards(AuthGuard('jwt'))
+  alterPassword(@Req() req, @Body() body: alterPasswordDto) {
+    return this.usersService.alterPassword(req.user.usercode, body);
   }
 
   @Post('updateAvatar')
