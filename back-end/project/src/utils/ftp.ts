@@ -2,7 +2,6 @@ import * as ftp from 'ftp';
 import * as path from 'path';
 import * as fs from 'fs';
 import ftpConfig from 'src/config/ftpConfig';
-import { HttpException, HttpStatus } from '@nestjs/common';
 
 const config = ftpConfig.config_pro;
 

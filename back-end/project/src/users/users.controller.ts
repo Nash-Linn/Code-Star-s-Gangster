@@ -48,6 +48,17 @@ export class UsersController {
     return this.usersService.updateAvatar(req.user.usercode, file);
   }
 
+  @Post('updateMinio')
+  @UseInterceptors(FileInterceptor('file'))
+  updateMinio(@UploadedFile() file) {
+    return this.usersService.updateMinio(file);
+  }
+
+  @Get('getFromMinio/:filename')
+  getFromMinio(@Res() res: Response, @Param() param) {
+    return this.usersService.getFromMinio(res, param.filename);
+  }
+
   @Get('getAvatar/:filename')
   getAvatar(@Res() res: Response, @Param() param) {
     return this.usersService.getAvatar(res, param.filename);

@@ -4,7 +4,6 @@ import { NestExpressApplication } from '@nestjs/platform-express/interfaces';
 import { ResponseInterceptor } from './common/responseInterceptor'; //引入响应拦截器
 import { AnomalyFilters } from './common/anomalyFilters'; //引入异常过滤器
 import * as cors from 'cors';
-import { join } from 'path';
 import env from './config/env';
 
 async function bootstrap() {

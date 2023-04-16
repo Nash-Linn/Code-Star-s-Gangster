@@ -12,6 +12,7 @@ import {
   dealContentType,
 } from 'src/utils/ftp';
 import { alterPasswordDto } from './dto/alter-password.dto';
+import { getFileFromMinio, putFileToMinio } from 'src/utils/minio';
 
 @Injectable()
 export class UsersService {
@@ -81,6 +82,18 @@ export class UsersService {
       .where('usercode = :usercode', { usercode: usercode })
       .execute();
     return res;
+  }
+
+  async updateMinio(file: any) {
+    const fileName = dealFileNameAddDate(file);
+    putFileToMinio(file, 'code-star-gangster', `/avatars/${fileName}`);
+  }
+  async getFromMinio(filename: any, response) {
+    return getFileFromMinio(
+      response,
+      'code-star-gangster',
+      `/avatars/${filename}`,
+    );
   }
 
   async getAvatar(response, filename) {

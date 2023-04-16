@@ -7,6 +7,7 @@
 
 /src/common/databaseKey.ts
 /src/config/ftpConfig.ts
+/src/config/minioConfig.ts
 
 # Logs
 logs
