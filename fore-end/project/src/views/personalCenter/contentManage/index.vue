@@ -30,9 +30,17 @@
       </csgBlogCard>
     </div>
   </div>
+  <teleport to="body">
+    <csgTipDialog
+      v-model="deleteDialogVisable"
+      message="确认删除该文章？"
+      @on-confirm="handleConfirm"
+    />
+  </teleport>
 </template>
 <script setup lang="ts">
 import csgBlogCard from '@/components/csgBlogCard.vue'
+import csgTipDialog from '@/components/csgTipDialog.vue'
 import { ref, reactive, inject, onBeforeMount } from 'vue'
 import { getMyBlogList, deleteBlog } from '@/api/blogsManage/blogsManage'
 import { useRouter } from 'vue-router'
@@ -45,7 +53,7 @@ const searchData = reactive({
 })
 
 const handleSearch = () => {
-  console.log('searchData', searchData)
+  GetMyBlogList({ keyword: searchData.key })
 }
 
 const blogList: any = ref([])
@@ -63,24 +71,32 @@ const handleEditBlog = (blog: any) => {
   })
 }
 
+const deleteDialogVisable = ref(false)
+const deleteBlogId = ref()
 const handleDeleteBlog = (blog: any) => {
-  console.log('删除', blog)
+  deleteDialogVisable.value = true
+  deleteBlogId.value = blog.id
+}
+
+const handleConfirm = () => {
+  DeleteBlog(deleteBlogId.value)
 }
 
 const DeleteBlog = (id: string) => {
   deleteBlog(id).then((res) => {
     if (res.code == 200) {
+      deleteDialogVisable.value = false
       $csgMessage({
         type: 'success',
-        message: '发布成功！'
+        message: '成功！'
       })
-      router.push(`/blogDetail/${res.data.id}`)
+      onload()
     }
   })
 }
 
 const onload = () => {
-  GetMyBlogList({})
+  GetMyBlogList({ keyword: searchData.key })
 }
 onBeforeMount(() => {
   onload()

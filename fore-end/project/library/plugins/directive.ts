@@ -1,4 +1,5 @@
 export  function setup(app:any) {
+    //点击元素外部
   const vClickOutside = {
     mounted(el:any, binding:any) {
         function eventHandler(e:any) {
@@ -24,4 +25,22 @@ export  function setup(app:any) {
   }
 
   app.directive('click-outside', vClickOutside)
+
+
+
+  //滚动到底加载更多
+  const dropDownLoadmore = {
+    mounted(el:any, binding:any) {
+        const SELECTWRAP_DOM = el;
+        SELECTWRAP_DOM.addEventListener('scroll', function() {
+            const condition =
+            SELECTWRAP_DOM.scrollHeight - SELECTWRAP_DOM.scrollTop <= SELECTWRAP_DOM.clientHeight + 1 ;
+            if (condition) {
+                binding.value();
+            }
+        });
+    }
+   }
+  app.directive('drop-down-loadmore',dropDownLoadmore);
+
 }

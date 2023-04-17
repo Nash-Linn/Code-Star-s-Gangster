@@ -104,14 +104,13 @@ export class BlogsManageService {
   }
 
   async getBlogList(query: {
-    keyWord: string;
+    keyword: string;
     page: number;
     pageSize: number;
   }) {
     const page = query.page ? query.page : 1;
     const pageSize = query.pageSize ? query.pageSize : 10;
-    const keyWord = query.keyWord ? query.keyWord : '';
-
+    const keyword = query.keyword ? query.keyword : '';
     const data = await this.blogs
       .createQueryBuilder('blogs')
       .leftJoinAndSelect(Users, 'users', 'blogs.creator = users.id')
@@ -129,15 +128,15 @@ export class BlogsManageService {
       `,
       )
       .where('blogs.status = :status', { status: 1 })
-      .andWhere('blogs.title LIKE :keyWord', { keyWord: `%${keyWord}%` })
+      .andWhere('blogs.title LIKE :keyword', { keyword: `%${keyword}%` })
       .orderBy('blogs.createTime', 'DESC')
-      .skip((page - 1) * pageSize)
-      .take(pageSize)
+      .offset((page - 1) * pageSize)
+      .limit(pageSize)
       .getRawMany();
 
     const total = await this.blogs.count({
       where: {
-        title: Like(`%${keyWord}%`),
+        title: Like(`%${keyword}%`),
       },
     });
     return {
@@ -149,14 +148,14 @@ export class BlogsManageService {
   async getMyBlogList(
     req,
     query: {
-      keyWord: string;
+      keyword: string;
       page: number;
       pageSize: number;
     },
   ) {
     const page = query.page ? query.page : 1;
     const pageSize = query.pageSize ? query.pageSize : 10;
-    const keyWord = query.keyWord ? query.keyWord : '';
+    const keyword = query.keyword ? query.keyword : '';
 
     const data = await this.blogs
       .createQueryBuilder('blogs')
@@ -176,10 +175,10 @@ export class BlogsManageService {
       )
       .where('blogs.creatorId = :creatorId', { creatorId: req.user.id })
       .andWhere('blogs.status = :status', { status: 1 })
-      .andWhere('blogs.title LIKE :keyWord', { keyWord: `%${keyWord}%` })
+      .andWhere('blogs.title LIKE :keyword', { keyword: `%${keyword}%` })
       .orderBy('blogs.createTime', 'DESC')
-      .skip((page - 1) * pageSize)
-      .take(pageSize)
+      .offset((page - 1) * pageSize)
+      .limit(pageSize)
       .getRawMany();
 
     const total = await this.blogs

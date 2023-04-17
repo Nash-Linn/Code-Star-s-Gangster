@@ -16,11 +16,10 @@ export function update(data:any) {
   })
 }
 
-export function deleteBlog(params:any) {
+export function deleteBlog(id:string) {
   return request({
-    url: '/blogsManage/delete',
+    url: `/blogsManage/delete/${id}`,
     method: 'get',
-    params,
   })
 }
 

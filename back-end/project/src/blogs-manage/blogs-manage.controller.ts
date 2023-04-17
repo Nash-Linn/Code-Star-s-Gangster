@@ -67,7 +67,7 @@ export class BlogsManageController {
   }
 
   @Get('getList')
-  getList(@Query() query: { keyWord: string; page: number; pageSize: number }) {
+  getList(@Query() query: { keyword: string; page: number; pageSize: number }) {
     return this.blogsManageService.getBlogList(query);
   }
 
@@ -75,7 +75,7 @@ export class BlogsManageController {
   @UseGuards(AuthGuard('jwt'))
   getMyBlogList(
     @Request() req,
-    @Query() query: { keyWord: string; page: number; pageSize: number },
+    @Query() query: { keyword: string; page: number; pageSize: number },
   ) {
     return this.blogsManageService.getMyBlogList(req, query);
   }

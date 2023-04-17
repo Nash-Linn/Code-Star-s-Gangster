@@ -27,6 +27,12 @@
       <div class="csg-dialog-content">
         <slot name="content"></slot>
       </div>
+      <div v-if="props.footer" class="csg-dialog-footer">
+        <csg-button class="cancel-button" size="small" type="danger" @click="handleCancel"
+          >取消</csg-button
+        >
+        <csg-button size="small" @click="handleConfirm">确定</csg-button>
+      </div>
     </div>
   </div>
 </template>
@@ -38,13 +44,15 @@ interface Props {
   modelValue: boolean
   title?: string
   width?: string
+  footer?: boolean
 }
 
-const emits = defineEmits(['update:modelValue'])
+const emits = defineEmits(['update:modelValue', 'on-cancel', 'on-confirm'])
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: false,
-  title: '标题'
+  title: '标题',
+  footer: false
 })
 
 const dialogVisible = computed({
@@ -56,6 +64,14 @@ const dialogVisible = computed({
 
 const handleClose = () => {
   dialogVisible.value = false
+}
+
+const handleCancel = () => {
+  dialogVisible.value = false
+  emits('on-cancel')
+}
+const handleConfirm = () => {
+  emits('on-confirm')
 }
 </script>
 
@@ -107,6 +123,17 @@ const handleClose = () => {
 
   .csg-dialog-content {
     width: 100%;
+  }
+  .csg-dialog-footer {
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .cancel-button {
+      margin-right: 20px;
+    }
   }
 }
 </style>

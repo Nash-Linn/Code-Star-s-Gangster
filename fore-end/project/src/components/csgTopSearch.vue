@@ -1,7 +1,7 @@
 <template>
   <div class="csg-top-search-wrap">
     <div class="input-wrap">
-      <input type="text" v-model="searchKey" />
+      <input type="text" v-model="searchKey" @keyup.enter="handleSearch" />
     </div>
     <div class="pre-icon"></div>
     <div class="button" @click="handleSearch">
