@@ -9,7 +9,12 @@
         </div>
         <div class="form-part2">
           <csg-form-item class="form-item form-cover" label="文章封面">
-            <csg-upload type="pictureCard" @change="handleCoverChange" :limit="1" />
+            <csg-upload
+              type="pictureCard"
+              @change="handleCoverChange"
+              :limit="1"
+              :fileList="blogCover"
+            />
           </csg-form-item>
           <csg-form-item class="form-item form-summary" label="文章摘要">
             <csg-textarea class="textarea-summary" v-model="baseInfo.summary" type="textarea" />
@@ -26,23 +31,37 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, reactive, inject } from 'vue'
-
+import { ref, reactive, inject, onBeforeMount } from 'vue'
+import { useRoute } from 'vue-router'
 import csgRichText from '@/components/csgRichText.vue'
-import { create } from '@/api/blogsManage/blogsManage'
+import { create, update } from '@/api/blogsManage/blogsManage'
 import { useRouter } from 'vue-router'
-import { isBlank } from '@/utils/validate'
+import { getBlogDetail } from '@/api/blogsManage/blogsManage'
+import { baseURL } from '@/config'
+import { isEmpty } from '@/utils/validate'
+
+const route = useRoute()
 
 const router = useRouter()
 
 const $csgMessage = inject('$csgMessage') as Function
 // 内容 HTML
 
-const baseInfo = reactive({
+const blogId = ref()
+const blogCover: any[] = reactive([])
+
+interface BaseInfo {
+  title: string
+  summary: string
+  content: string
+  cover: any
+}
+
+const baseInfo: BaseInfo = reactive({
   title: '',
-  cover: '',
   summary: '',
-  content: ''
+  content: '',
+  cover: null
 })
 
 const handleCoverChange = (val: any) => {
@@ -50,7 +69,7 @@ const handleCoverChange = (val: any) => {
 }
 
 const verify = () => {
-  if (isBlank(baseInfo.title)) {
+  if (isEmpty(baseInfo.title)) {
     $csgMessage({
       type: 'danger',
       message: '请输入标题'
@@ -76,9 +95,16 @@ const handlePublish = () => {
   form.append('title', baseInfo.title)
   form.append('summary', baseInfo.summary)
   form.append('content', baseInfo.content)
-  form.append('file', baseInfo.cover)
+  if (!isEmpty(baseInfo.cover)) {
+    form.append('file', baseInfo.cover.raw)
+  }
 
-  Create(form)
+  if (blogId.value) {
+    form.append('id', blogId.value)
+    Update(form)
+  } else {
+    Create(form)
+  }
 }
 
 const Create = (data: any) => {
@@ -93,6 +119,44 @@ const Create = (data: any) => {
     }
   })
 }
+const Update = (data: any) => {
+  update(data).then((res) => {
+    if (res.code == 200) {
+      $csgMessage({
+        type: 'success',
+        message: '发布成功！'
+      })
+      router.push(`/blogDetail/${res.data.id}`)
+    }
+  })
+}
+
+const onload = async () => {
+  if (route.query.id) {
+    blogId.value = route.query.id
+    GetBlogDetail(blogId.value)
+  }
+}
+
+const dealBlogInfo = (data: any) => {
+  baseInfo.content = data.content
+  baseInfo.title = data.title
+  baseInfo.summary = data.summary
+  blogCover.push({
+    name: data.coverUrl,
+    src: baseURL + '/blogsManage/cover/' + data.coverUrl,
+    status: 'old'
+  })
+}
+
+const GetBlogDetail = async (id: string) => {
+  await getBlogDetail(id).then((res) => {
+    dealBlogInfo(res.data)
+  })
+}
+onBeforeMount(() => {
+  onload()
+})
 </script>
 <style scoped lang="less">
 .container-wrap {

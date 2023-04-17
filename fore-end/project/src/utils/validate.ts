@@ -23,3 +23,22 @@ export function isBlank(value:any) {
     value.toLocaleLowerCase().trim() === 'null'
   )
 }
+
+/**
+ * @description 判断是否为空
+ * @param value
+ * @returns {boolean}
+ */
+export function isEmpty(any:any) {
+  if (any) {
+    if (any instanceof Array) {
+      return any.length == 0
+    }
+    if (any instanceof Object) {
+      return Object.keys(any).length == 0
+    }
+    return false
+  }
+
+  return true
+}

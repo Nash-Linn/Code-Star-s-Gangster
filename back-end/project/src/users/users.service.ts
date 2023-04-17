@@ -75,6 +75,7 @@ export class UsersService {
   async updateAvatar(usercode: string, file: any) {
     const fileName = dealFileNameAddDate(file);
     ftpPutFile(file, `/static/avatars/${fileName}`);
+    putFileToMinio(file, 'code-star-gangster', `/avatars/${fileName}`);
     const res = await this.users
       .createQueryBuilder('users')
       .update()
@@ -84,21 +85,9 @@ export class UsersService {
     return res;
   }
 
-  async updateMinio(file: any) {
-    const fileName = dealFileNameAddDate(file);
-    putFileToMinio(file, 'code-star-gangster', `/avatars/${fileName}`);
-  }
-  async getFromMinio(filename: any, response) {
-    return getFileFromMinio(
-      response,
-      'code-star-gangster',
-      `/avatars/${filename}`,
-    );
-  }
-
   async getAvatar(response, filename) {
-    const filePath = join('static', 'avatars', filename);
-    await ftpGetFile(filePath, response);
+    const filePath = join('avatars', filename);
+    getFileFromMinio(response, 'code-star-gangster', filePath);
   }
 
   async updateUserInfo(usercode, updateUserDto: UpdateUserDto) {

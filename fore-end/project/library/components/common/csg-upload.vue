@@ -1,9 +1,9 @@
 <template>
   <div v-if="props.type == 'pictureCard'" class="csg-upload-wrap">
     <div class="preview-wrap">
-      <div v-for="(item, index) in src" :key="index" class="preview">
+      <div v-for="(item, index) in fileList" :key="index" class="preview">
         <template v-if="item">
-          <img :src="item" alt="" />
+          <img :src="item.src" alt="" />
         </template>
         <div v-else class="placeholder"></div>
       </div>
@@ -12,9 +12,9 @@
       </div>
     </div>
     <div class="delete-wrap">
-      <div v-for="(item, index) in src" :key="index" class="preview">
+      <div v-for="(item, index) in fileList" :key="index" class="preview">
         <template v-if="item">
-          <div class="delete" @click="handleDelete(item, index)"></div>
+          <div class="delete" @click="handleDelete(index)"></div>
         </template>
       </div>
       <div class="input-extra">
@@ -40,13 +40,22 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, toRaw } from 'vue'
+import { isEmpty } from '@/utils/validate'
+import { ref, reactive, toRaw, watch } from 'vue'
 
 interface Props {
   type: 'defalut' | 'pictureCard'
   multiple?: boolean
   limit?: number
+  fileList?: any[]
 }
+
+interface FileItem {
+  name: string
+  raw: any
+  src?: any
+}
+
 const props = withDefaults(defineProps<Props>(), {
   type: 'defalut',
   multiple: true
@@ -56,9 +65,7 @@ const emits = defineEmits(['change', 'exceed'])
 
 const file = ref()
 
-const fileList = ref<any[]>([])
-
-const src = ref<any[]>([])
+const fileList: any[] = reactive([])
 
 const handleFileChange = (event: Event) => {
   let input = event.target as HTMLInputElement
@@ -66,38 +73,57 @@ const handleFileChange = (event: Event) => {
 
   for (let item of file.value) {
     if (item) {
-      if (props.limit && fileList.value.length >= props.limit) {
+      if (props.limit && fileList.length >= props.limit) {
         emits('exceed')
         return
       }
 
-      fileList.value.push(item)
+      let fileItem: FileItem = reactive({
+        name: '',
+        src: null,
+        raw: null
+      })
+
       if (item.type.search('image') != -1) {
         let reader = new FileReader()
         reader.readAsDataURL(item)
         reader.onload = function (e: Event) {
           //成功读取文件
-          src.value.push((e.target as FileReader).result)
+          fileItem.src = (e.target as FileReader).result
         }
       }
+      fileItem.name = item.name
+      fileItem.raw = item
+      fileList.push(fileItem)
 
       emits('change', {
-        file: item,
-        fileList: toRaw(fileList.value)
+        file: fileItem,
+        fileList: toRaw(fileList)
       })
     }
   }
 }
 
-const handleDelete = (item: any, index: any) => {
-  fileList.value.splice(index, 1)
-  if (item.type.search('image') != -1) {
-    src.value.splice(index, 1)
-  }
+const handleDelete = (index: any) => {
+  fileList.splice(index, 1)
+
   emits('change', {
-    fileList: toRaw(fileList.value)
+    fileList: toRaw(fileList)
   })
 }
+
+watch(
+  () => props.fileList,
+  (val) => {
+    fileList.length = 0
+    if (!isEmpty(val)) {
+      fileList.push(...(val as any[]))
+    }
+  },
+  {
+    immediate: true
+  }
+)
 </script>
 <style scoped lang="less">
 .input {

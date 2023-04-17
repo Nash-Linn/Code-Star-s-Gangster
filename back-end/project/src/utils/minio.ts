@@ -4,27 +4,42 @@ import * as fs from 'fs';
 import minioConfig from 'src/config/minioConfig';
 
 export function putFileToMinio(currentFile, bucketName, targetFilePath) {
-  const s3Client = new Minio.Client(minioConfig.minioOptions);
+  return new Promise((resolve, reject) => {
+    targetFilePath = transformPath(targetFilePath);
+    const s3Client = new Minio.Client(minioConfig.minioOptions);
 
-  let readStream;
-  if (typeof currentFile == 'string') {
-    readStream = fs.createReadStream(currentFile);
-  } else {
-    readStream = currentFile.buffer;
-  }
-
-  s3Client.putObject(bucketName, targetFilePath, readStream, function (e) {
-    if (e) {
-      return console.log(e);
+    let readStream;
+    if (typeof currentFile == 'string') {
+      readStream = fs.createReadStream(currentFile);
+    } else {
+      readStream = currentFile.buffer;
     }
-    const res = {
-      success: true,
-    };
-    return res;
+
+    s3Client.putObject(
+      bucketName,
+      targetFilePath,
+      readStream,
+      function (e, objInfo) {
+        if (e) {
+          const error = {
+            success: false,
+            e,
+          };
+          return reject(error);
+        }
+
+        const res = {
+          success: true,
+          objInfo,
+        };
+        resolve(res);
+      },
+    );
   });
 }
 
 export function getFileFromMinio(response, bucketName, filePath) {
+  filePath = transformPath(filePath);
   const s3Client = new Minio.Client(minioConfig.minioOptions);
   s3Client.getObject(bucketName, filePath, function (e, dataStream) {
     if (e) {
@@ -69,3 +84,8 @@ export function dealContentType(filePath) {
 
   return contentType;
 }
+
+//转换路径格式
+const transformPath = (originPath) => {
+  return path.normalize(originPath).replace(/\\/g, '/');
+};

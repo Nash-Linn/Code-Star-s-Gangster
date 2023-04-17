@@ -113,15 +113,15 @@ const handleMouseoverTipIcon = () => {
 </script>
 <style lang="less" scoped>
 .size-big {
-  height: 50px !important;
+  height: @height-big !important;
 }
 
 .size-normal {
-  height: 40px !important;
+  height: @height-normal !important;
 }
 
 .size-small {
-  height: 30px !important;
+  height: @height-small!important;
 }
 
 .required {

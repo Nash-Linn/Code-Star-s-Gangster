@@ -8,6 +8,22 @@ export function create(data:any) {
   })
 }
 
+export function update(data:any) {
+  return request({
+    url: '/blogsManage/update',
+    method: 'post',
+    data,
+  })
+}
+
+export function deleteBlog(params:any) {
+  return request({
+    url: '/blogsManage/delete',
+    method: 'get',
+    params,
+  })
+}
+
 
 export function getList(params:any) {
   return request({

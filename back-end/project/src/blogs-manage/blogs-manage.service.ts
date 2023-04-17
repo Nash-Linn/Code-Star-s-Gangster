@@ -5,6 +5,7 @@ import { Blogs } from './entities/blogs-manage.entity';
 import { Users } from 'src/users/entities/user.entity';
 import { dealFileNameAddDate, ftpGetFile, ftpPutFile } from 'src/utils/ftp';
 import { join } from 'path';
+import { getFileFromMinio, putFileToMinio } from 'src/utils/minio';
 @Injectable()
 export class BlogsManageService {
   constructor(
@@ -15,7 +16,8 @@ export class BlogsManageService {
   async uploadImage(usercode: string, file: any) {
     return new Promise((resolve, reject) => {
       const fileName = dealFileNameAddDate(file);
-      ftpPutFile(file, `/static/blog_images/${usercode}/${fileName}`)
+      const filePath = join('blog_images', usercode, fileName);
+      putFileToMinio(file, 'code-star-gangster', filePath)
         .then((res: any) => {
           if (res.success) {
             resolve({
@@ -37,13 +39,13 @@ export class BlogsManageService {
   }
 
   async getImage(response, usercode, filename) {
-    const filePath = join('static', 'blog_images', usercode, filename);
-    await ftpGetFile(filePath, response);
+    const filePath = join('blog_images', usercode, filename);
+    getFileFromMinio(response, 'code-star-gangster', filePath);
   }
 
   async getCover(response, filename) {
-    const filePath = join('static', 'blog_cover', filename);
-    await ftpGetFile(filePath, response);
+    const filePath = join('blog_cover', filename);
+    getFileFromMinio(response, 'code-star-gangster', filePath);
   }
 
   async create(req, file, body) {
@@ -55,12 +57,49 @@ export class BlogsManageService {
     data.content = body.content;
     if (file) {
       const fileName = dealFileNameAddDate(file);
-      ftpPutFile(file, `/static/blog_cover/${fileName}`);
+      const filePath = join('blog_cover', fileName);
+      putFileToMinio(file, 'code-star-gangster', filePath);
       data.coverUrl = fileName;
     }
     const res = await this.blogs.save(data);
     return {
       id: res.id,
+    };
+  }
+
+  async update(file, body) {
+    const data = new Blogs();
+    data.title = body.title;
+    data.summary = body.summary;
+    data.content = body.content;
+    if (file) {
+      const fileName = dealFileNameAddDate(file);
+      const filePath = join('blog_cover', fileName);
+      putFileToMinio(file, 'code-star-gangster', filePath);
+      data.coverUrl = fileName;
+    }
+    await this.blogs
+      .createQueryBuilder('blogs')
+      .update()
+      .set(data)
+      .where('id = :id', { id: body.id })
+      .execute();
+
+    return {
+      id: body.id,
+    };
+  }
+
+  async logicDelete(id) {
+    await this.blogs
+      .createQueryBuilder('blogs')
+      .update()
+      .set({ status: 0 })
+      .where('id = :id', { id: id })
+      .execute();
+
+    return {
+      id: id,
     };
   }
 
@@ -89,7 +128,8 @@ export class BlogsManageService {
           users.avatar as creatorAvatar
       `,
       )
-      .where('blogs.title LIKE :keyWord', { keyWord: `%${keyWord}%` })
+      .where('blogs.status = :status', { status: 1 })
+      .andWhere('blogs.title LIKE :keyWord', { keyWord: `%${keyWord}%` })
       .orderBy('blogs.createTime', 'DESC')
       .skip((page - 1) * pageSize)
       .take(pageSize)
@@ -135,6 +175,7 @@ export class BlogsManageService {
       `,
       )
       .where('blogs.creatorId = :creatorId', { creatorId: req.user.id })
+      .andWhere('blogs.status = :status', { status: 1 })
       .andWhere('blogs.title LIKE :keyWord', { keyWord: `%${keyWord}%` })
       .orderBy('blogs.createTime', 'DESC')
       .skip((page - 1) * pageSize)

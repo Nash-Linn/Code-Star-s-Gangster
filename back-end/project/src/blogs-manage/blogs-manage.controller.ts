@@ -54,6 +54,17 @@ export class BlogsManageController {
   create(@UploadedFile() file, @Request() req, @Body() body) {
     return this.blogsManageService.create(req, file, body);
   }
+  @Post('update')
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FileInterceptor('file'))
+  update(@UploadedFile() file, @Body() body) {
+    return this.blogsManageService.update(file, body);
+  }
+
+  @Get('delete/:id')
+  logicDelete(@Param() params) {
+    return this.blogsManageService.logicDelete(params.id);
+  }
 
   @Get('getList')
   getList(@Query() query: { keyWord: string; page: number; pageSize: number }) {

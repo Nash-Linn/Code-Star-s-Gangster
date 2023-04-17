@@ -33,8 +33,12 @@
 </template>
 <script setup lang="ts">
 import csgBlogCard from '@/components/csgBlogCard.vue'
-import { ref, reactive, onBeforeMount } from 'vue'
-import { getMyBlogList } from '@/api/blogsManage/blogsManage'
+import { ref, reactive, inject, onBeforeMount } from 'vue'
+import { getMyBlogList, deleteBlog } from '@/api/blogsManage/blogsManage'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const $csgMessage = inject('$csgMessage') as Function
 
 const searchData = reactive({
   key: ''
@@ -53,11 +57,26 @@ const GetMyBlogList = (data: any) => {
 }
 
 const handleEditBlog = (blog: any) => {
-  console.log('编辑', blog)
+  router.push({
+    name: 'PublishBlog',
+    query: { id: blog.id }
+  })
 }
 
 const handleDeleteBlog = (blog: any) => {
   console.log('删除', blog)
+}
+
+const DeleteBlog = (id: string) => {
+  deleteBlog(id).then((res) => {
+    if (res.code == 200) {
+      $csgMessage({
+        type: 'success',
+        message: '发布成功！'
+      })
+      router.push(`/blogDetail/${res.data.id}`)
+    }
+  })
 }
 
 const onload = () => {

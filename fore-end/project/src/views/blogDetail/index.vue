@@ -19,7 +19,7 @@
     </section>
   </div>
 </template>
-<script setup>
+<script lang="ts" setup>
 import { reactive, onBeforeMount } from 'vue'
 import { getBlogDetail } from '@/api/blogsManage/blogsManage'
 import { useRoute } from 'vue-router'
@@ -36,7 +36,7 @@ const blogInfo = reactive({
   creatorAvatar: ''
 })
 
-const GetBlogDetail = async (id) => {
+const GetBlogDetail = async (id: string) => {
   await getBlogDetail(id).then((res) => {
     blogInfo.content = res.data.content
     blogInfo.title = res.data.title
@@ -47,7 +47,8 @@ const GetBlogDetail = async (id) => {
 }
 
 onBeforeMount(() => {
-  GetBlogDetail(route.params.id)
+  let id: string = route.params.id as string
+  GetBlogDetail(id)
 })
 </script>
 <style lang="less" scoped>
