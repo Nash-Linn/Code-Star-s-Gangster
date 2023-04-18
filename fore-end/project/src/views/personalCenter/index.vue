@@ -33,7 +33,6 @@ import menus from './components/menus.vue'
     min-height: calc(@main-height - 2 * @base-padding);
     background-color: #fff;
     border-radius: @base-border-radius;
-    padding: @base-padding;
     margin-left: 220px;
   }
 }

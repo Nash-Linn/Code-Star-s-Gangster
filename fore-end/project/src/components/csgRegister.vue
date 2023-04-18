@@ -84,6 +84,13 @@ const registerData = reactive<RegisterData>({
   repassword: ''
 })
 
+const validatePassword = (value: any, callback: any) => {
+  if (value.length < 6 || value.length > 20) {
+    callback('请输入6-20位的密码')
+  } else {
+    callback()
+  }
+}
 const validateRePass = (value: any, callback: any) => {
   if (value != registerData.password) {
     callback('两次密码输入不一致,请重新输入')
@@ -111,6 +118,10 @@ const ruleValidate = {
     {
       required: true,
       message: '请填写密码',
+      trigger: 'blur'
+    },
+    {
+      validator: validatePassword,
       trigger: 'blur'
     }
   ],

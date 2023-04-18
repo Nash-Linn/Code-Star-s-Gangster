@@ -33,6 +33,7 @@ const verify = () => {
   let requiredFlag = false
   let validatorFlag = false
   for (let key in props.rules) {
+    let domwrap = document.querySelector(`.csg-from-item .${key}`) as HTMLElement
     let dom = document.querySelector(`.csg-from-item #${key}`) as HTMLElement
     let rule: Rule[] = props.rules[key]
 
@@ -40,11 +41,11 @@ const verify = () => {
       if (item.validator) {
         let callback = (msg: any) => {
           if (msg) {
-            dom?.setAttribute('failCheck', 'true')
-            dom?.setAttribute('failMsg', msg)
+            domwrap?.setAttribute('failCheck', 'true')
+            domwrap?.setAttribute('failMsg', msg)
             validatorFlag = false
           } else {
-            dom?.setAttribute('failCheck', 'false')
+            domwrap?.setAttribute('failCheck', 'false')
             validatorFlag = true
           }
         }
@@ -60,11 +61,11 @@ const verify = () => {
       if (item.required) {
         let eventRequired = function () {
           if (isBlank((props.model as Model)[key])) {
-            dom?.setAttribute('failCheck', 'true')
-            dom?.setAttribute('failMsg', item.message)
+            domwrap?.setAttribute('failCheck', 'true')
+            domwrap?.setAttribute('failMsg', item.message)
             requiredFlag = false
           } else {
-            dom?.setAttribute('failCheck', 'false')
+            domwrap?.setAttribute('failCheck', 'false')
             requiredFlag = true
           }
         }

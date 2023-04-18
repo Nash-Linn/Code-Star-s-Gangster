@@ -1,13 +1,20 @@
 <template>
   <div :class="inputStyle">
-    <input
-      :id="props.formId"
-      class="csg-input-inner"
-      :type="props.type"
-      v-model="value"
-      :placeholder="props.placeholder"
-    />
-    <span v-if="props.label" class="csg-input-label">{{ props.label }}</span>
+    <div class="csg-input" :class="props.formId">
+      <input
+        class="csg-input-inner"
+        ref="inputRef"
+        :id="props.formId"
+        :type="props.type"
+        v-model="value"
+        :placeholder="props.placeholder"
+      />
+      <span v-if="props.label" class="csg-input-label">{{ props.label }}</span>
+      <div class="suffix-icon">
+        <slot name="suffix"> </slot>
+      </div>
+    </div>
+
     <div class="csg-input-tip-icon">
       <csg-popover>
         <template #reference>
@@ -39,13 +46,10 @@
         </div>
       </csg-popover>
     </div>
-    <div class="suffix-icon">
-      <slot name="suffix" />
-    </div>
   </div>
 </template>
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 const emits = defineEmits(['update:modelValue'])
 interface Props {
@@ -107,7 +111,7 @@ const inputStyle = computed(() => {
 
 const failMsg = ref()
 const handleMouseoverTipIcon = () => {
-  let inputdom = document.querySelector(`#${props.formId}`)
+  let inputdom = document.querySelector(`.${props.formId}`)
   failMsg.value = inputdom?.getAttribute('failMsg')
 }
 </script>
@@ -139,7 +143,11 @@ const handleMouseoverTipIcon = () => {
     color: red;
   }
 }
-
+.csg-input {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
 .csg-input-inner {
   position: relative;
   width: 100%;
@@ -221,11 +229,11 @@ const handleMouseoverTipIcon = () => {
   color: @base-danger-color;
 }
 
-.csg-input-inner[failcheck='true'] ~ .csg-input-tip-icon {
+.csg-input[failcheck='true'] ~ .csg-input-tip-icon {
   display: block;
 }
 
-.csg-input-inner[failcheck='false'] ~ .csg-input-tip-icon {
+.csg-input[failcheck='false'] ~ .csg-input-tip-icon {
   display: none;
 }
 

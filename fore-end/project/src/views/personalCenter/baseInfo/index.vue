@@ -113,7 +113,7 @@ onBeforeMount(() => {
 <style scoped lang="less">
 .base-info-wrap {
   width: 100%;
-
+  padding: 20px;
   .avatar-wrap {
     height: 100px;
     display: flex;

@@ -1,19 +1,38 @@
 <template>
-  <div class="index-wrap">
-    <csgBlogCard class="blog-card" v-for="(item, index) in blogList" :key="index" :data="item" />
-    <!-- <csg-loadmore :more="showMore" :loading="loading" /> -->
+  <div class="index-wrap" ref="indexWrapRef">
+    <csg-scroll class="scroll" :height="scrollHeight" @on-max="handleLoadMore">
+      <div class="scroll-inner">
+        <csgBlogCard
+          class="blog-card"
+          v-for="(item, index) in blogList"
+          :key="index"
+          :data="item"
+        />
+        <csg-loadmore :more="showMore" :loading="loading" />
+      </div>
+    </csg-scroll>
   </div>
 </template>
 <script setup lang="ts">
 import csgBlogCard from '@/components/csgBlogCard.vue'
 
-import { onMounted, ref, reactive, inject } from 'vue'
+import { onMounted, ref, reactive, inject, computed } from 'vue'
 import { getList } from '@/api/blogsManage/blogsManage'
+
+const indexWrapRef = ref()
+const scrollHeight = computed(() => {
+  let height = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0
+  let basePadding = 10
+  return height - 2 * basePadding
+})
 
 const $sub = inject('$sub') as Function
 
 $sub('topbar-search', (val: string) => {
-  GetList({ keyword: val })
+  filters.keyword = val
+  filters.page = 1
+  blogList.value.length = 0
+  GetList(filters)
 })
 
 const blogList: any = ref([])
@@ -31,6 +50,8 @@ const GetList = (data: any) => {
       if (total > filters.page * filters.pageSize) {
         showMore.value = true
         filters.page++
+      } else {
+        showMore.value = false
       }
     })
     .finally(() => {
@@ -41,14 +62,18 @@ const GetList = (data: any) => {
 //加载更多
 const filters = reactive({
   page: 1,
-  pageSize: 10
+  pageSize: 10,
+  keyword: ''
 })
 //显示加载更多
 const showMore = ref(false)
 const loading = ref(false)
 
 const handleLoadMore = () => {
-  console.log('到底加载更多')
+  if (loading.value || !showMore.value) {
+    return
+  }
+  GetList(filters)
 }
 const onload = () => {
   GetList({})
@@ -60,9 +85,21 @@ onMounted(() => {
 <style lang="less" scoped>
 .index-wrap {
   width: 100%;
-  padding: @base-padding;
+  padding: 10px;
+
+  min-height: @main-height;
+  border-radius: @base-border-radius;
   .blog-card {
     margin-bottom: 10px;
+  }
+}
+
+.scroll {
+  border-radius: @base-border-radius;
+  overflow: hidden;
+
+  .scroll-inner {
+    padding: 10px;
   }
 }
 </style>

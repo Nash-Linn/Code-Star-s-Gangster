@@ -151,6 +151,7 @@ export default {
       let prevPage = this.yMove
       if (!prevPage) return
       let thumbClickPosition = this.$refs['bar'].offsetHeight - prevPage
+      console.log('this.$el', this.$el)
       this.barMoveHandle(event, this.$el, thumbClickPosition)
     },
     //  鼠标抬起来的事件

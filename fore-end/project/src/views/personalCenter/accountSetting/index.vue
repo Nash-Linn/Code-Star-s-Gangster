@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="account-setting-wrap">
     <header class="header">
       <span class="title">账号设置</span>
     </header>
@@ -24,6 +24,9 @@ const handleAlterPasswordDialog = () => {
 }
 </script>
 <style lang="less" scoped>
+.account-setting-wrap {
+  padding: 20px;
+}
 .header {
   .title {
     font-size: @title-font-size;

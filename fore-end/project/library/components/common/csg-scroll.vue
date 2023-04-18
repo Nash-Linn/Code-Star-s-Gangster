@@ -4,7 +4,7 @@
     class="csg-scroll"
     @wheel.prevent="wheelEventHandle"
     :style="{ height: height + 'px' }"
-    ref="jScroll"
+    ref="scrollRef"
   >
     <!--滚动内容-->
     <div class="scroll-content" :id="domId" :style="scrollContentStyles" ref="scrollWrapperRef">
@@ -26,7 +26,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 interface Props {
   //  外框高度
   height?: number
@@ -56,7 +56,7 @@ const props = withDefaults(defineProps<Props>(), {
   gap: 0
 })
 
-const emits = defineEmits(['on-max', 'on-min'])
+const emits = defineEmits(['on-max', 'on-min', 'on-ready'])
 // 滚动内容的高度
 const domClientHeight = ref(0)
 // 滚动距离
@@ -68,6 +68,7 @@ const scrollStep = ref(0)
 const dom = ref()
 const scrollWrapperRef = ref()
 const barRef = ref()
+const scrollRef = ref()
 //  滚动内容的样式
 const scrollContentStyles = computed(() => {
   return {
@@ -125,10 +126,8 @@ const getDomClientHeight = () => {
 
 //  滚轮事件处理
 const wheelEventHandle = (event: any) => {
-  if (!dom.value) {
-    dom.value = scrollWrapperRef.value
-    getDomClientHeight()
-  }
+  dom.value = scrollWrapperRef.value
+  getDomClientHeight()
   if (scrollBarHeight.value === 0) return
   let { deltaY } = event
   deltaY += props.speed
@@ -142,9 +141,9 @@ const prevScorllHandle = () => {
   let isMax = maxScrollTop.value - Math.abs(scrollTop.value) < scrollStep.value
   if (isMax) {
     scrollTop.value = -maxScrollTop.value
+    emits('on-max')
   } else {
     scrollTop.value -= scrollStep.value
-    emits('on-max')
   }
 }
 
@@ -153,9 +152,9 @@ const nextScorllHandle = () => {
   let isMin = Math.abs(scrollTop.value) - scrollStep.value < 0
   if (isMin) {
     scrollTop.value = 0
+    emits('on-min')
   } else {
     scrollTop.value += scrollStep.value
-    emits('on-min')
   }
 }
 
@@ -177,7 +176,7 @@ const mouseMoveDocumentHandler = (event: any) => {
   let prevPage = yMove.value
   if (!prevPage) return
   let thumbClickPosition = barRef.value.offsetHeight - prevPage
-  barMoveHandle(event, barRef.value, thumbClickPosition)
+  barMoveHandle(event, scrollRef.value, thumbClickPosition)
 }
 //  鼠标抬起来的事件
 const mouseUpDocumentHandler = () => {
@@ -190,11 +189,11 @@ const clickBarWrapHandler = (event: any) => {
   let thumbHalf = barRef.value.offsetHeight / 2
   barMoveHandle(event, event.target, thumbHalf)
 }
-//  滑块移动处理
+//滑块移动处理
 const barMoveHandle = (event: any, dom: any, position: any) => {
   let offset = Math.abs(dom.getBoundingClientRect()['top'] - event.clientY)
-  let thumbPositionPercentage = ((offset - position) * 100) / dom.offsetHeight
-  let _scrollTop = -((thumbPositionPercentage * domClientHeight.value) / 100)
+  let thumbPositionPercentage = (offset - position) / dom.offsetHeight
+  let _scrollTop = -(thumbPositionPercentage * domClientHeight.value)
   if (-_scrollTop >= maxScrollTop.value) {
     emits('on-max')
     scrollTop.value = -maxScrollTop.value
@@ -204,13 +203,33 @@ const barMoveHandle = (event: any, dom: any, position: any) => {
     scrollTop.value = 0
     return
   }
-
-  // scrollTop.value = _scrollTop
+  scrollTop.value = _scrollTop
 }
 //  如果有iframe 也需要处理
 const iframeDocumentHandle = () => {
-  console.log('处理iframe ')
+  let iframe = document.getElementsByTagName('iframe')
+  if (iframe) {
+    for (let i = 0; i < iframe.length; i++) {
+      let iframeDocument = iframe[i].contentWindow?.document
+      iframeDocument?.addEventListener('mouseup', mouseUpDocumentHandler, false)
+    }
+  }
 }
+
+onUnmounted(() => {
+  document.removeEventListener('mouseup', mouseUpDocumentHandler)
+})
+
+onMounted(() => {
+  emits('on-ready', () => {
+    // if (this.domId) {
+    iframeDocumentHandle()
+    // this.dom = document.getElementById(this.domId);
+    dom.value = scrollWrapperRef.value
+    getDomClientHeight()
+    // }
+  })
+})
 </script>
 <style lang="less" scoped>
 .csg-scroll {

@@ -203,7 +203,8 @@ export class BlogsManageService {
           users.avatar as creatorAvatar
       `,
       )
-      .where('blogs.id = :id', { id: params.id })
+      .where('blogs.status = :status', { status: 1 })
+      .andWhere('blogs.id = :id', { id: params.id })
       .getRawOne();
   }
 }
