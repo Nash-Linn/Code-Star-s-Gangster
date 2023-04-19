@@ -13,7 +13,7 @@
               </csg-menu>
             </div>
             <div class="logout-button">
-              <csg-button size="small" class="button" @click="handleLogout">退出登录</csg-button>
+              <csg-button class="button" @click="handleLogout">退出登录</csg-button>
             </div>
           </div>
         </template>
@@ -21,7 +21,7 @@
           <div class="unlogin-wrap">
             <div class="title">登录后可发表文章</div>
             <div class="buttons">
-              <csg-button size="small" class="button" @click="handleLogin">立即登录</csg-button>
+              <csg-button class="button" @click="handleLogin">立即登录</csg-button>
               <div class="register" @click="handleRegister">点我注册</div>
             </div>
           </div>

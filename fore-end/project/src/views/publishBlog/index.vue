@@ -20,6 +20,10 @@
             <csg-textarea class="textarea-summary" v-model="baseInfo.summary" type="textarea" />
           </csg-form-item>
         </div>
+        <csg-form-item class="form-item" label="文章标签">
+          <csg-tag class="tag-item" close>标签1</csg-tag>
+          <csg-button>添加标签</csg-button>
+        </csg-form-item>
       </csg-forms>
       <div class="button-wrap">
         <csg-button class="button" @click="handlePublish">发布</csg-button>
@@ -195,6 +199,10 @@ onBeforeMount(() => {
   min-height: calc(@main-height - 340px);
   padding: @base-padding;
   padding-top: 0;
+}
+
+.tag-item {
+  margin-right: 10px;
 }
 
 .button-wrap {

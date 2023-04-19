@@ -28,10 +28,8 @@
         <slot name="content"></slot>
       </div>
       <div v-if="props.footer" class="csg-dialog-footer">
-        <csg-button class="cancel-button" size="small" type="danger" @click="handleCancel"
-          >取消</csg-button
-        >
-        <csg-button size="small" @click="handleConfirm">确定</csg-button>
+        <csg-button class="cancel-button" type="danger" @click="handleCancel">取消</csg-button>
+        <csg-button @click="handleConfirm">确定</csg-button>
       </div>
     </div>
   </div>

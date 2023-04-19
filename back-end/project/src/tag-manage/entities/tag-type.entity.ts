@@ -5,16 +5,12 @@ import {
   PrimaryGeneratedColumn,
   JoinColumn,
 } from 'typeorm';
-import { Blogs } from './blogs-manage.entity';
+
 @Entity()
-export class BlogTags {
+export class TagType {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   name: string;
-
-  @ManyToOne(() => Blogs, (blog) => blog.id)
-  @JoinColumn({ name: 'blogId' })
-  blogId: Blogs;
 }

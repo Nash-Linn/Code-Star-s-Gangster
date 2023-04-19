@@ -63,15 +63,15 @@ const buttonStyle = computed(() => {
 </script>
 <style lang="less" scoped>
 .size-big {
-  height: 45px !important;
+  height: @height-big !important;
 }
 
 .size-normal {
-  height: 35px !important;
+  height: @height-normal !important;
 }
 
 .size-small {
-  height: 25px !important;
+  height: @height-small!important;
 }
 
 .success-bg {

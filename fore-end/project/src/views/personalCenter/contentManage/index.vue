@@ -4,12 +4,7 @@
       <header class="header">
         <div class="title">内容管理</div>
         <div class="search">
-          <csg-input
-            v-model="filters.keyword"
-            @keyup.enter="handleSearch"
-            size="small"
-            label="搜索文章"
-          >
+          <csg-input v-model="filters.keyword" @keyup.enter="handleSearch" label="搜索文章">
             <template #suffix>
               <div class="suffix-icon" @click="handleSearch">
                 <img id="inactive" src="@/assets/icons/search1.png" alt="" />

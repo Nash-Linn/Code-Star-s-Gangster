@@ -9,7 +9,6 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { BlogTags } from './blog-tags.entity';
 import { Users } from 'src/users/entities/user.entity';
 @Entity()
 export class Blogs {
@@ -37,9 +36,6 @@ export class Blogs {
 
   @CreateDateColumn({ type: 'timestamp', comment: '创建时间' })
   createTime: Date;
-
-  @OneToMany(() => BlogTags, (tags) => tags.blogId)
-  tags: BlogTags[];
 
   @ManyToOne(() => Users, (users) => users.id, {
     cascade: true,

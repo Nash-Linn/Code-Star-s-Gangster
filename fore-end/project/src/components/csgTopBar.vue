@@ -11,9 +11,7 @@
       </div>
       <div class="right">
         <csgTopBarAvatar />
-        <csg-button v-if="isOnlne" size="small" class="public" @click="goToPublishBlog"
-          >发布</csg-button
-        >
+        <csg-button v-if="isOnlne" class="public" @click="goToPublishBlog">发布</csg-button>
       </div>
     </div>
   </div>

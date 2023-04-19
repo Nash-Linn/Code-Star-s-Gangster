@@ -1,13 +1,16 @@
 <template>
   <div :class="inputStyle">
-    <textarea
-      :id="props.formId"
-      class="csg-textarea-inner"
-      v-model="value"
-      placeholder=" "
-      :rows="props.rows"
-    />
-    <span v-if="props.label" class="csg-textarea-label">{{ props.label }}</span>
+    <div class="csg-textarea" :class="props.formId">
+      <textarea
+        :id="props.formId"
+        class="csg-textarea-inner"
+        v-model="value"
+        placeholder=" "
+        :rows="props.rows"
+      />
+      <span v-if="props.label" class="csg-textarea-label">{{ props.label }}</span>
+    </div>
+
     <div class="csg-textarea-tip-icon">
       <csg-popover>
         <template #reference>
@@ -85,7 +88,7 @@ const inputStyle = computed(() => {
 
 const failMsg = ref()
 const handleMouseoverTipIcon = () => {
-  let inputdom = document.querySelector(`#${props.formId}`)
+  let inputdom = document.querySelector(`.{props.formId}`)
   failMsg.value = inputdom?.getAttribute('failMsg')
 }
 </script>
@@ -104,6 +107,11 @@ const handleMouseoverTipIcon = () => {
     font-size: 20px;
     color: red;
   }
+}
+.csg-textarea {
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
 .csg-textarea-inner {
@@ -205,11 +213,11 @@ const handleMouseoverTipIcon = () => {
   color: @base-danger-color;
 }
 
-.csg-textarea-inner[failcheck='true'] ~ .csg-textarea-tip-icon {
+.csg-textarea[failcheck='true'] ~ .csg-textarea-tip-icon {
   display: block;
 }
 
-.csg-textarea-inner[failcheck='false'] ~ .csg-textarea-tip-icon {
+.csg-textarea[failcheck='false'] ~ .csg-textarea-tip-icon {
   display: none;
 }
 </style>
