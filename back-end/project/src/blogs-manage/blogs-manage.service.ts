@@ -6,6 +6,7 @@ import { Users } from 'src/users/entities/user.entity';
 import { dealFileNameAddDate, ftpGetFile, ftpPutFile } from 'src/utils/ftp';
 import { join } from 'path';
 import { getFileFromMinio, putFileToMinio } from 'src/utils/minio';
+import { BlogTags } from 'src/tag-manage/entities/blog-tags.entity';
 @Injectable()
 export class BlogsManageService {
   constructor(
@@ -72,6 +73,18 @@ export class BlogsManageService {
     data.title = body.title;
     data.summary = body.summary;
     data.content = body.content;
+
+    //处理标签
+    // if (body.tags) {
+    //   const blogTags = [];
+    //   const tags = JSON.parse(body.tags);
+    //   for (const item of tags) {
+    //     const tag = new BlogTags();
+    //     tag.id = item;
+    //     blogTags.push(tag);
+    //   }
+    //   data.tags = blogTags;
+    // }
     if (file) {
       const fileName = dealFileNameAddDate(file);
       const filePath = join('blog_cover', fileName);
