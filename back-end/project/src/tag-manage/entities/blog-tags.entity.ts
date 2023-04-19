@@ -17,7 +17,4 @@ export class BlogTags {
 
   @Column()
   typeId: string;
-
-  @ManyToMany(() => Blogs, (blog) => blog.tags)
-  blogs: Blogs[];
 }

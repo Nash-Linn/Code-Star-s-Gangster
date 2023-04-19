@@ -1,17 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { getConnection, Like, Repository } from 'typeorm';
 import { Blogs } from './entities/blogs-manage.entity';
 import { Users } from 'src/users/entities/user.entity';
 import { dealFileNameAddDate, ftpGetFile, ftpPutFile } from 'src/utils/ftp';
 import { join } from 'path';
 import { getFileFromMinio, putFileToMinio } from 'src/utils/minio';
 import { BlogTags } from 'src/tag-manage/entities/blog-tags.entity';
+import { TagManageService } from 'src/tag-manage/tag-manage.service';
+import { MergeBlogsTags } from 'src/tag-manage/entities/merge-blogs-tags.entity';
 @Injectable()
 export class BlogsManageService {
   constructor(
     @InjectRepository(Blogs, 'cs_gangster')
     private readonly blogs: Repository<Blogs>,
+    private readonly tagManageService: TagManageService,
   ) {}
 
   async uploadImage(usercode: string, file: any) {
@@ -63,6 +66,7 @@ export class BlogsManageService {
       data.coverUrl = fileName;
     }
     const res = await this.blogs.save(data);
+    await this.tagManageService.bindBlogTag(res.id, body.tags);
     return {
       id: res.id,
     };
@@ -74,17 +78,6 @@ export class BlogsManageService {
     data.summary = body.summary;
     data.content = body.content;
 
-    //处理标签
-    // if (body.tags) {
-    //   const blogTags = [];
-    //   const tags = JSON.parse(body.tags);
-    //   for (const item of tags) {
-    //     const tag = new BlogTags();
-    //     tag.id = item;
-    //     blogTags.push(tag);
-    //   }
-    //   data.tags = blogTags;
-    // }
     if (file) {
       const fileName = dealFileNameAddDate(file);
       const filePath = join('blog_cover', fileName);
@@ -97,6 +90,8 @@ export class BlogsManageService {
       .set(data)
       .where('id = :id', { id: body.id })
       .execute();
+
+    await this.tagManageService.bindBlogTag(body.id, body.tags);
 
     return {
       id: body.id,

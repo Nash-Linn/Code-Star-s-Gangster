@@ -45,8 +45,4 @@ export class Blogs {
   })
   @JoinColumn({ name: 'creatorId' })
   creator: Users;
-
-  @ManyToMany(() => BlogTags)
-  @JoinTable()
-  tags: BlogTags[];
 }

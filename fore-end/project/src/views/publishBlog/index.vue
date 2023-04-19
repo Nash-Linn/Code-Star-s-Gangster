@@ -105,8 +105,6 @@ const handlePublish = () => {
 
   if (blogId.value) {
     form.append('id', blogId.value)
-    let tags = JSON.stringify([4, 5])
-    form.append('tags', tags)
     Update(form)
   } else {
     Create(form)
@@ -132,7 +130,7 @@ const Update = (data: any) => {
         type: 'success',
         message: '发布成功！'
       })
-      // router.push(`/blogDetail/${res.data.id}`)
+      router.push(`/blogDetail/${res.data.id}`)
     }
   })
 }
