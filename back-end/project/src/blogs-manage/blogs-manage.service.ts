@@ -142,6 +142,13 @@ export class BlogsManageService {
       .limit(pageSize)
       .getRawMany();
 
+    if (data && data.length > 0) {
+      for (const item of data) {
+        const tags = await this.tagManageService.getBlogTag(item.id);
+        item.tags = tags;
+      }
+    }
+
     const total = await this.blogs.count({
       where: {
         title: Like(`%${keyword}%`),

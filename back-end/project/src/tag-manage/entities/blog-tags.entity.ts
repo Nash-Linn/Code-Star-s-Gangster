@@ -16,5 +16,5 @@ export class BlogTags {
   name: string;
 
   @Column()
-  typeId: string;
+  typeId: number;
 }

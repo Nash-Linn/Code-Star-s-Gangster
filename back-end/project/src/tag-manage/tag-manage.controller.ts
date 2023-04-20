@@ -25,4 +25,9 @@ export class TagManageController {
   getTags(@Param() param) {
     return this.tagManageService.getTags(param.typeId);
   }
+
+  @Get('blogTag/:blogId')
+  getBlogTags(@Param() param) {
+    return this.tagManageService.getBlogTag(param.blogId);
+  }
 }

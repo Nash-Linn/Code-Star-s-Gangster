@@ -22,7 +22,7 @@ export class TagManageService {
     return this.tagType.find();
   }
 
-  getTags(typeId: string) {
+  getTags(typeId: number) {
     return this.blogTags.find({
       where: {
         typeId: typeId,
@@ -56,5 +56,24 @@ export class TagManageService {
       blogsTags.tagId = item;
       await this.mergeBlogsTags.save(blogsTags);
     }
+  }
+
+  getBlogTag(blogId) {
+    return this.mergeBlogsTags
+      .createQueryBuilder('mergeBlogsTags')
+      .leftJoinAndSelect(
+        BlogTags,
+        'blogTags',
+        'blogTags.id = mergeBlogsTags.tagId',
+      )
+      .select(
+        `
+        mergeBlogsTags.tagId,
+        blogTags.name,
+        blogTags.typeId
+        `,
+      )
+      .where('mergeBlogsTags.blogId = :blogId', { blogId: blogId })
+      .getRawMany();
   }
 }

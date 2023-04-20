@@ -13,7 +13,20 @@
         <span class="summary">{{ props.data.summary }}</span>
       </div>
       <div class="bottom">
-        <div class="bottom-left">{{ parseTime(props.data.createTime) }}</div>
+        <div class="bottom-left">
+          <div class="create-time">
+            {{ parseTime(props.data.createTime) }}
+          </div>
+          <div class="blog-tags">
+            <csg-tag
+              class="tag-item"
+              v-for="(item, index) in props.data.tags"
+              :key="index"
+              size="small"
+              >{{ item.name }}</csg-tag
+            >
+          </div>
+        </div>
         <div class="bottom-right">
           <slot name="bottom-right">{{ props.data.creatorName }}</slot>
         </div>
@@ -36,6 +49,7 @@ interface Data {
   coverUrl: string
   summary: string
   createTime: string
+  tags?: any[]
 }
 
 interface Props {
@@ -108,6 +122,21 @@ const handleClickCard = () => {
       height: 18px;
       display: flex;
       justify-content: space-between;
+
+      .bottom-left {
+        display: flex;
+        align-items: center;
+
+        .create-time {
+          margin-right: 10px;
+        }
+
+        .blog-tags {
+          .tag-item {
+            margin-right: 5px;
+          }
+        }
+      }
     }
   }
 }

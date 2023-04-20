@@ -12,6 +12,7 @@
     </div>
     <!--滚动条-->
     <div
+      v-show="showScrollBar"
       :class="['scroll-bar-wrap', props.autoHide ? 'autoHide' : '']"
       :style="scrollWrapStyle"
       @mousedown.prevent.stop="clickBarWrapHandler"
@@ -97,6 +98,12 @@ const scrollBarStyle = computed(() => {
     borderRadius: `${props.radius}px`
   }
 })
+
+//滚动条显示
+const showScrollBar = computed(() => {
+  return domClientHeight.value > props.height
+})
+
 //  滚动条高度
 const scrollBarHeight = computed(() => {
   let barHeight = (props.height * props.height) / domClientHeight.value
@@ -221,14 +228,10 @@ onUnmounted(() => {
 })
 
 onMounted(() => {
-  emits('on-ready', () => {
-    // if (this.domId) {
-    iframeDocumentHandle()
-    // this.dom = document.getElementById(this.domId);
-    dom.value = scrollWrapperRef.value
-    getDomClientHeight()
-    // }
-  })
+  dom.value = scrollWrapperRef.value
+  getDomClientHeight()
+  iframeDocumentHandle()
+  emits('on-ready')
 })
 </script>
 <style lang="less" scoped>

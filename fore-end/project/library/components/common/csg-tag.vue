@@ -92,6 +92,7 @@ const handleClose = () => {
   height: 32px;
   align-items: center;
   padding: 0 5px;
+  cursor: pointer;
 }
 
 .close-icon-wrap {

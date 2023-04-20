@@ -17,7 +17,10 @@
           <div class="delete" @click="handleDelete(index)"></div>
         </template>
       </div>
-      <div class="input-extra">
+      <div
+        v-if="!props.limit || (props.limit && fileList.length < props.limit)"
+        class="input-extra"
+      >
         <input
           class="input"
           type="file"

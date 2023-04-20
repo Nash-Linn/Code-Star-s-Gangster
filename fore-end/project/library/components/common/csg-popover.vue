@@ -4,7 +4,7 @@
       <slot name="reference">
         <div class="placeholer">按钮</div>
       </slot>
-      <div v-show="popovershow" class="pop-content">
+      <div v-show="popovershow" class="pop-content" :style="`padding:${props.padding}`">
         <div class="trigger"></div>
         <slot
           ><div :style="`width:${props.width};`">{{ props.content }}</div></slot
@@ -19,11 +19,13 @@ interface Props {
   trigger?: 'click' | 'hover'
   content?: string
   width?: string
+  padding?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   trigger: 'hover',
-  width: '100px'
+  width: '100px',
+  padding: '20px'
 })
 
 const popovershow = ref(false)

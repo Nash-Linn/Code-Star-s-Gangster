@@ -21,8 +21,15 @@
           </csg-form-item>
         </div>
         <csg-form-item class="form-item" label="文章标签">
-          <csg-tag class="tag-item" close>标签1</csg-tag>
-          <csg-button>添加标签</csg-button>
+          <csg-tag
+            v-for="(item, index) in tagsList"
+            :key="index"
+            class="tag-item"
+            close
+            @on-close="handleDeleteTag(item.id)"
+            >{{ item.name }}</csg-tag
+          >
+          <csg-button v-if="!tagExceed" @click="handleTagDialogVisible">添加标签</csg-button>
         </csg-form-item>
       </csg-forms>
       <div class="button-wrap">
@@ -33,17 +40,21 @@
       <csgRichText v-model:model-value="baseInfo.content" class="pulish-blog-wrap" />
     </csg-card>
   </div>
+  <teleport to="body">
+    <tagDialog v-model="tagDialogVisible" @click-tag="handleAddTag" />
+  </teleport>
 </template>
 <script setup lang="ts">
 import { ref, reactive, inject, onBeforeMount } from 'vue'
 import { useRoute } from 'vue-router'
 import csgRichText from '@/components/csgRichText.vue'
+import tagDialog from './components/tagDialog.vue'
 import { create, update } from '@/api/blogsManage/blogsManage'
 import { useRouter } from 'vue-router'
 import { getBlogDetail } from '@/api/blogsManage/blogsManage'
 import { baseURL } from '@/config'
 import { isEmpty } from '@/utils/validate'
-
+import type { TagItem } from './interface/tag'
 const route = useRoute()
 
 const router = useRouter()
@@ -70,6 +81,29 @@ const baseInfo: BaseInfo = reactive({
 
 const handleCoverChange = (val: any) => {
   baseInfo.cover = val.file
+}
+
+const tagDialogVisible = ref(false)
+const tagsList = ref<TagItem[]>([])
+const tagExceed = ref(false)
+const handleTagDialogVisible = () => {
+  tagDialogVisible.value = true
+}
+const handleAddTag = (tagInfo: TagItem) => {
+  tagExceed.value = false
+  if (tagsList.value.length >= 5) {
+    tagExceed.value = true
+    return
+  }
+  if (tagsList.value.findIndex((item) => item.id == tagInfo.id) == -1) {
+    tagsList.value.push(tagInfo)
+  }
+}
+
+const handleDeleteTag = (tagId: number) => {
+  let index = tagsList.value.findIndex((item) => item.id == tagId)
+  tagsList.value.splice(index, 1)
+  tagExceed.value = false
 }
 
 const verify = () => {
@@ -101,6 +135,11 @@ const handlePublish = () => {
   form.append('content', baseInfo.content)
   if (!isEmpty(baseInfo.cover)) {
     form.append('file', baseInfo.cover.raw)
+  }
+
+  if (!isEmpty(tagsList.value)) {
+    let tags = tagsList.value.map((item) => item.id)
+    form.append('tags', JSON.stringify(tags))
   }
 
   if (blogId.value) {
