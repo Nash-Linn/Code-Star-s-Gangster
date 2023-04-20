@@ -25,10 +25,13 @@
         <div class="right">
           <csg-scroll height="300">
             <template v-if="addNew">
-              <csg-select v-model="newTagInfo.tagType" placeholder="选择或输入标签分类">
-                <csg-option label="label1" value="value1" />
-                <csg-option label="label2" value="value2" />
-              </csg-select>
+              <csg-select
+                v-model="newTagInfo.tagType"
+                placeholder="选择或输入标签分类"
+                :options="tagTypeList"
+                label-name="name"
+                value-name="id"
+              />
             </template>
             <template v-else>
               <csg-tag

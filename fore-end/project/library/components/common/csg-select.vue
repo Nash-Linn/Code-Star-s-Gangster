@@ -90,8 +90,14 @@
         </div>
       </div>
     </template>
-    <div class="options-wrap">
-      <slot></slot>
+    <div ref="optionsRef" class="options-wrap">
+      <csg-option
+        v-for="(item, index) in optionsList"
+        :key="index"
+        :label="item[props.labelName]"
+        :value="item[props.valueName]"
+        @click="handleChose(item)"
+      />
     </div>
   </csg-popover>
 </template>
@@ -105,7 +111,8 @@ import {
   reactive,
   type ComponentInternalInstance,
   onMounted,
-  onUpdated
+  onUpdated,
+  watchEffect
 } from 'vue'
 
 const emits = defineEmits(['update:modelValue'])
@@ -118,6 +125,9 @@ interface Props {
   required?: boolean
   placeholder?: string
   filter?: boolean
+  options: any[]
+  labelName?: string
+  valueName?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -125,7 +135,9 @@ const props = withDefaults(defineProps<Props>(), {
   type: 'text',
   required: false,
   placeholder: ' ',
-  filter: false
+  filter: false,
+  labelName: 'label',
+  valueName: 'value'
 })
 
 const value = computed({
@@ -134,6 +146,18 @@ const value = computed({
     emits('update:modelValue', val)
   }
 })
+
+const optionsList = computed(() => {
+  if (props.filter) {
+    return []
+  }
+
+  return props.options
+})
+
+const handleChose = (option: any) => {
+  console.log('option', option)
+}
 
 const inputStyle = computed(() => {
   let style: string
@@ -190,16 +214,7 @@ const { proxy } = getCurrentInstance() as ComponentInternalInstance
 const customSlots = reactive({
   ...proxy?.$slots
 })
-
-onMounted(() => {
-  console.log('customSlots', customSlots)
-  let options: any = document.querySelectorAll('.options-wrap .csg-option')
-  for (let item of options) {
-    item.addEventListener('click', () => {
-      console.log(' aaaa')
-    })
-  }
-})
+const optionsRef = ref()
 </script>
 <style lang="less" scoped>
 .size-big {
