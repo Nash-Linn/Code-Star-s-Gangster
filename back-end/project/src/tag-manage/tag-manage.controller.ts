@@ -30,4 +30,9 @@ export class TagManageController {
   getBlogTags(@Param() param) {
     return this.tagManageService.getBlogTag(param.blogId);
   }
+
+  @Post('addTag')
+  addTag(@Body() body: { isNewType: boolean; tagType: any; tag: string }) {
+    return this.tagManageService.addTag(body.isNewType, body.tagType, body.tag);
+  }
 }

@@ -25,17 +25,23 @@
         <div class="right">
           <csg-scroll height="300">
             <template v-if="addNew">
-              <csg-select
-                v-model="newTagInfo.tagType"
-                class="tag-type-select"
-                filter
-                :options="tagTypeList"
-                placeholder="选择或输入标签分类"
-                label-name="name"
-                value-name="id"
-                @on-change="handleSelectTagTypeChange"
-              />
-              <csg-input v-model="newTagInfo.tag" placeholder="输入标签名" />
+              <csg-forms ref="formRef" :model="newTagInfo" :rules="ruleValidate">
+                <csg-form-item formId="tagType">
+                  <csg-select
+                    v-model="newTagInfo.tagType"
+                    filter
+                    :options="tagTypeList"
+                    placeholder="选择或输入标签分类"
+                    label-name="name"
+                    value-name="id"
+                    @on-change="handleSelectTagTypeChange"
+                  />
+                </csg-form-item>
+                <csg-form-item formId="tag">
+                  <csg-input v-model="newTagInfo.tag" placeholder="输入标签名" />
+                </csg-form-item>
+              </csg-forms>
+
               <div class="add-tag-button">
                 <csg-button @click="handleAddNewTag">新增标签</csg-button>
               </div>
@@ -112,6 +118,24 @@ const newTagInfo = reactive({
   tag: '',
   isNewType: false
 })
+const ruleValidate = reactive({
+  tagType: [
+    {
+      required: true,
+      message: '请选择或输入标签分类',
+      trigger: 'blur'
+    }
+  ],
+  tag: [
+    {
+      required: true,
+      message: '请输入新增的标签',
+      trigger: 'blur'
+    }
+  ]
+})
+
+const formRef = ref()
 //切换至新增标签
 const handleNewTag = () => {
   tagTypeIndex.value = -1
@@ -120,10 +144,20 @@ const handleNewTag = () => {
 
 //新增标签中  标签类型改变
 const handleSelectTagTypeChange = (val: any) => {
-  console.log('val', val)
+  newTagInfo.isNewType = val.isNew
+  if (newTagInfo.isNewType) {
+    newTagInfo.tagType = val.value
+  } else {
+    newTagInfo.tagType = val.label
+  }
 }
 
-const handleAddNewTag = () => {}
+const handleAddNewTag = () => {
+  if (!formRef.value.verify()) {
+    return false
+  }
+  console.log('newTagInfo', newTagInfo)
+}
 
 const beforeMountOnload = async () => {
   await TagType()
@@ -193,7 +227,6 @@ onBeforeMount(() => {
 }
 
 .add-tag-button {
-  margin-top: 10px;
   display: flex;
   justify-content: center;
 }

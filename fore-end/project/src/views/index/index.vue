@@ -22,7 +22,6 @@ import { getList } from '@/api/blogsManage/blogsManage'
 const indexWrapRef = ref()
 const scrollHeight = computed(() => {
   let height = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0
-  console.log('height', height)
   let basePadding = 10
   return height - 3 * basePadding
 })

@@ -6,24 +6,17 @@
     <template #content>
       <div class="register-wrap">
         <csg-forms ref="formRef" :model="registerData" :rules="ruleValidate">
-          <csg-form-item>
-            <csg-input formId="username" label="昵称" v-model="registerData.username" required />
+          <csg-form-item formId="username">
+            <csg-input label="昵称" v-model="registerData.username" required />
           </csg-form-item>
-          <csg-form-item>
-            <csg-input formId="usercode" label="账号" v-model="registerData.usercode" required />
+          <csg-form-item formId="usercode">
+            <csg-input label="账号" v-model="registerData.usercode" required />
           </csg-form-item>
-          <csg-form-item>
+          <csg-form-item formId="password">
+            <csg-input label="密码" type="password" v-model="registerData.password" required />
+          </csg-form-item>
+          <csg-form-item formId="repassword">
             <csg-input
-              formId="password"
-              label="密码"
-              type="password"
-              v-model="registerData.password"
-              required
-            />
-          </csg-form-item>
-          <csg-form-item>
-            <csg-input
-              formId="repassword"
               label="再次输入密码"
               type="password"
               v-model="registerData.repassword"

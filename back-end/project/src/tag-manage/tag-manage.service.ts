@@ -76,4 +76,21 @@ export class TagManageService {
       .where('mergeBlogsTags.blogId = :blogId', { blogId: blogId })
       .getRawMany();
   }
+
+  async addTag(isNewType, tagType, tag) {
+    let tagTypeId;
+    if (isNewType) {
+      const tagTypeData = new TagType();
+      tagTypeData.name = tagType;
+      const newTagType = await this.tagType.save(tagTypeData);
+      tagTypeId = newTagType.id;
+    } else {
+      tagTypeId = tagType;
+    }
+    const tagData = new BlogTags();
+    tagData.name = tag;
+    tagData.typeId = tagTypeId;
+    const newTag = this.blogTags.save(tagData);
+    return newTag;
+  }
 }
