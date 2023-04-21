@@ -1,6 +1,6 @@
 <template>
   <div class="csg-top-bar-avatar-wrap">
-    <csg-popover>
+    <csg-popover trigger="hover">
       <template #reference> <csg-avatar :imgurl="avatar" desc="登录" /></template>
       <div class="content">
         <template v-if="loging">

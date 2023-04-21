@@ -27,11 +27,18 @@
             <template v-if="addNew">
               <csg-select
                 v-model="newTagInfo.tagType"
-                placeholder="选择或输入标签分类"
+                class="tag-type-select"
+                filter
                 :options="tagTypeList"
+                placeholder="选择或输入标签分类"
                 label-name="name"
                 value-name="id"
+                @on-change="handleSelectTagTypeChange"
               />
+              <csg-input v-model="newTagInfo.tag" placeholder="输入标签名" />
+              <div class="add-tag-button">
+                <csg-button @click="handleAddNewTag">新增标签</csg-button>
+              </div>
             </template>
             <template v-else>
               <csg-tag
@@ -72,11 +79,12 @@ interface TagTypeItem {
   name: string
 }
 
-const tagTypeList = ref<TagTypeItem[]>([])
+const tagTypeList = reactive<TagTypeItem[]>([])
 const tagList = ref<TagItem[]>([])
 const TagType = async () => {
+  tagTypeList.length = 0
   await tagType().then((res) => {
-    tagTypeList.value = res.data
+    tagTypeList.push(...res.data)
   })
 }
 
@@ -100,17 +108,27 @@ const Tag = (id: number) => {
 //新增标签
 const addNew = ref(false)
 const newTagInfo = reactive({
-  tagType: null
+  tagType: '',
+  tag: '',
+  isNewType: false
 })
+//切换至新增标签
 const handleNewTag = () => {
   tagTypeIndex.value = -1
   addNew.value = true
 }
 
+//新增标签中  标签类型改变
+const handleSelectTagTypeChange = (val: any) => {
+  console.log('val', val)
+}
+
+const handleAddNewTag = () => {}
+
 const beforeMountOnload = async () => {
   await TagType()
   tagTypeIndex.value = 0
-  Tag(tagTypeList.value[0].id)
+  Tag(tagTypeList[0].id)
 }
 
 onBeforeMount(() => {
@@ -168,5 +186,15 @@ onBeforeMount(() => {
       margin-bottom: 10px;
     }
   }
+}
+
+.tag-type-select {
+  margin-bottom: 10px;
+}
+
+.add-tag-button {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
 }
 </style>

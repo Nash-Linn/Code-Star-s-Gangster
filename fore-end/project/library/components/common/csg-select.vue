@@ -1,5 +1,5 @@
 <template>
-  <csg-popover trigger="click" padding="0">
+  <csg-popover padding="0" :visible="popoverVisible">
     <template #reference>
       <div :class="inputStyle">
         <div
@@ -13,8 +13,11 @@
             class="csg-select-inner"
             :id="props.formId"
             :readonly="!props.filter"
-            v-model="value"
+            v-model="inputValue"
             :placeholder="props.placeholder"
+            @input="handleInput"
+            @click="handleClickInput"
+            v-click-outside="handleClickInputOut"
           />
 
           <span v-if="props.label" class="csg-input-label">{{ props.label }}</span>
@@ -94,6 +97,7 @@
       <csg-option
         v-for="(item, index) in optionsList"
         :key="index"
+        :selected="item[props.valueName] == value"
         :label="item[props.labelName]"
         :value="item[props.valueName]"
         @click="handleChose(item)"
@@ -103,19 +107,9 @@
 </template>
 <script setup lang="ts">
 import { isEmpty } from '@/utils/validate'
-import {
-  ref,
-  computed,
-  watch,
-  getCurrentInstance,
-  reactive,
-  type ComponentInternalInstance,
-  onMounted,
-  onUpdated,
-  watchEffect
-} from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
-const emits = defineEmits(['update:modelValue'])
+const emits = defineEmits(['update:modelValue', 'on-change'])
 interface Props {
   modelValue: any
   size?: string
@@ -139,25 +133,6 @@ const props = withDefaults(defineProps<Props>(), {
   labelName: 'label',
   valueName: 'value'
 })
-
-const value = computed({
-  get: () => props.modelValue || '',
-  set: (val) => {
-    emits('update:modelValue', val)
-  }
-})
-
-const optionsList = computed(() => {
-  if (props.filter) {
-    return []
-  }
-
-  return props.options
-})
-
-const handleChose = (option: any) => {
-  console.log('option', option)
-}
 
 const inputStyle = computed(() => {
   let style: string
@@ -206,15 +181,69 @@ const handleMouseleave = () => {
   mouseenter.value = false
 }
 
-const handleClear = () => {
-  value.value = ''
+const inputValue = ref()
+const value = computed({
+  get: () => props.modelValue || '',
+  set: (val) => {
+    emits('update:modelValue', val)
+    emits('on-change', val)
+  }
+})
+
+const popoverVisible = ref(false)
+
+const handleClickInput = () => {
+  popoverVisible.value = true
+}
+const handleClickInputOut = () => {
+  popoverVisible.value = false
 }
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance
-const customSlots = reactive({
-  ...proxy?.$slots
+const handleInput = (event: any) => {
+  matchInputValue(event.target.value)
+}
+
+const matchInputValue = (val: any) => {
+  let matchItem = optionsList.value.filter((item) => item[props.labelName] == val).pop()
+  if (!isEmpty(matchItem)) {
+    value.value = matchItem[props.valueName]
+    inputValue.value = matchItem[props.labelName]
+  } else {
+    value.value = val
+  }
+}
+
+const matchValue = (val: any) => {
+  let matchItem = optionsList.value.filter((item) => item[props.valueName] == val).pop()
+  if (!isEmpty(matchItem)) {
+    value.value = matchItem[props.valueName]
+    inputValue.value = matchItem[props.labelName]
+  }
+}
+
+const optionsList = computed(() => {
+  if (props.filter && inputValue.value) {
+    let newOptions = props.options.filter((item) => item[props.labelName].match(inputValue.value))
+    return newOptions
+  }
+
+  return props.options
 })
-const optionsRef = ref()
+
+const handleChose = (option: any) => {
+  inputValue.value = option[props.labelName]
+  value.value = option[props.valueName]
+  popoverVisible.value = false
+}
+
+const handleClear = () => {
+  value.value = ''
+  inputValue.value = ''
+}
+
+onMounted(() => {
+  matchValue(value.value)
+})
 </script>
 <style lang="less" scoped>
 .size-big {

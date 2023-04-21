@@ -4,7 +4,11 @@
       <slot name="reference">
         <div class="placeholer">按钮</div>
       </slot>
-      <div v-show="popovershow" class="pop-content" :style="`padding:${props.padding}`">
+      <div
+        v-show="props.visible || popovershow"
+        class="pop-content"
+        :style="`padding:${props.padding}`"
+      >
         <div class="trigger"></div>
         <slot
           ><div :style="`width:${props.width};`">{{ props.content }}</div></slot
@@ -16,16 +20,22 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 interface Props {
-  trigger?: 'click' | 'hover'
+  //手动控制可见
+  visible: boolean
+  //触发方法
+  trigger: 'click' | 'hover'
+  //显示内容
   content?: string
+  //弹出宽度
   width?: string
+  //内容区padding
   padding?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  trigger: 'hover',
   width: '100px',
-  padding: '20px'
+  padding: '20px',
+  visible: false
 })
 
 const popovershow = ref(false)
