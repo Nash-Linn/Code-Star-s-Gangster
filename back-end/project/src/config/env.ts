@@ -31,7 +31,7 @@ function envFunc(evn): Env {
 
 type envType = 'pro' | 'dev';
 
-const env: envType = 'dev';
+const env: envType = 'pro';
 
 const Env = envFunc(env);
 export default {
