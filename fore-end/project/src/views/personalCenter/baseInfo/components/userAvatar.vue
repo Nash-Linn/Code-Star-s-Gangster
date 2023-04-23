@@ -28,7 +28,7 @@ import { inject, computed } from 'vue'
 import { useUserStore } from '@/stores/modules/user'
 import { updateAvatar } from '@/api/user'
 import { baseURL } from '@/config'
-const $csgMessage = inject('$csgMessage') as Function
+const $csgMessage: any = inject('$csgMessage')
 
 const userStore = useUserStore()
 

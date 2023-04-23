@@ -54,7 +54,7 @@ import { getMyBlogList, deleteBlog } from '@/api/blogsManage/blogsManage'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const $csgMessage = inject('$csgMessage') as Function
+const $csgMessage: any = inject('$csgMessage')
 
 const contentManageRef = ref()
 const scrollHeight = computed(() => {

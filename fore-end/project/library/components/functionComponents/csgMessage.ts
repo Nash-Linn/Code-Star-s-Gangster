@@ -1,7 +1,8 @@
-import { createApp } from 'vue'
+import { createApp  } from 'vue'
+import type{InjectionKey}from 'vue'
 import csgMessageCom from '@lib/components/common/csg-message.vue'
 
-const csgMessage = (option:{
+const csgMessage= (option:{
   type?:"success"|"warn"|"danger",
   message:string
 }) => {

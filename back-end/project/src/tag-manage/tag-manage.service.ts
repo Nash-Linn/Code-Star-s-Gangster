@@ -1,5 +1,5 @@
 import { MergeBlogsTags } from './entities/merge-blogs-tags.entity';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTagManageDto } from './dto/create-tag-manage.dto';
 import { UpdateTagManageDto } from './dto/update-tag-manage.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -86,6 +86,18 @@ export class TagManageService {
       tagTypeId = newTagType.id;
     } else {
       tagTypeId = tagType;
+      const tagInfo = await this.blogTags.find({
+        where: {
+          name: tag,
+          typeId: tagType,
+        },
+      });
+      if (tagInfo.length > 0) {
+        throw new HttpException(
+          '当前类别下已存在该标签',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
     }
     const tagData = new BlogTags();
     tagData.name = tag;

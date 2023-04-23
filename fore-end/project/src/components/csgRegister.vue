@@ -41,7 +41,7 @@ import { useUserStore } from '@/stores/modules/user'
 
 const userStore = useUserStore()
 
-const $csgMessage = inject('$csgMessage') as Function
+const $csgMessage: any = inject('$csgMessage')
 
 const emits = defineEmits(['update:modelValue'])
 

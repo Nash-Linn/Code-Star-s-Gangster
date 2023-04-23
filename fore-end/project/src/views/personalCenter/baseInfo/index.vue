@@ -49,7 +49,7 @@ import { ref, reactive, inject, onBeforeMount } from 'vue'
 import userAvatar from './components/userAvatar.vue'
 
 import { getUserInfo, updateUserInfo } from '@/api/user'
-const $csgMessage = inject('$csgMessage') as Function
+const $csgMessage: any = inject('$csgMessage')
 
 const isEdit = ref(false)
 

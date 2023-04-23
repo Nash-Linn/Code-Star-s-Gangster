@@ -59,7 +59,7 @@ const route = useRoute()
 
 const router = useRouter()
 
-const $csgMessage = inject('$csgMessage') as Function
+const $csgMessage: any = inject('$csgMessage')
 // 内容 HTML
 
 const blogId = ref()

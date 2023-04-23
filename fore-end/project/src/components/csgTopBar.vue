@@ -2,9 +2,8 @@
   <div class="topbar">
     <div class="topbar-content">
       <div class="left">
-        <div class="left-item">
-          <router-link to="/">博客</router-link>
-        </div>
+        <router-link class="left-item" to="/">博客</router-link>
+        <router-link class="left-item" to="/about">关于</router-link>
       </div>
       <div class="center">
         <csgTopSearch />
@@ -53,8 +52,14 @@ const goToPublishBlog = () => {
       display: flex;
       flex-shrink: 0;
       .left-item {
+        display: block;
         height: 100%;
         cursor: pointer;
+        margin-right: 20px;
+      }
+
+      .router-link-active.router-link-exact-active.left-item {
+        color: @base-color;
       }
     }
 

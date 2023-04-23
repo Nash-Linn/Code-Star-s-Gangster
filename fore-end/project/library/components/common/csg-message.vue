@@ -102,7 +102,7 @@ var timer: any = null
 const props = withDefaults(defineProps<Props>(), {
   type: 'default',
   message: '默认信息',
-  showtime: 3000
+  showtime: 1500
 })
 
 const messageStyle = computed(() => {

@@ -15,3 +15,11 @@ export function tag(id:number) {
     method: 'get',
   })
 }
+//添加标签
+export function addTag(data:{ isNewType: boolean; tagType: any; tag: string }) {
+  return request({
+    url:`/tagManage/addTag`,
+    method: 'post',
+    data
+  })
+}

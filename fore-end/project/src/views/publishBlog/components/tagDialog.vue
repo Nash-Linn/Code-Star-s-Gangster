@@ -24,7 +24,7 @@
         </div>
         <div class="right">
           <csg-scroll height="300">
-            <template v-if="addNew">
+            <template v-if="tagTypeIndex == -1">
               <csg-forms ref="formRef" :model="newTagInfo" :rules="ruleValidate">
                 <csg-form-item formId="tagType">
                   <csg-select
@@ -63,9 +63,12 @@
   </csg-dialog>
 </template>
 <script setup lang="ts">
-import { ref, reactive, computed, onBeforeMount } from 'vue'
-import { tagType, tag } from '@/api/tagManage/tagManage'
+import { ref, reactive, inject, computed, onBeforeMount } from 'vue'
+import { tagType, tag, addTag } from '@/api/tagManage/tagManage'
 import type { TagItem } from '../interface/tag'
+
+const $csgMessage: any = inject('$csgMessage')
+
 interface Props {
   modelValue: boolean
 }
@@ -87,7 +90,7 @@ interface TagTypeItem {
 
 const tagTypeList = reactive<TagTypeItem[]>([])
 const tagList = ref<TagItem[]>([])
-const TagType = async () => {
+const GetTagTypeList = async () => {
   tagTypeList.length = 0
   await tagType().then((res) => {
     tagTypeList.push(...res.data)
@@ -96,7 +99,6 @@ const TagType = async () => {
 
 const tagTypeIndex = ref()
 const handleClickTagType = (index: number, id: number) => {
-  addNew.value = false
   tagTypeIndex.value = index
   Tag(id)
 }
@@ -105,19 +107,24 @@ const handleClickTag = (tag: TagItem) => {
   emits('click-tag', tag)
 }
 
-const Tag = (id: number) => {
-  tag(id).then((res) => {
+const Tag = async (id: number) => {
+  await tag(id).then((res) => {
     tagList.value = res.data
   })
 }
 
 //新增标签
-const addNew = ref(false)
 const newTagInfo = reactive({
   tagType: '',
   tag: '',
   isNewType: false
 })
+const initNewTagInfo = () => {
+  newTagInfo.isNewType = false
+  newTagInfo.tag = ''
+  newTagInfo.tagType = ''
+}
+
 const ruleValidate = reactive({
   tagType: [
     {
@@ -139,28 +146,53 @@ const formRef = ref()
 //切换至新增标签
 const handleNewTag = () => {
   tagTypeIndex.value = -1
-  addNew.value = true
 }
 
 //新增标签中  标签类型改变
 const handleSelectTagTypeChange = (val: any) => {
   newTagInfo.isNewType = val.isNew
-  if (newTagInfo.isNewType) {
-    newTagInfo.tagType = val.value
-  } else {
-    newTagInfo.tagType = val.label
-  }
+  newTagInfo.tagType = val.value
 }
 
 const handleAddNewTag = () => {
   if (!formRef.value.verify()) {
     return false
   }
-  console.log('newTagInfo', newTagInfo)
+  AddTag(newTagInfo)
+}
+
+const addTagSuccess = async (typeId: any) => {
+  await GetTagTypeList()
+  let index = tagTypeList.findIndex((item) => item.id == typeId)
+  tagTypeIndex.value = index
+  initNewTagInfo()
+  await Tag(typeId)
+}
+
+const AddTag = (data: { isNewType: boolean; tagType: any; tag: string }) => {
+  addTag(data)
+    .then((res) => {
+      if (res.success) {
+        $csgMessage({
+          type: 'success',
+          message: '新增成功！'
+        })
+        addTagSuccess(res.data.typeId)
+      }
+    })
+    .catch((err) => {
+      console.log('err', err)
+      if (!err.success) {
+        $csgMessage({
+          type: 'danger',
+          message: err.msg
+        })
+      }
+    })
 }
 
 const beforeMountOnload = async () => {
-  await TagType()
+  await GetTagTypeList()
   tagTypeIndex.value = 0
   Tag(tagTypeList[0].id)
 }

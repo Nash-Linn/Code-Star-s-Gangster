@@ -44,7 +44,7 @@ import { ref, reactive, computed, inject } from 'vue'
 import { encryptcode } from '@/utils/encryp'
 import { alterPassword } from '@/api/user'
 
-const $csgMessage = inject('$csgMessage') as Function
+const $csgMessage: any = inject('$csgMessage')
 
 const emits = defineEmits(['update:modelValue'])
 

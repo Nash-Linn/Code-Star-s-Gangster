@@ -25,7 +25,7 @@ import { encryptcode } from '@/utils/encryp'
 import { useUserStore } from '@/stores/modules/user'
 import { ref, inject, computed } from 'vue'
 
-const $csgMessage = inject('$csgMessage') as Function
+const $csgMessage: any = inject('$csgMessage')
 
 const emits = defineEmits(['update:modelValue'])
 

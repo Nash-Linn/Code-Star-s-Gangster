@@ -11,6 +11,8 @@ import {
 import qs from 'qs'
 import { isArray } from '@/utils/validate'
 import { getToken } from './token'
+import { inject } from 'vue'
+const $csgMessage:any = inject('$csgMessage')
 
 // 操作正常Code数组
 const codeVerificationArray = isArray(successCode)
@@ -108,11 +110,7 @@ const handleData = async ({ config ,data, status, statusText }:HandleDataConf) =
   switch (code) {
     case 200:
       return data
-    case 401:
-      break
-    case 402:
-      break
-    case 403:
+    default:
       break
   }
   // 异常处理
