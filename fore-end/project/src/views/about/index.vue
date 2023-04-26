@@ -22,7 +22,7 @@ import right from './component/right.vue'
 }
 
 .about-content {
-  height: 100px;
+  overflow: hidden;
 
   > div {
     float: left;
