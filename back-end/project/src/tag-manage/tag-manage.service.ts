@@ -68,7 +68,7 @@ export class TagManageService {
       )
       .select(
         `
-        mergeBlogsTags.tagId,
+        blogTags.id,
         blogTags.name,
         blogTags.typeId
         `,

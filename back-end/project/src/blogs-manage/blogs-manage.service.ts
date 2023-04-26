@@ -196,6 +196,13 @@ export class BlogsManageService {
       .limit(pageSize)
       .getRawMany();
 
+    if (data && data.length > 0) {
+      for (const item of data) {
+        const tags = await this.tagManageService.getBlogTag(item.id);
+        item.tags = tags;
+      }
+    }
+
     const total = await this.blogs
       .createQueryBuilder('blogs')
       .where('blogs.creatorId = :creatorId', { creatorId: req.user.id })
@@ -207,7 +214,7 @@ export class BlogsManageService {
   }
 
   async getBlogDetail(params) {
-    return this.blogs
+    const data: any = await this.blogs
       .createQueryBuilder('blogs')
       .leftJoinAndSelect(Users, 'users', 'blogs.creator = users.id')
       .select(
@@ -221,5 +228,9 @@ export class BlogsManageService {
       .where('blogs.status = :status', { status: 1 })
       .andWhere('blogs.id = :id', { id: params.id })
       .getRawOne();
+
+    const tags = await this.tagManageService.getBlogTag(data.id);
+    data.tags = tags;
+    return data;
   }
 }

@@ -185,11 +185,14 @@ const dealBlogInfo = (data: any) => {
   baseInfo.content = data.content
   baseInfo.title = data.title
   baseInfo.summary = data.summary
-  blogCover.push({
-    name: data.coverUrl,
-    src: baseURL + '/blogsManage/cover/' + data.coverUrl,
-    status: 'old'
-  })
+  if (data.coverUrl) {
+    blogCover.push({
+      name: data.coverUrl,
+      src: baseURL + '/blogsManage/cover/' + data.coverUrl,
+      status: 'old'
+    })
+  }
+  tagsList.value = data.tags
 }
 
 const GetBlogDetail = async (id: string) => {
