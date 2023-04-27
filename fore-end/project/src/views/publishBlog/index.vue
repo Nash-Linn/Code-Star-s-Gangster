@@ -1,5 +1,8 @@
 <template>
   <div class="container-wrap">
+    <csg-card>
+      <csgRichText v-model:model-value="baseInfo.content" class="pulish-blog-wrap" />
+    </csg-card>
     <csg-card class="base-info-wrap">
       <csg-forms ref="formRef" :model="baseInfo" class="form-wrap">
         <div class="form-part1">
@@ -35,9 +38,6 @@
       <div class="button-wrap">
         <csg-button class="button" @click="handlePublish">发布</csg-button>
       </div>
-    </csg-card>
-    <csg-card>
-      <csgRichText v-model:model-value="baseInfo.content" class="pulish-blog-wrap" />
     </csg-card>
   </div>
   <teleport to="body">
@@ -236,9 +236,10 @@ onBeforeMount(() => {
   }
 }
 .pulish-blog-wrap {
-  margin-top: 20px;
+  // margin-top: 20px;
+  margin-bottom: 20px;
   width: 100%;
-  min-height: calc(@main-height - 340px);
+  // min-height: calc(@main-height - 340px);
   padding: @base-padding;
   padding-top: 0;
 }

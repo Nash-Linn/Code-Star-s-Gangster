@@ -1,11 +1,14 @@
 <template>
   <div class="csg-rich-text-wrap" @click="handleClickEdit">
-    <Toolbar
-      v-if="props.toolbar"
-      style="border-bottom: 1px solid #ccc"
-      :editor="editorRef"
-      :defaultConfig="toolbarConfig"
-    />
+    <div class="toolbar">
+      <Toolbar
+        v-if="props.toolbar"
+        style="border-bottom: 1px solid #ccc"
+        :editor="editorRef"
+        :defaultConfig="toolbarConfig"
+      />
+    </div>
+
     <Editor
       v-model="valueHtml"
       class="editor"
@@ -130,6 +133,12 @@ const handleClickEdit = () => {
     div {
       padding: 0;
     }
+  }
+
+  .toolbar {
+    position: sticky;
+    top: 50px;
+    z-index: 9;
   }
 }
 </style>
