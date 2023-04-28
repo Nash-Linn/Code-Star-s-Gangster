@@ -1,54 +1,59 @@
 <template>
   <div class="container-wrap">
-    <csg-card>
-      <csgRichText v-model:model-value="baseInfo.content" class="pulish-blog-wrap" />
-    </csg-card>
-    <csg-card class="base-info-wrap">
-      <csg-forms ref="formRef" :model="baseInfo" class="form-wrap">
-        <div class="form-part1">
-          <csg-form-item class="form-item" label="文章标题">
-            <csg-input formId="username" v-model="baseInfo.title" required />
+    <csgBlogMenu class="blog-menu" :data="baseInfo.content" />
+    <div class="blog-container">
+      <csg-card>
+        <csgRichText v-model:model-value="baseInfo.content" class="pulish-blog-wrap" />
+      </csg-card>
+      <csg-card class="base-info-wrap">
+        <csg-forms ref="formRef" :model="baseInfo" class="form-wrap">
+          <div class="form-part1">
+            <csg-form-item class="form-item" label="文章标题">
+              <csg-input formId="username" v-model="baseInfo.title" required />
+            </csg-form-item>
+          </div>
+          <div class="form-part2">
+            <csg-form-item class="form-item form-cover" label="文章封面">
+              <csg-upload
+                type="pictureCard"
+                @change="handleCoverChange"
+                :limit="1"
+                :fileList="blogCover"
+              />
+            </csg-form-item>
+            <csg-form-item class="form-item form-summary" label="文章摘要">
+              <csg-textarea class="textarea-summary" v-model="baseInfo.summary" type="textarea" />
+            </csg-form-item>
+          </div>
+          <csg-form-item class="form-item" label="文章标签">
+            <csg-tag
+              v-for="(item, index) in tagsList"
+              :key="index"
+              class="tag-item"
+              close
+              @on-close="handleDeleteTag(item.id)"
+              >{{ item.name }}</csg-tag
+            >
+            <csg-button v-if="!tagExceed" @click="handleTagDialogVisible">添加标签</csg-button>
           </csg-form-item>
+        </csg-forms>
+        <div class="button-wrap">
+          <csg-button class="button" @click="handlePublish">发布</csg-button>
         </div>
-        <div class="form-part2">
-          <csg-form-item class="form-item form-cover" label="文章封面">
-            <csg-upload
-              type="pictureCard"
-              @change="handleCoverChange"
-              :limit="1"
-              :fileList="blogCover"
-            />
-          </csg-form-item>
-          <csg-form-item class="form-item form-summary" label="文章摘要">
-            <csg-textarea class="textarea-summary" v-model="baseInfo.summary" type="textarea" />
-          </csg-form-item>
-        </div>
-        <csg-form-item class="form-item" label="文章标签">
-          <csg-tag
-            v-for="(item, index) in tagsList"
-            :key="index"
-            class="tag-item"
-            close
-            @on-close="handleDeleteTag(item.id)"
-            >{{ item.name }}</csg-tag
-          >
-          <csg-button v-if="!tagExceed" @click="handleTagDialogVisible">添加标签</csg-button>
-        </csg-form-item>
-      </csg-forms>
-      <div class="button-wrap">
-        <csg-button class="button" @click="handlePublish">发布</csg-button>
-      </div>
-    </csg-card>
+      </csg-card>
+    </div>
   </div>
   <teleport to="body">
     <tagDialog v-model="tagDialogVisible" @click-tag="handleAddTag" />
   </teleport>
 </template>
 <script setup lang="ts">
-import { ref, reactive, inject, onBeforeMount } from 'vue'
-import { useRoute } from 'vue-router'
 import csgRichText from '@/components/csgRichText.vue'
 import tagDialog from './components/tagDialog.vue'
+import csgBlogMenu from '@/components/csgBlogMenu.vue'
+
+import { ref, reactive, inject, onBeforeMount } from 'vue'
+import { useRoute } from 'vue-router'
 import { create, update } from '@/api/blogsManage/blogsManage'
 import { useRouter } from 'vue-router'
 import { getBlogDetail } from '@/api/blogsManage/blogsManage'
@@ -207,6 +212,20 @@ onBeforeMount(() => {
 <style scoped lang="less">
 .container-wrap {
   padding: @base-padding;
+  display: flex;
+}
+
+.blog-menu {
+  width: 200px;
+  flex-shrink: 0;
+  position: fixed;
+  top: calc(@top-bar-height + @base-padding);
+  height: calc(@main-height - 40px);
+}
+.blog-container {
+  width: 100%;
+  margin-left: 210px;
+  border-radius: @base-border-radius;
 }
 .base-info-wrap {
   width: 100%;

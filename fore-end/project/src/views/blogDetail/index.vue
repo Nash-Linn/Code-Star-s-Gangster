@@ -1,6 +1,7 @@
 <template>
   <div class="blog-detail-wrap">
-    <section class="container">
+    <csgBlogMenu class="blog-menu" :data="blogInfo.content" />
+    <section class="blog-container">
       <header>
         <span class="title">{{ blogInfo.title }}</span>
       </header>
@@ -26,6 +27,7 @@ import { useRoute } from 'vue-router'
 import csgRichText from '@/components/csgRichText.vue'
 import { parseTime } from '@/utils'
 import { baseURL } from '@/config'
+import csgBlogMenu from '@/components/csgBlogMenu.vue'
 
 const route = useRoute()
 const blogInfo = reactive({
@@ -55,8 +57,18 @@ onBeforeMount(() => {
 .blog-detail-wrap {
   width: 100%;
   padding: @base-padding;
+  display: flex;
+  .blog-menu {
+    width: 200px;
+    flex-shrink: 0;
+    position: fixed;
+    top: calc(@top-bar-height + @base-padding);
+    height: calc(@main-height - 40px);
+  }
 
-  .container {
+  .blog-container {
+    width: 100%;
+    margin-left: 210px;
     padding: @base-padding;
     background-color: #fff;
     border-radius: @base-border-radius;
