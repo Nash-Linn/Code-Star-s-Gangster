@@ -18,12 +18,14 @@ import { ref, watch, computed } from 'vue'
 
 interface Prop {
   data: string
+  height?: number
 }
 const props = defineProps<Prop>()
 
 const menuList = ref()
 const handlerMenu = () => {
   let content = document.querySelector('.csg-rich-text-wrap') as HTMLElement
+  if (!content) return
   let els = content.querySelectorAll('h1,h2,h3,h4,h5,h6')
   let menus: any = []
   if (els) {
@@ -86,6 +88,9 @@ const scrollHeight = computed(() => {
   let wrapHeight = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0
   let titleHeight = titleRef.value ? titleRef.value?.clientHeight : 0
   const padding = 20
+  if (props.height) {
+    return props.height - titleHeight - 2 * padding
+  }
   return wrapHeight - titleHeight - 2 * padding
 })
 </script>

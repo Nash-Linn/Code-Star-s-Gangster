@@ -52,96 +52,105 @@ const valueHtml = computed({
 // 编辑器实例，必须用 shallowRef
 const editorRef = shallowRef()
 
-class MyButtonMenuClass implements IButtonMenu {
-  title = '生成目录'
-  tag = 'button'
+// class MyButtonMenuClass implements IButtonMenu {
+//   title = '生成目录'
+//   tag = 'button'
 
-  constructor() {
-    this.title = '生成目录' // 自定义菜单标题
-    this.tag = 'button'
-  }
-  // 获取菜单执行时的 value
-  getValue() {
-    // 用不到 getValue
-    return ''
-  }
+//   constructor() {
+//     this.title = '生成目录' // 自定义菜单标题
+//     this.tag = 'button'
+//   }
+//   // 获取菜单执行时的 value
+//   getValue() {
+//     // 用不到 getValue
+//     return ''
+//   }
 
-  // 菜单是否需要激活（如选中加粗文本，“加粗”菜单会激活），用不到则返回 false
-  isActive() {
-    return false
-  }
-  // 菜单是否需要禁用（如选中 H1 ，“引用”菜单被禁用），用不到则返回 false
-  isDisabled() {
-    return false
-  }
+//   // 菜单是否需要激活（如选中加粗文本，“加粗”菜单会激活），用不到则返回 false
+//   isActive() {
+//     return false
+//   }
+//   // 菜单是否需要禁用（如选中 H1 ，“引用”菜单被禁用），用不到则返回 false
+//   isDisabled() {
+//     return false
+//   }
 
-  // 点击菜单时触发的函数
-  exec(editor: any) {
-    let headers = editor.getElemsByTypePrefix('header')
-    let nodes = headers.map((item: any) => {
-      let node: any = {
-        type: 'paragraph',
-        children: [
-          {
-            text: item.children[0].text,
-            color: 'rgb(78, 210, 210)'
-          }
-        ]
-      }
-      if (item.type === 'header1') {
-        node.indent = '2em'
-      }
+//   // 点击菜单时触发的函数
+//   exec(editor: any) {
+//     let headers = editor.getElemsByTypePrefix('header')
+//     let nodes = headers.map((item: any) => {
+//       let node: any = {
+//         type: 'paragraph',
+//         children: [
+//           {
+//             text: item.children[0].text,
+//             color: 'rgb(78, 210, 210)'
+//           }
+//         ]
+//       }
+//       if (item.type === 'header1') {
+//         node.indent = '2em'
+//       }
 
-      if (item.type === 'header2') {
-        node.indent = '4em'
-      }
-      if (item.type === 'header3') {
-        node.indent = '6em'
-      }
-      if (item.type === 'header4') {
-        node.indent = '8em'
-      }
-      if (item.type === 'header5') {
-        node.indent = '10em'
-      }
+//       if (item.type === 'header2') {
+//         node.indent = '4em'
+//       }
+//       if (item.type === 'header3') {
+//         node.indent = '6em'
+//       }
+//       if (item.type === 'header4') {
+//         node.indent = '8em'
+//       }
+//       if (item.type === 'header5') {
+//         node.indent = '10em'
+//       }
 
-      return node
-    })
-    const divider = {
-      type: 'divider',
-      children: [
-        {
-          text: ''
-        }
-      ]
-    }
+//       return node
+//     })
+//     const divider = {
+//       type: 'divider',
+//       children: [
+//         {
+//           text: ''
+//         }
+//       ]
+//     }
 
-    const menu = {
-      type: 'paragraph',
-      children: [
-        {
-          text: '目录',
-          bold: true
-        }
-      ]
-    }
-    nodes.unshift(menu)
-    nodes.push(divider)
-    SlateTransforms.insertNodes(editor, nodes)
-  }
-}
-const myButtonMenu = {
-  key: 'createMenu', // menu key ，唯一。注册之后，可配置到工具栏
-  factory() {
-    return new MyButtonMenuClass()
-  }
-}
+//     const menu = {
+//       type: 'paragraph',
+//       children: [
+//         {
+//           text: '目录',
+//           bold: true
+//         }
+//       ]
+//     }
+//     nodes.unshift(menu)
+//     nodes.push(divider)
+//     SlateTransforms.insertNodes(editor, nodes)
+//   }
+// }
+// const myButtonMenu = {
+//   key: 'createMenu', // menu key ，唯一。注册之后，可配置到工具栏
+//   factory() {
+//     return new MyButtonMenuClass()
+//   }
+// }
 
-Boot.registerMenu(myButtonMenu)
+// Boot.registerMenu(myButtonMenu)
 
 const toolbarConfig: Partial<IToolbarConfig> = {
-  insertKeys: { index: 27, keys: ['createMenu'] },
-  excludeKeys: ['headerSelect', 'bold', 'group-video', 'fullScreen', 'undo', 'redo']
+  // insertKeys: { index: 27, keys: ['createMenu'] },
+  excludeKeys: [
+    'headerSelect',
+    'bold',
+    'color',
+    'bgColor',
+    'group-video',
+    'fullScreen',
+    'undo',
+    'redo'
+  ]
 }
 
 const editorConfig: Partial<IEditorConfig> = {

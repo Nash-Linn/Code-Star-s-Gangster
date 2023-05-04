@@ -210,21 +210,24 @@ onBeforeMount(() => {
 })
 </script>
 <style scoped lang="less">
+@menu-width: 200px;
 .container-wrap {
+  position: relative;
   padding: @base-padding;
   display: flex;
 }
 
 .blog-menu {
-  width: 200px;
+  width: @menu-width;
   flex-shrink: 0;
   position: fixed;
   top: calc(@top-bar-height + @base-padding);
   height: calc(@main-height - 40px);
 }
 .blog-container {
-  width: 100%;
-  margin-left: 210px;
+  position: relative;
+  left: calc(@menu-width + 10px);
+  width: calc(100% - @menu-width - 10px);
   border-radius: @base-border-radius;
 }
 .base-info-wrap {
@@ -255,10 +258,8 @@ onBeforeMount(() => {
   }
 }
 .pulish-blog-wrap {
-  // margin-top: 20px;
   margin-bottom: 20px;
   width: 100%;
-  // min-height: calc(@main-height - 340px);
   padding: @base-padding;
   padding-top: 0;
 }
