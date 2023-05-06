@@ -14,7 +14,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, onMounted } from 'vue'
 
 interface Prop {
   data: string
@@ -84,14 +84,23 @@ watch(
 
 const indexWrapRef = ref()
 const titleRef = ref()
+
+const wrapHeight = ref()
+
 const scrollHeight = computed(() => {
-  let wrapHeight = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0
   let titleHeight = titleRef.value ? titleRef.value?.clientHeight : 0
   const padding = 20
   if (props.height) {
     return props.height - titleHeight - 2 * padding
   }
-  return wrapHeight - titleHeight - 2 * padding
+  return wrapHeight.value - titleHeight - 2 * padding
+})
+
+onMounted(() => {
+  wrapHeight.value = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0
+  window.onresize = () => {
+    wrapHeight.value = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0
+  }
 })
 </script>
 <style lang="less" scoped>
@@ -105,9 +114,10 @@ const scrollHeight = computed(() => {
 .title {
   font-size: @title-font-size;
   font-weight: bold;
+  padding-bottom: 10px;
 }
 .menu-item {
-  margin: 10px 0;
+  padding-bottom: 10px;
   color: @base-color;
   cursor: pointer;
   width: 100%;

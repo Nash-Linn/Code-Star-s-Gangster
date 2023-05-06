@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import csgBlogCard from '@/components/csgBlogCard.vue'
 import csgTipDialog from '@/components/csgTipDialog.vue'
-import { ref, reactive, computed, inject, onBeforeMount } from 'vue'
+import { ref, reactive, computed, inject, onMounted } from 'vue'
 import { getMyBlogList, deleteBlog } from '@/api/blogsManage/blogsManage'
 import { useRouter } from 'vue-router'
 
@@ -57,9 +57,9 @@ const router = useRouter()
 const $csgMessage: any = inject('$csgMessage')
 
 const contentManageRef = ref()
+const contentManageHeight = ref()
 const scrollHeight = computed(() => {
-  let height = contentManageRef.value ? contentManageRef.value?.clientHeight : 0
-  return height - 52 - 20 - 20
+  return contentManageHeight.value - 52 - 20 - 20
 })
 
 const filters = reactive({
@@ -142,8 +142,13 @@ const DeleteBlog = (id: string) => {
 
 const onload = () => {
   GetMyBlogList(filters)
+  contentManageHeight.value = contentManageRef.value ? contentManageRef.value?.clientHeight : 0
+  window.onresize = () => {
+    contentManageHeight.value = contentManageRef.value ? contentManageRef.value?.clientHeight : 0
+  }
 }
-onBeforeMount(() => {
+
+onMounted(() => {
   onload()
 })
 </script>

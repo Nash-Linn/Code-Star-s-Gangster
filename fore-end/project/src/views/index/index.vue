@@ -20,10 +20,11 @@ import { onMounted, ref, reactive, inject, computed } from 'vue'
 import { getList } from '@/api/blogsManage/blogsManage'
 
 const indexWrapRef = ref()
+
+const wrapHeight = ref()
 const scrollHeight = computed(() => {
-  let height = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0
   let basePadding = 10
-  return height - 3 * basePadding
+  return wrapHeight.value - 3 * basePadding
 })
 
 const $sub = inject('$sub') as Function
@@ -77,6 +78,10 @@ const handleLoadMore = () => {
 }
 const onload = () => {
   GetList({})
+  wrapHeight.value = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0
+  window.onresize = () => {
+    wrapHeight.value = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0
+  }
 }
 onMounted(() => {
   onload()
