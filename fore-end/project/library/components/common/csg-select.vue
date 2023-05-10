@@ -21,7 +21,7 @@
         <span v-if="props.label" class="csg-select-label">{{ props.label }}</span>
         <div class="suffix-icon">
           <span class="suffix-inner">
-            <i v-if="mouseenter && !isEmpty(value)" @click="handleClear">
+            <i v-show="showClose" @click="handleClear">
               <svg
                 class="icon"
                 height="14"
@@ -39,8 +39,7 @@
                 />
               </svg>
             </i>
-
-            <i class="arrows-icon" v-else>
+            <i v-show="!showClose" class="arrows-icon">
               <svg
                 class="icon"
                 height="14"
@@ -140,6 +139,10 @@ const handleMouseleave = () => {
   mouseenter.value = false
 }
 
+const showClose = computed(() => {
+  return mouseenter.value && !isEmpty(value.value)
+})
+
 const inputValue = ref()
 const value = computed({
   get: () => props.modelValue || '',
@@ -189,12 +192,12 @@ const matchValue = (val: any) => {
 }
 
 const optionsList = computed(() => {
+  let options = props.options || []
   if (props.filter && inputValue.value) {
-    let newOptions = props.options.filter((item) => item[props.labelName].match(inputValue.value))
+    let newOptions = options.filter((item) => item[props.labelName].match(inputValue.value))
     return newOptions
   }
-
-  return props.options
+  return options
 })
 
 const handleChose = (option: any) => {

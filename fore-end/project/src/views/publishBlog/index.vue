@@ -34,7 +34,8 @@
               @on-close="handleDeleteTag(item.id)"
               >{{ item.name }}</csg-tag
             >
-            <csg-button v-if="!tagExceed" @click="handleTagDialogVisible">添加标签</csg-button>
+            <csg-button v-show="!tagExceed" @click="handleTagDialogVisible">添加标签</csg-button>
+            <span class="tag-tip">（最多可添加五个标签）</span>
           </csg-form-item>
         </csg-forms>
         <div class="button-wrap">
@@ -266,6 +267,10 @@ onBeforeMount(() => {
 
 .tag-item {
   margin-right: 10px;
+}
+
+.tag-tip {
+  color: @base-placeholder-color;
 }
 
 .button-wrap {

@@ -87,6 +87,20 @@ interface TagTypeItem {
   id: number
   name: string
 }
+const tagTypeList1 = reactive([
+  {
+    label: '1',
+    value: '1'
+  },
+  {
+    label: '2',
+    value: '2'
+  },
+  {
+    label: '3',
+    value: '3'
+  }
+])
 
 const tagTypeList = reactive<TagTypeItem[]>([])
 const tagList = ref<TagItem[]>([])
@@ -116,6 +130,7 @@ const Tag = async (id: number) => {
 //新增标签
 const newTagInfo = reactive({
   tagType: '',
+  tagType1: '',
   tag: '',
   isNewType: false
 })
