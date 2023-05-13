@@ -2,6 +2,13 @@
   <div class="topbar">
     <div class="topbar-content">
       <div class="left">
+        <div class="logo">
+          <img src="@/assets/avatar/avatar.png" alt="" />
+          <div class="logo-title">
+            <div>CSG</div>
+            <div class="des">Code Star's Gangster</div>
+          </div>
+        </div>
         <router-link class="left-item" to="/">博客</router-link>
         <router-link class="left-item" to="/about">关于</router-link>
       </div>
@@ -51,6 +58,33 @@ const goToPublishBlog = () => {
       width: 300px;
       display: flex;
       flex-shrink: 0;
+      align-items: center;
+
+      .logo {
+        height: 40px;
+        border-radius: @base-border-radius;
+        overflow: hidden;
+        margin-right: 20px;
+        background-color: @base-color;
+        display: flex;
+        align-items: center;
+        .logo-title {
+          font-size: 20px;
+          font-weight: bold;
+          color: #fff;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-right: 10px;
+          .des {
+            font-size: 12px;
+            font-weight: normal;
+          }
+        }
+        img {
+          height: 100%;
+        }
+      }
       .left-item {
         display: block;
         height: 100%;
