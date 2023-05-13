@@ -68,6 +68,7 @@ onBeforeMount(() => {
 
   .blog-container {
     width: 100%;
+    min-height: calc(@main-height - 40px);
     margin-left: 210px;
     padding: @base-padding;
     background-color: #fff;

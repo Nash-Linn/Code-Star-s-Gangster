@@ -14,7 +14,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from 'vue'
+import { ref, watch, computed, onMounted, nextTick } from 'vue'
 
 interface Prop {
   data: string
@@ -78,7 +78,11 @@ const scrollToEle = (item: any, index: any) => {
 watch(
   () => props.data,
   () => {
-    handlerMenu()
+    //nextTick()等待下一次 DOM 更新刷新的工具方法
+    //防止博客内容dom元素未更新
+    nextTick(() => {
+      handlerMenu()
+    })
   }
 )
 
@@ -97,6 +101,7 @@ const scrollHeight = computed(() => {
 })
 
 onMounted(() => {
+  handlerMenu()
   wrapHeight.value = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0
   window.onresize = () => {
     wrapHeight.value = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0
