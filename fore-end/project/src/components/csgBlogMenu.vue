@@ -16,6 +16,8 @@
 <script setup lang="ts">
 import { ref, watch, computed, onMounted, nextTick } from 'vue'
 
+const emits = defineEmits(['menu-change'])
+
 interface Prop {
   data: string
   height?: number
@@ -44,6 +46,7 @@ const handlerMenu = () => {
   }
   menuList.value = menus
   listenScroll()
+  emits('menu-change', menus)
 }
 // 监听目录导航，设置选中时的样式
 const listenScroll = () => {
