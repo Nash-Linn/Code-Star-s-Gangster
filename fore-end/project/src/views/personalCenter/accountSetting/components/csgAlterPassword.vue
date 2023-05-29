@@ -3,27 +3,14 @@
     <template #content>
       <div class="register-wrap">
         <csg-forms ref="formRef" :model="alterData" :rules="ruleValidate">
-          <csg-form-item>
-            <csg-input
-              formId="password"
-              label="原密码"
-              type="password"
-              v-model="alterData.password"
-              required
-            />
+          <csg-form-item formId="password">
+            <csg-input label="原密码" type="password" v-model="alterData.password" required />
           </csg-form-item>
-          <csg-form-item>
-            <csg-input
-              formId="newPassword"
-              label="新密码"
-              type="password"
-              v-model="alterData.newPassword"
-              required
-            />
+          <csg-form-item formId="newPassword">
+            <csg-input label="新密码" type="password" v-model="alterData.newPassword" required />
           </csg-form-item>
-          <csg-form-item>
+          <csg-form-item formId="repassword">
             <csg-input
-              formId="repassword"
               label="再次输入新密码"
               type="password"
               v-model="alterData.repassword"
@@ -117,7 +104,6 @@ const handleRegister = () => {
   if (!formRef.value.verify()) {
     return false
   }
-
   let createdata: AlterData = {
     password: encryptcode(alterData.password),
     newPassword: encryptcode(alterData.newPassword)
