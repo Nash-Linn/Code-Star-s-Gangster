@@ -97,6 +97,8 @@ const route = useRoute()
 const router = useRouter()
 
 const $csgMessage: any = inject('$csgMessage')
+const $sub: any = inject('$sub')
+
 // 内容 HTML
 
 const blogId = ref()
@@ -161,6 +163,10 @@ const verify = () => {
 
   return true
 }
+
+$sub('publishBlog', () => {
+  handlePublish()
+})
 
 const handlePublish = () => {
   if (!verify()) {

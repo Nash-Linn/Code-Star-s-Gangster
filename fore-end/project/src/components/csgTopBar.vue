@@ -2,7 +2,7 @@
   <div class="topbar">
     <div class="topbar-content">
       <div class="left">
-        <div class="logo">
+        <div class="logo" @click="handleClickLogo">
           <img src="@/assets/avatar/avatar.png" alt="" />
           <div class="logo-title">
             <div>CSG</div>
@@ -23,21 +23,43 @@
   </div>
 </template>
 <script setup>
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import csgTopSearch from './csgTopSearch.vue'
 import csgTopBarAvatar from './csgTopBarAvatar.vue'
 import { useUserStore } from '@/stores/modules/user'
+import { useCommonStore } from '@/stores/modules/common'
+const $pub = inject('$pub')
+const $unsub = inject('$unsub')
 
 const userStore = useUserStore()
+
 const router = useRouter()
 
 const isOnlne = computed(() => {
   return userStore.getToken ? true : false
 })
 
+//获取当前路由
+const currentRoute = computed(() => {
+  return router.currentRoute.value.path
+})
+
 const goToPublishBlog = () => {
-  router.push('/publishBlog')
+  if (currentRoute.value == '/publishBlog') {
+    $pub('publishBlog')
+  } else {
+    $unsub('publishBlog')
+    router.push('/publishBlog')
+  }
+}
+
+const commonStore = useCommonStore()
+const handleClickLogo = () => {
+  commonStore.addLogoClickCount()
+  if (commonStore.getLogoClickCount == 0) {
+    router.push('/gameCenter/dinoDemo')
+  }
 }
 </script>
 <style scoped lang="less">
@@ -46,6 +68,7 @@ const goToPublishBlog = () => {
   height: @top-bar-height;
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
   background-color: #fff;
+  user-select: none;
   .topbar-content {
     height: 100%;
     width: @base-page-width;
@@ -66,6 +89,7 @@ const goToPublishBlog = () => {
         overflow: hidden;
         margin-right: 20px;
         background-color: @base-color;
+        cursor: pointer;
         display: flex;
         align-items: center;
         .logo-title {

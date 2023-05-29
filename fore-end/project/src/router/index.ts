@@ -76,6 +76,20 @@ const Routes =  [
     },
   },
   {
+    path: '/gameCenter',
+    name: 'GameCenter',
+    children:[
+      {
+        path: 'dinoDemo',
+        name: 'DinoDemo',
+        component: ()=>import('@/views/gameCenter/dinoDemo/index.vue'),
+        meta:{
+          title:'小恐龙demo',
+        }
+      },
+    ]
+  },
+  {
     path: '/test',
     name: 'Test',
     component: ()=>import('@/views/test/index.vue'),
