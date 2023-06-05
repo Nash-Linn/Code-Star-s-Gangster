@@ -21,6 +21,7 @@
             <csg-form-item class="form-item form-cover" label="文章封面">
               <csg-upload
                 type="pictureCard"
+                accept="image/*"
                 @change="handleCoverChange"
                 :limit="1"
                 :fileList="blogCover"

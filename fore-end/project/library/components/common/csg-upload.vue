@@ -22,6 +22,7 @@
         class="input-extra"
       >
         <input
+          :accept="props.accept"
           class="input"
           type="file"
           title=""
@@ -51,6 +52,7 @@ interface Props {
   multiple?: boolean
   limit?: number
   fileList?: any[]
+  accept?: string
 }
 
 interface FileItem {

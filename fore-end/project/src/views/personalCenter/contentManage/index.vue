@@ -141,6 +141,7 @@ const DeleteBlog = (id: string) => {
 }
 
 const onload = () => {
+  blogList.value = []
   GetMyBlogList(filters)
   contentManageHeight.value = contentManageRef.value ? contentManageRef.value?.clientHeight : 0
   window.onresize = () => {
