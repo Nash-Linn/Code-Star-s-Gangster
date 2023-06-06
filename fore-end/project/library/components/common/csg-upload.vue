@@ -37,6 +37,7 @@
     <input
       class="input"
       type="file"
+      :accept="props.accept"
       title=""
       :multiple="props.multiple"
       @change="handleFileChange"

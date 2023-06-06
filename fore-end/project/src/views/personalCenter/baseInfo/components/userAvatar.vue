@@ -1,5 +1,5 @@
 <template>
-  <csg-upload class="upload-avatar-warp" @change="handleChange">
+  <csg-upload class="upload-avatar-warp" accept="image/*" @change="handleChange">
     <div class="avatar">
       <img class="img" :src="avatar" alt="" />
       <div class="icon">
@@ -39,7 +39,7 @@ const avatar = computed(() => {
 const handleChange = (val: any) => {
   const form = new FormData()
   form.append('usercode', userStore.getUsercode)
-  form.append('file', val.file)
+  form.append('file', val.file.raw)
   UpdateAvatar(form)
 }
 
@@ -51,6 +51,7 @@ const UpdateAvatar = (data: any) => {
         type: 'success',
         message: '成功'
       })
+      userStore.getUserInfo()
     }
   })
 }
