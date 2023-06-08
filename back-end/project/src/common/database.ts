@@ -1,16 +1,17 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import key from './databaseKey'; //用于存储数据库密码
+import { datebaseKey } from '../config/keys'; //用于存储数据库密码
 
+import env from '../config/env';
 export function databaseConf() {
   const conf = [
     TypeOrmModule.forRoot({
       name: 'cs_gangster',
       type: 'mysql',
-      host: '101.34.111.220',
+      host: env.ip,
       port: 3306,
       database: 'cs_gangster',
       username: 'cs_gangster',
-      password: key.cs_gangster,
+      password: datebaseKey.cs_gangster,
       retryDelay: 500, //重试时间间隔
       retryAttempts: 10, //重试次数
       synchronize: true, //自动将实体类同步到数据库

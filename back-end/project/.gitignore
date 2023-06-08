@@ -3,11 +3,7 @@
 /dist.zip
 **/node_modules
 
-
-
-/src/common/databaseKey.ts
-/src/config/ftpConfig.ts
-/src/config/minioConfig.ts
+**/config/keys.ts
 
 # Logs
 logs

@@ -3,10 +3,12 @@ import { join } from 'path';
 interface Env {
   baseUrl: string;
   staticDir: string;
+  ip: string;
 }
 
 function envFunc(evn): Env {
   let baseUrl: string;
+  let ip: string;
   let staticDir: string;
   switch (evn) {
     case 'dev':
@@ -14,7 +16,9 @@ function envFunc(evn): Env {
       staticDir = join(__dirname, '..', 'static');
       break;
     case 'pro':
-      baseUrl = 'http://101.34.111.220:8080';
+      // ip = '101.34.111.220';
+      ip = '123.249.17.37';
+      baseUrl = `http://${ip}:8080`;
       staticDir = '/code_star_gangster/static';
       break;
     default:
@@ -26,6 +30,7 @@ function envFunc(evn): Env {
   return {
     baseUrl,
     staticDir,
+    ip,
   };
 }
 
@@ -38,4 +43,5 @@ export default {
   envType: env,
   baseURL: Env.baseUrl,
   staticDir: Env.staticDir,
+  ip: Env.ip,
 };
