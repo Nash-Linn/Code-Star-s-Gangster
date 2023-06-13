@@ -1,5 +1,5 @@
 <template>
-  <div ref="indexWrapRef" class="blog-menu">
+  <div v-show="show" ref="indexWrapRef" class="blog-menu">
     <div ref="titleRef" class="title">目录</div>
     <csg-scroll :height="scrollHeight">
       <div
@@ -21,8 +21,21 @@ const emits = defineEmits(['menu-change'])
 interface Prop {
   data: string
   height?: number
+  show?: boolean
 }
 const props = defineProps<Prop>()
+
+watch(
+  () => props.show,
+  (val) => {
+    if (val) {
+      nextTick(() => {
+        calcWrapHeight()
+        handlerMenu()
+      })
+    }
+  }
+)
 
 const menuList = ref()
 const handlerMenu = () => {
@@ -103,11 +116,15 @@ const scrollHeight = computed(() => {
   return wrapHeight.value - titleHeight - 2 * padding
 })
 
-onMounted(() => {
-  handlerMenu()
+const calcWrapHeight = () => {
   wrapHeight.value = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0
+}
+
+onMounted(() => {
+  calcWrapHeight()
+  handlerMenu()
   window.onresize = () => {
-    wrapHeight.value = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0
+    calcWrapHeight()
   }
 })
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="container-wrap" :class="[showMenu ? 'show-menu' : 'no-menu']">
     <csgBlogMenu
-      v-show="showMenu"
+      :show="showMenu"
       class="blog-menu"
       :data="baseInfo.content"
       @menu-change="handleMenuChange"
