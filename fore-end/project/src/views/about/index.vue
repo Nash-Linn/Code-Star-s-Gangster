@@ -4,7 +4,9 @@
       <div class="center">
         <div class="center-content"><center /></div>
       </div>
-      <div class="left"><left /></div>
+      <div class="left">
+        <left />
+      </div>
       <div class="right"><right /></div>
     </div>
   </div>

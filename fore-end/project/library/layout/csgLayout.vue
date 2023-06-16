@@ -9,8 +9,10 @@
       </div>
     </div>
   </div>
+  <teleport to="body"><csgWatchUpdate /></teleport>
 </template>
 <script setup lang="ts">
+import csgWatchUpdate from '@lib/components/others/csgWatchUpdate.vue'
 import csgTopBar from '@/components/csgTopBar.vue'
 import { useUserStore } from '@/stores/modules/user'
 import { getToken } from '@/utils/token'
