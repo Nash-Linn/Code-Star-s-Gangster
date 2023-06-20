@@ -11,6 +11,9 @@
         <csg-loadmore :more="showMore" :loading="loading" />
       </div>
     </csg-scroll>
+    <footer class="footer">
+      ©csgblog.xyz <span class="icp" @click="goToICP">浙ICP备2023016699号-1</span>
+    </footer>
   </div>
 </template>
 <script setup lang="ts">
@@ -24,7 +27,9 @@ const indexWrapRef = ref()
 const wrapHeight = ref()
 const scrollHeight = computed(() => {
   let basePadding = 10
-  return wrapHeight.value - 3 * basePadding
+  let footer = document.querySelector('.footer')
+  let footerHeight = footer?.clientHeight as number
+  return wrapHeight.value - 3 * basePadding - footerHeight
 })
 
 const $sub = inject('$sub') as Function
@@ -83,6 +88,11 @@ const onload = () => {
     wrapHeight.value = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0
   }
 }
+
+const goToICP = () => {
+  window.open('https://beian.miit.gov.cn/')
+}
+
 onMounted(() => {
   onload()
 })
@@ -105,6 +115,22 @@ onMounted(() => {
 
   .scroll-inner {
     padding: 10px;
+  }
+}
+
+.footer {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .icp {
+    margin-left: 10px;
+
+    &:hover {
+      color: @base-color;
+      cursor: pointer;
+    }
   }
 }
 </style>
