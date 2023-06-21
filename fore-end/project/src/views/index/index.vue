@@ -29,7 +29,7 @@ const scrollHeight = computed(() => {
   let basePadding = 10
   let footer = document.querySelector('.footer')
   let footerHeight = footer?.clientHeight as number
-  return wrapHeight.value - 3 * basePadding - footerHeight
+  return wrapHeight.value - 3 * basePadding - footerHeight - 1
 })
 
 const $sub = inject('$sub') as Function
@@ -104,6 +104,10 @@ onMounted(() => {
 
   min-height: @main-height;
   border-radius: @base-border-radius;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   .blog-card {
     margin-bottom: 10px;
   }
@@ -119,7 +123,6 @@ onMounted(() => {
 }
 
 .footer {
-  margin-top: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
