@@ -144,6 +144,7 @@ watch(
   display: inline-block;
   vertical-align: middle;
   margin-bottom: -10px;
+  z-index: 0;
 
   .preview-wrap {
     position: relative;
