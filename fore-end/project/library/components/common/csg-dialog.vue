@@ -81,6 +81,7 @@ const handleConfirm = () => {
   top: 0;
   left: 0;
   z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.3);
 }
 .csg-dialog {
   position: absolute;

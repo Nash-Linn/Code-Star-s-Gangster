@@ -37,8 +37,13 @@ update.on('update', () => {
   }
 })
 
-const dialogVisible = computed(() => {
-  return showDialog.value && needUpdate.value
+const dialogVisible = computed({
+  set(val) {
+    showDialog.value = val
+  },
+  get() {
+    return showDialog.value && needUpdate.value
+  }
 })
 
 const handleCancel = () => {

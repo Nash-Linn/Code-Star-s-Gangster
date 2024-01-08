@@ -11,10 +11,25 @@
 </template>
 <script setup>
 import { ref, inject } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+const route = useRoute()
+const router = useRouter()
 const searchKey = ref('')
 const $pub = inject('$pub')
 const handleSearch = () => {
-  $pub('topbar-search', searchKey.value)
+  let isIndex = route.name === 'Index'
+
+  if (isIndex) {
+    $pub('topbar-search', searchKey.value)
+  } else {
+    router.push({
+      name: 'Index',
+      query: {
+        isIndex,
+        filter: searchKey.value
+      }
+    })
+  }
 }
 </script>
 <style lang="less" scoped>

@@ -21,6 +21,9 @@ import csgBlogCard from '@/components/csgBlogCard.vue'
 
 import { onMounted, ref, reactive, inject, computed } from 'vue'
 import { getList } from '@/api/blogsManage/blogsManage'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 
 const indexWrapRef = ref()
 
@@ -82,7 +85,12 @@ const handleLoadMore = () => {
   GetList(filters)
 }
 const onload = () => {
-  GetList({})
+  if (route.query && route.query.isIndex === 'false') {
+    filters.keyword = route.query.filter as string
+    GetList(filters)
+  } else {
+    GetList({})
+  }
   wrapHeight.value = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0
   window.onresize = () => {
     wrapHeight.value = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0

@@ -224,6 +224,7 @@ const handleClickEdit = () => {
   height: inherit;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 
   :deep(.w-e-scroll) {
     div {

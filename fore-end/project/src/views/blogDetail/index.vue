@@ -106,6 +106,7 @@ const showMenu = computed(() => {
 .show-menu {
   .blog-container {
     margin-left: 210px !important;
+    width: calc(100% - 210px) !important;
   }
 }
 
