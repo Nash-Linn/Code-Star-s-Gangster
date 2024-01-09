@@ -41,6 +41,7 @@ const verify = () => {
     for (let item of rule) {
       if (item.validator) {
         let callback = (msg: any) => {
+          console.log('msg', msg)
           if (msg) {
             domwrap?.setAttribute('failCheck', 'true')
             failMsgDom.innerHTML = msg
@@ -48,7 +49,6 @@ const verify = () => {
           } else {
             domwrap?.setAttribute('failCheck', 'false')
             failMsgDom.innerHTML = ''
-            validatorFlag = true
           }
         }
         let eventValidator = function () {
