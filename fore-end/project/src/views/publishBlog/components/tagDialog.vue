@@ -14,6 +14,7 @@
               <div class="tag-type-name">{{ item.name }}</div>
             </div>
             <div
+              v-if="isAdmin()"
               class="tag-type"
               :class="[tagTypeIndex == -1 ? 'tag-type-selected' : '']"
               @click="handleNewTag"
@@ -66,6 +67,7 @@
 import { ref, reactive, inject, computed, onBeforeMount } from 'vue'
 import { tagType, tag, addTag } from '@/api/tagManage/tagManage'
 import type { TagItem } from '../interface/tag'
+import { isAdmin } from '@/utils/permission'
 
 const $csgMessage: any = inject('$csgMessage')
 
@@ -87,20 +89,6 @@ interface TagTypeItem {
   id: number
   name: string
 }
-const tagTypeList1 = reactive([
-  {
-    label: '1',
-    value: '1'
-  },
-  {
-    label: '2',
-    value: '2'
-  },
-  {
-    label: '3',
-    value: '3'
-  }
-])
 
 const tagTypeList = reactive<TagTypeItem[]>([])
 const tagList = ref<TagItem[]>([])

@@ -9,7 +9,12 @@
           <csg-input label="账号" v-model="loginData.usercode" />
         </csg-form-item>
         <csg-form-item>
-          <csg-input label="密码" type="password" v-model="loginData.password" />
+          <csg-input
+            label="密码"
+            type="password"
+            v-model="loginData.password"
+            @keyup.enter="handleLogin"
+          />
         </csg-form-item>
         <div class="button-wrap">
           <csg-button class="login-button" @click="handleLogin"> 立即登录 </csg-button>

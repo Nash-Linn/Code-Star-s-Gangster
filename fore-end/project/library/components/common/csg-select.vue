@@ -19,6 +19,7 @@
         />
 
         <span v-if="props.label" class="csg-select-label">{{ props.label }}</span>
+        <div class="require-icon">*</div>
         <div class="suffix-icon">
           <span class="suffix-inner">
             <i v-show="showClose" @click="handleClear">
@@ -234,19 +235,37 @@ onMounted(() => {
 }
 
 .required {
-  position: relative;
+  // position: relative;
 
-  &::before {
-    display: block;
-    content: '*';
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translate(-50%, calc(-50% + 3px));
-    z-index: 1;
-    font-size: 20px;
+  // &::before {
+  //   display: block;
+  //   content: '*';
+  //   position: absolute;
+  //   left: 10px;
+  //   top: 50%;
+  //   transform: translate(-50%, calc(-50% + 3px));
+  //   z-index: 1;
+  //   font-size: 20px;
+  //   color: red;
+  // }
+
+  .require-icon {
+    width: 20px;
+    height: 100%;
+
     color: red;
+    font-size: 20px;
+    position: absolute;
+    left: 0;
+    top: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
+}
+
+.require-icon {
+  display: none;
 }
 
 .csg-select-inner {

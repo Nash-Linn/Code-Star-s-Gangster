@@ -1,7 +1,7 @@
 <template>
   <div class="blog-detail-wrap" :class="[showMenu ? 'show-menu' : 'no-menu']">
     <csgBlogMenu
-      :show="showMenu"
+      :show="true"
       class="blog-menu"
       :data="blogInfo.content"
       @menu-change="handleMenuChange"
@@ -47,7 +47,7 @@
           fill="#4ed2d2"
         ></path>
       </svg>
-      <span>目录</span>
+      <span style="user-select: none">目录</span>
     </div>
   </div>
 </template>
@@ -104,19 +104,31 @@ const showMenu = computed(() => {
 </script>
 <style lang="less" scoped>
 .show-menu {
-  .blog-container {
-    margin-left: 210px !important;
-    width: calc(100% - 210px) !important;
+  // .blog-container {
+  //   margin-left: 210px !important;
+  //   width: calc(100% - 210px) !important;
+  // }
+
+  .blog-menu {
+    margin-left: -210px;
+    opacity: 1;
+    transition: all 0.3s;
   }
 }
 
 .no-menu {
-  .blog-container {
-    margin-left: 0 !important;
+  // .blog-container {
+  //   margin-left: 0 !important;
+  // }
+
+  .blog-menu {
+    opacity: 0;
+    margin-left: 0px;
   }
 }
 
 .blog-detail-wrap {
+  position: relative;
   width: 100%;
   padding: @base-padding;
   display: flex;
@@ -131,7 +143,7 @@ const showMenu = computed(() => {
   .blog-container {
     width: 100%;
     min-height: calc(@main-height - 40px);
-    margin-left: 210px;
+    // margin-left: 210px;
     padding: @base-padding;
     background-color: #fff;
     border-radius: @base-border-radius;

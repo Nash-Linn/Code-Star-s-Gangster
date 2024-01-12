@@ -7,7 +7,13 @@
     ref="scrollRef"
   >
     <!--滚动内容-->
-    <div class="scroll-content" :id="domId" :style="scrollContentStyles" ref="scrollWrapperRef">
+    <div
+      class="scroll-content"
+      :id="domId"
+      :style="scrollContentStyles"
+      ref="scrollWrapperRef"
+      v-dom-resize="handleScrollContentResize"
+    >
       <slot></slot>
     </div>
     <!--滚动条-->
@@ -28,6 +34,7 @@
 </template>
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import type { Ref } from 'vue'
 interface Props {
   //  外框高度
   height?: number
@@ -66,7 +73,6 @@ const scrollTop = ref(0)
 const scrollStep = ref(0)
 
 //dom元素
-const dom = ref()
 const scrollWrapperRef = ref()
 const barRef = ref()
 const scrollRef = ref()
@@ -116,7 +122,7 @@ const maxScrollTop = computed(() => {
 })
 
 // 获取dom高度
-const getDomClientHeight = () => {
+const getDomClientHeight = (dom: Ref<HTMLElement>) => {
   domClientHeight.value = dom.value.clientHeight
   if (dom.value && domClientHeight.value === 0) {
     let event = () => {
@@ -133,8 +139,7 @@ const getDomClientHeight = () => {
 
 //  滚轮事件处理
 const wheelEventHandle = (event: any) => {
-  dom.value = scrollWrapperRef.value
-  getDomClientHeight()
+  getDomClientHeight(scrollWrapperRef)
   if (scrollBarHeight.value === 0) return
   let { deltaY } = event
   deltaY += props.speed
@@ -223,13 +228,24 @@ const iframeDocumentHandle = () => {
   }
 }
 
+interface Resize {
+  width: number
+  height: number
+}
+
+const handleScrollContentResize = ({ width, height }: Resize) => {
+  if (height < props.height) {
+    //将滚动条置顶
+    scrollTop.value = 0
+  }
+}
+
 onUnmounted(() => {
   document.removeEventListener('mouseup', mouseUpDocumentHandler)
 })
 
 onMounted(() => {
-  dom.value = scrollWrapperRef.value
-  getDomClientHeight()
+  getDomClientHeight(scrollWrapperRef)
   iframeDocumentHandle()
   emits('on-ready')
 })

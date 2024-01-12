@@ -1,7 +1,7 @@
 <template>
   <div class="container-wrap" :class="[showMenu ? 'show-menu' : 'no-menu']">
     <csgBlogMenu
-      :show="showMenu"
+      :show="true"
       class="blog-menu"
       :data="baseInfo.content"
       @menu-change="handleMenuChange"
@@ -270,16 +270,27 @@ const showMenu = computed(() => {
 @menu-width: 200px;
 
 .show-menu {
-  .blog-container {
-    width: calc(100% - @menu-width - 10px) !important;
-    left: calc(@menu-width + 10px) !important;
+  // .blog-container {
+  //   width: calc(100% - @menu-width - 10px) !important;
+  //   left: calc(@menu-width + 10px) !important;
+  // }
+
+  .blog-menu {
+    margin-left: -210px;
+    opacity: 1;
+    transition: all 0.3s;
   }
 }
 
 .no-menu {
-  .blog-container {
-    width: 100% !important;
-    left: 0 !important;
+  // .blog-container {
+  //   width: 100% !important;
+  //   left: 0 !important;
+  // }
+
+  .blog-menu {
+    opacity: 0;
+    margin-left: 0px;
   }
 }
 
@@ -298,8 +309,9 @@ const showMenu = computed(() => {
 }
 .blog-container {
   position: relative;
-  left: calc(@menu-width + 10px);
-  width: calc(100% - @menu-width - 10px);
+  // left: calc(@menu-width + 10px);
+  // width: calc(100% - @menu-width - 10px);
+  width: 100%;
   border-radius: @base-border-radius;
 }
 .base-info-wrap {

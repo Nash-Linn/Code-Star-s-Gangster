@@ -10,7 +10,7 @@ interface State{
   username:string
   usercode:string
   avatar:string
-  roles:string[]
+  roles:string
 }
 
 export const useUserStore = defineStore('user', {
@@ -19,7 +19,7 @@ export const useUserStore = defineStore('user', {
     username:'',
     usercode:'',
     avatar:'',
-    roles:[]
+    roles:''
   }),
   getters:{
     getToken: (state) => state.token,
@@ -42,7 +42,7 @@ export const useUserStore = defineStore('user', {
     setAvatar(avatar:string) {
       this.avatar = avatar
     },
-    setRoles(roles:string[]) {
+    setRoles(roles:string) {
       this.roles = roles
     },
 
@@ -110,7 +110,7 @@ export const useUserStore = defineStore('user', {
         this.setUsername('')
         this.setUsercode('')
         this.setAvatar('')
-        this.setRoles([])
+        this.setRoles('')
         this.setToken('')
         removeToken()
       }
