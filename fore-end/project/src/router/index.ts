@@ -13,7 +13,8 @@ const Routes =  [
     name: 'Index',
     component: ()=>import('@/views/index/index.vue'),
     meta:{
-      title:'博客'
+      title:'博客',
+      keepAlive:true
     },
   },
   {

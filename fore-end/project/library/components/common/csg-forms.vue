@@ -61,15 +61,16 @@ const verify = () => {
 
       if (item.required) {
         let eventRequired = function () {
-          if (isEmpty((props.model as Model)[key])) {
-            domwrap?.setAttribute('failCheck', 'true')
-            failMsgDom.innerHTML = item.message
-            requiredFlag = false
-          } else {
-            domwrap?.setAttribute('failCheck', 'false')
-            failMsgDom.innerHTML = ''
-            requiredFlag = true
-          }
+          setTimeout(() => {
+            if (isEmpty((props.model as Model)[key])) {
+              domwrap?.setAttribute('failCheck', 'true')
+              failMsgDom.innerHTML = item.message
+              requiredFlag = false
+            } else {
+              domwrap?.setAttribute('failCheck', 'false')
+              failMsgDom.innerHTML = ''
+            }
+          }, 200)
         }
         eventRequired()
         dom.addEventListener(item.trigger, eventRequired)

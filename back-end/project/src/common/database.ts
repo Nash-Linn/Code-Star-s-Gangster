@@ -14,7 +14,7 @@ export function databaseConf() {
       password: datebaseKey.cs_gangster,
       retryDelay: 500, //重试时间间隔
       retryAttempts: 10, //重试次数
-      synchronize: true, //自动将实体类同步到数据库
+      synchronize: false, //自动将实体类同步到数据库
       autoLoadEntities: true, //自动加载实体
       // entities: [__dirname + '/**/*.entity{.ts,.js}'],
     }),

@@ -31,7 +31,7 @@ export class Blogs {
   summary: string;
 
   @Exclude()
-  @Column({ type: 'text', comment: '文章正文' })
+  @Column({ type: 'longtext', comment: '文章正文' })
   content: string;
 
   @Column({ type: 'varchar', length: 1, default: 1, comment: '状态' })

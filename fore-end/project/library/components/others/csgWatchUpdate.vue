@@ -17,6 +17,9 @@ import { ref, computed } from 'vue'
 
 import { Updater } from '@/utils/watchUpdate'
 
+//获取环境
+const env = import.meta.env.MODE
+
 //实例化该类
 const update = new Updater({
   timer: 60000
@@ -42,7 +45,7 @@ const dialogVisible = computed({
     showDialog.value = val
   },
   get() {
-    return showDialog.value && needUpdate.value
+    return showDialog.value && needUpdate.value && env !== 'development'
   }
 })
 

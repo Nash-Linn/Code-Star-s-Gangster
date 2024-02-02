@@ -33,7 +33,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, onActivated, onDeactivated } from 'vue'
 import type { Ref } from 'vue'
 interface Props {
   //  外框高度
@@ -54,6 +54,8 @@ interface Props {
   gap?: number
   //id
   domId?: string
+  //是否保存滚动条当前位置
+  saveScrollTop?: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
   height: 100,
@@ -240,14 +242,34 @@ const handleScrollContentResize = ({ width, height }: Resize) => {
   }
 }
 
+// 保存滚动条当前位置
+const saveScrollTop = ref()
+
+const onload = () => {
+  getDomClientHeight(scrollWrapperRef)
+  iframeDocumentHandle()
+  emits('on-ready')
+}
+
 onUnmounted(() => {
   document.removeEventListener('mouseup', mouseUpDocumentHandler)
 })
 
 onMounted(() => {
-  getDomClientHeight(scrollWrapperRef)
-  iframeDocumentHandle()
-  emits('on-ready')
+  onload()
+})
+
+onActivated(() => {
+  onload()
+
+  if (props.saveScrollTop) {
+    scrollTop.value = saveScrollTop.value
+  }
+})
+
+onDeactivated(() => {
+  document.removeEventListener('mouseup', mouseUpDocumentHandler)
+  saveScrollTop.value = scrollTop.value
 })
 </script>
 <style lang="less" scoped>

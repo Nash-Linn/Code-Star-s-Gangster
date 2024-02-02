@@ -118,7 +118,6 @@ const Tag = async (id: number) => {
 //新增标签
 const newTagInfo = reactive({
   tagType: '',
-  tagType1: '',
   tag: '',
   isNewType: false
 })
@@ -153,7 +152,7 @@ const handleNewTag = () => {
 
 //新增标签中  标签类型改变
 const handleSelectTagTypeChange = (val: any) => {
-  newTagInfo.isNewType = val.isNew
+  newTagInfo.isNewType = val.isMatch === false
   newTagInfo.tagType = val.value
 }
 

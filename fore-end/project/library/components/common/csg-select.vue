@@ -72,11 +72,12 @@
 </template>
 <script setup lang="ts">
 import { isEmpty } from '@/utils/validate'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 
 const emits = defineEmits(['update:modelValue', 'on-change'])
 interface Props {
   modelValue: any
+  options: any[]
   size?: string
   type?: string
   label?: string
@@ -84,7 +85,6 @@ interface Props {
   required?: boolean
   placeholder?: string
   filter?: boolean
-  options: any[]
   labelName?: string
   valueName?: string
 }
@@ -144,13 +144,33 @@ const showClose = computed(() => {
   return mouseenter.value && !isEmpty(value.value)
 })
 
+// 对应 labelName 的值
 const inputValue = ref()
+
+// 对应 valueName 的值
 const value = computed({
-  get: () => props.modelValue || '',
+  get: () => {
+    return props.modelValue || ''
+  },
   set: (val) => {
     emits('update:modelValue', val)
   }
 })
+
+watch(
+  [() => props.modelValue, () => props.options],
+  (newValue) => {
+    if (newValue[1].length > 0 && (newValue[0] !== undefined || newValue[0] !== null)) {
+      let matchOption = newValue[1].filter((item) => item[props.valueName] == newValue[0]).pop()
+      if (matchOption) {
+        inputValue.value = matchOption[props.labelName]
+      }
+    }
+  },
+  {
+    immediate: true
+  }
+)
 
 const popoverVisible = ref(false)
 
@@ -159,37 +179,6 @@ const handleClickInput = () => {
 }
 const handleClickInputOut = () => {
   popoverVisible.value = false
-}
-
-const handleInput = (event: any) => {
-  matchInputValue(event.target.value)
-}
-
-const matchInputValue = (val: any) => {
-  let matchItem = optionsList.value.filter((item) => item[props.labelName] == val).pop()
-  if (!isEmpty(matchItem)) {
-    value.value = matchItem[props.valueName]
-    inputValue.value = matchItem[props.labelName]
-    emits('on-change', {
-      isNew: false,
-      label: matchItem[props.labelName],
-      value: matchItem[props.valueName]
-    })
-  } else {
-    value.value = val
-    emits('on-change', {
-      isNew: true,
-      value: val
-    })
-  }
-}
-
-const matchValue = (val: any) => {
-  let matchItem = optionsList.value.filter((item) => item[props.valueName] == val).pop()
-  if (!isEmpty(matchItem)) {
-    value.value = matchItem[props.valueName]
-    inputValue.value = matchItem[props.labelName]
-  }
 }
 
 const optionsList = computed(() => {
@@ -201,15 +190,31 @@ const optionsList = computed(() => {
   return options
 })
 
+const selectRef = ref()
+
 const handleChose = (option: any) => {
   inputValue.value = option[props.labelName]
   value.value = option[props.valueName]
   popoverVisible.value = false
   emits('on-change', {
-    isNew: false,
     label: option[props.labelName],
     value: option[props.valueName]
   })
+}
+
+const handleInput = (val: any) => {
+  value.value = val.target.value
+  if (props.filter) {
+    let matchItem = optionsList.value
+      .filter((item) => item[props.labelName] == val.target.value)
+      .pop()
+    if (!matchItem) {
+      emits('on-change', {
+        isMatch: false,
+        value: val.target.value
+      })
+    }
+  }
 }
 
 const handleClear = () => {
@@ -218,7 +223,7 @@ const handleClear = () => {
 }
 
 onMounted(() => {
-  matchValue(value.value)
+  // matchValue(value.value)
 })
 </script>
 <style lang="less" scoped>

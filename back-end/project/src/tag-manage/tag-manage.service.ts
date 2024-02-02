@@ -1,7 +1,5 @@
 import { MergeBlogsTags } from './entities/merge-blogs-tags.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateTagManageDto } from './dto/create-tag-manage.dto';
-import { UpdateTagManageDto } from './dto/update-tag-manage.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TagType } from './entities/tag-type.entity';
 import { Repository } from 'typeorm';
@@ -22,6 +20,7 @@ export class TagManageService {
     return this.tagType.find();
   }
 
+  // 根据类别id获取标签所有字段
   getTags(typeId: number) {
     return this.blogTags.find({
       where: {
@@ -30,6 +29,7 @@ export class TagManageService {
     });
   }
 
+  // 获取标签详情
   async getTag(id) {
     return await this.blogTags.findOne({
       where: {

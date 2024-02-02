@@ -6,15 +6,26 @@ import { Users } from 'src/users/entities/user.entity';
 import { dealFileNameAddDate, ftpGetFile, ftpPutFile } from 'src/utils/ftp';
 import { join } from 'path';
 import { getFileFromMinio, putFileToMinio } from 'src/utils/minio';
-import { BlogTags } from 'src/tag-manage/entities/blog-tags.entity';
 import { TagManageService } from 'src/tag-manage/tag-manage.service';
+import { BlogTags } from 'src/tag-manage/entities/blog-tags.entity';
 import { MergeBlogsTags } from 'src/tag-manage/entities/merge-blogs-tags.entity';
-@Injectable()
+
+interface GetBlogQuery {
+  keyword: string;
+  typeId: number;
+  tagId: number;
+  page: number;
+  pageSize: number;
+}
 export class BlogsManageService {
   constructor(
     @InjectRepository(Blogs, 'cs_gangster')
     private readonly blogs: Repository<Blogs>,
     private readonly tagManageService: TagManageService,
+    @InjectRepository(BlogTags, 'cs_gangster')
+    private readonly blogTags: Repository<BlogTags>,
+    @InjectRepository(MergeBlogsTags, 'cs_gangster')
+    private readonly mergeBlogsTags: Repository<MergeBlogsTags>,
   ) {}
 
   async uploadImage(usercode: string, file: any) {
@@ -77,7 +88,6 @@ export class BlogsManageService {
     data.title = body.title;
     data.summary = body.summary;
     data.content = body.content;
-
     if (file) {
       const fileName = dealFileNameAddDate(file);
       const filePath = join('blog_cover', fileName);
@@ -111,11 +121,7 @@ export class BlogsManageService {
     };
   }
 
-  async getBlogList(query: {
-    keyword: string;
-    page: number;
-    pageSize: number;
-  }) {
+  async getBlogListByKeyword(query: GetBlogQuery) {
     const page = query.page ? query.page : 1;
     const pageSize = query.pageSize ? query.pageSize : 10;
     const keyword = query.keyword ? query.keyword : '';
@@ -158,6 +164,103 @@ export class BlogsManageService {
       data,
       total,
     };
+  }
+
+  async getBlogListByTag(query: GetBlogQuery) {
+    const page = query.page ? query.page : 1;
+    const pageSize = query.pageSize ? query.pageSize : 10;
+
+    let tagIdQb;
+    let blogIdQb;
+
+    const parameters = {
+      label: null,
+      value: null,
+    };
+    if (query.tagId == 0 || query.tagId === undefined || query.tagId === null) {
+      tagIdQb = this.blogTags
+        .createQueryBuilder('blogTags')
+        .select(['blogTags.id'])
+        .where('blogTags.typeId = :typeId', { typeId: query.typeId });
+
+      if (query.typeId == 0 || query.typeId === undefined) {
+        tagIdQb = this.blogTags
+          .createQueryBuilder('blogTags')
+          .select(['blogTags.id']);
+      }
+
+      blogIdQb = this.mergeBlogsTags
+        .createQueryBuilder('mergeBlogsTags')
+        .select(['mergeBlogsTags.blogId'])
+        .where('mergeBlogsTags.tagId IN (' + (await tagIdQb.getQuery()) + ')')
+        .setParameter('typeId', query.typeId);
+
+      parameters.label = 'typeId';
+      parameters.value = query.typeId;
+    } else {
+      blogIdQb = this.mergeBlogsTags
+        .createQueryBuilder('mergeBlogsTags')
+        .select(['mergeBlogsTags.blogId'])
+        .where('mergeBlogsTags.tagId = :tagId', { tagId: query.tagId });
+
+      parameters.label = 'tagId';
+      parameters.value = query.tagId;
+    }
+
+    const data = await this.blogs
+      .createQueryBuilder('blogs')
+      .leftJoinAndSelect(Users, 'users', 'blogs.creator = users.id')
+      .select(
+        `
+          blogs.id,
+          blogs.title,
+          blogs.coverUrl,
+          blogs.summary,
+          blogs.status,
+          blogs.createTime,
+          users.usercode as creatorCode,
+          users.username as creatorName,
+          users.avatar as creatorAvatar
+      `,
+      )
+      .where('blogs.status = :status', { status: 1 })
+      .andWhere('blogs.id IN (' + (await blogIdQb.getQuery()) + ')')
+      .setParameter(parameters.label, parameters.value)
+      .orderBy('blogs.createTime', 'DESC')
+      .offset((page - 1) * pageSize)
+      .limit(pageSize)
+      .getRawMany();
+
+    if (data && data.length > 0) {
+      for (const item of data) {
+        const tags = await this.tagManageService.getBlogTag(item.id);
+        item.tags = tags;
+      }
+    }
+
+    const total = await this.blogs
+      .createQueryBuilder('blogs')
+      .where('blogs.id IN (' + (await blogIdQb.getQuery()) + ')')
+      .setParameter(parameters.label, parameters.value)
+      .getCount();
+
+    return {
+      data,
+      total,
+    };
+  }
+
+  async getBlogList(query: GetBlogQuery) {
+    let data;
+    if (
+      (query.typeId === null || query.typeId === undefined) &&
+      (query.tagId === null || query.tagId === undefined)
+    ) {
+      data = await this.getBlogListByKeyword(query);
+    } else {
+      data = await this.getBlogListByTag(query);
+    }
+    return data;
   }
 
   async getMyBlogList(

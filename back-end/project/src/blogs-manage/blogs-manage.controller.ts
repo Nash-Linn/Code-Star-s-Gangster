@@ -67,7 +67,16 @@ export class BlogsManageController {
   }
 
   @Get('getList')
-  getList(@Query() query: { keyword: string; page: number; pageSize: number }) {
+  getList(
+    @Query()
+    query: {
+      keyword: string;
+      page: number;
+      pageSize: number;
+      tagId: number;
+      typeId: number;
+    },
+  ) {
     return this.blogsManageService.getBlogList(query);
   }
 

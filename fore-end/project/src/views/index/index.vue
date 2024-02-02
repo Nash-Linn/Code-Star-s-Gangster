@@ -1,16 +1,34 @@
 <template>
   <div class="index-wrap" ref="indexWrapRef">
-    <csg-scroll class="scroll" :height="scrollHeight" @on-max="handleLoadMore">
-      <div class="scroll-inner">
-        <csgBlogCard
-          class="blog-card"
-          v-for="(item, index) in blogList"
-          :key="index"
-          :data="item"
-        />
-        <csg-loadmore :more="showMore" :loading="loading" />
+    <div class="content">
+      <div class="left-nav-bar">
+        <csgLeftNavBar @on-type-change="handleNavTypeChange" :navTypeId="navTypeId" />
       </div>
-    </csg-scroll>
+      <div class="right-part">
+        <div class="top-bar">
+          <div class="title">{{ blogStore.typeEnum[navTypeId] }}</div>
+          <csg-select
+            v-if="navTypeId != 0"
+            v-model="choseTagId"
+            @on-change="handleTagChange"
+            :options="tagList"
+            labelName="name"
+            valueName="id"
+          />
+        </div>
+        <csg-scroll class="scroll" :height="scrollHeight" @on-max="handleLoadMore" saveScrollTop>
+          <div class="scroll-inner">
+            <csgBlogCard
+              class="blog-card"
+              v-for="(item, index) in blogList"
+              :key="index"
+              :data="item"
+            />
+            <csg-loadmore :more="showMore" :loading="loading" />
+          </div>
+        </csg-scroll>
+      </div>
+    </div>
     <footer class="footer">
       ©csgblog.xyz <span class="icp" @click="goToICP">浙ICP备2023016699号-1</span>
     </footer>
@@ -18,10 +36,16 @@
 </template>
 <script setup lang="ts">
 import csgBlogCard from '@/components/csgBlogCard.vue'
+import csgLeftNavBar from '@/components/csgLeftNavBar.vue'
 
-import { onMounted, ref, reactive, inject, computed } from 'vue'
+import { onMounted, ref, reactive, inject, computed, type Ref } from 'vue'
 import { getList } from '@/api/blogsManage/blogsManage'
 import { useRoute } from 'vue-router'
+
+import { useBlogStore } from '@/stores/modules/blog'
+import { tag } from '@/api/tagManage/tagManage'
+
+const blogStore = useBlogStore()
 
 const route = useRoute()
 
@@ -30,9 +54,11 @@ const indexWrapRef = ref()
 const wrapHeight = ref()
 const scrollHeight = computed(() => {
   let basePadding = 10
+  let topBar = document.querySelector('.top-bar')
+  let topBarHeight = (topBar?.clientHeight as number) + 20
   let footer = document.querySelector('.footer')
   let footerHeight = footer?.clientHeight as number
-  return wrapHeight.value - 3 * basePadding - footerHeight - 1
+  return wrapHeight.value - 3 * basePadding - footerHeight - topBarHeight
 })
 
 const $sub = inject('$sub') as Function
@@ -40,13 +66,18 @@ const $sub = inject('$sub') as Function
 $sub('topbar-search', (val: string) => {
   filters.keyword = val
   filters.page = 1
+  filters.tagId = null
+  filters.typeId = null
   blogList.value.length = 0
+  choseTagId.value = 0
+  navTypeId.value = 0
+
   GetList(filters)
 })
 
 const blogList: any = ref([])
 
-const GetList = (data: any) => {
+const GetList = (data: Filters) => {
   loading.value = true
   getList(data)
     .then((res) => {
@@ -68,11 +99,22 @@ const GetList = (data: any) => {
     })
 }
 
+interface Filters {
+  page: number
+  pageSize: number
+  keyword: string
+  tagId?: number | null
+  typeId?: number | null
+}
+
 //加载更多
-const filters = reactive({
+
+const filters = reactive<Filters>({
   page: 1,
   pageSize: 10,
-  keyword: ''
+  keyword: '',
+  tagId: null,
+  typeId: null
 })
 //显示加载更多
 const showMore = ref(false)
@@ -89,7 +131,11 @@ const onload = () => {
     filters.keyword = route.query.filter as string
     GetList(filters)
   } else {
-    GetList({})
+    GetList({
+      page: 1,
+      pageSize: 10,
+      keyword: ''
+    })
   }
   wrapHeight.value = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0
   window.onresize = () => {
@@ -101,6 +147,45 @@ const goToICP = () => {
   window.open('https://beian.miit.gov.cn/')
 }
 
+//点击左侧导航栏 类型变化
+const navTypeId = ref(0)
+const handleNavTypeChange = (val: number) => {
+  navTypeId.value = val
+
+  if (val != 0) {
+    GetTagList(val)
+    choseTagId.value = 0
+  }
+  getBlogListByType()
+}
+
+interface Tag {
+  id: number
+  name: string
+}
+
+const tagList: Ref<Tag[]> = ref([])
+
+const GetTagList = (id: number) => {
+  tag(id).then((res) => {
+    tagList.value = res.data
+    tagList.value.unshift({ id: 0, name: '全部' })
+  })
+}
+
+const choseTagId = ref(0)
+const handleTagChange = () => {
+  getBlogListByType()
+}
+
+const getBlogListByType = () => {
+  filters.tagId = choseTagId.value
+  filters.typeId = navTypeId.value
+  filters.page = 1
+  blogList.value.length = 0
+  GetList(filters)
+}
+
 onMounted(() => {
   onload()
 })
@@ -108,7 +193,7 @@ onMounted(() => {
 <style lang="less" scoped>
 .index-wrap {
   width: 100%;
-  padding: 10px;
+  padding: 10px 20px;
 
   min-height: @main-height;
   border-radius: @base-border-radius;
@@ -116,31 +201,56 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  .blog-card {
-    margin-bottom: 10px;
+
+  .content {
+    display: flex;
+    padding-top: 10px;
+
+    .left-nav-bar {
+      width: @left-nav-bar-width;
+      margin-right: 20px;
+    }
+
+    .right-part {
+      width: 100%;
+      .top-bar {
+        font-size: 20px;
+        font-weight: bold;
+        background-color: #fff;
+        border-radius: @base-border-radius;
+        margin-bottom: 10px;
+        height: 50px;
+        padding: 0 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .scroll {
+        width: 100%;
+        border-radius: @base-border-radius;
+        overflow: hidden;
+        .scroll-inner {
+          .blog-card {
+            margin-bottom: 10px;
+          }
+        }
+      }
+    }
   }
-}
 
-.scroll {
-  border-radius: @base-border-radius;
-  overflow: hidden;
+  .footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-  .scroll-inner {
-    padding: 10px;
-  }
-}
+    .icp {
+      margin-left: 10px;
 
-.footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  .icp {
-    margin-left: 10px;
-
-    &:hover {
-      color: @base-color;
-      cursor: pointer;
+      &:hover {
+        color: @base-color;
+        cursor: pointer;
+      }
     }
   }
 }
