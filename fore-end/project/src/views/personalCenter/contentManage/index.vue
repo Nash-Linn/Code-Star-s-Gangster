@@ -18,7 +18,7 @@
     </div>
 
     <div class="content">
-      <csg-scroll class="scroll" :height="scrollHeight" @on-max="handleLoadMore">
+      <csg-scroll class="scroll" :height="scrollHeight" @on-max="handleLoadMore" saveScrollTop>
         <div class="scroll-inner">
           <csgBlogCard
             class="blog-card"

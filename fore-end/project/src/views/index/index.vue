@@ -154,8 +154,9 @@ const handleNavTypeChange = (val: number) => {
 
   if (val != 0) {
     GetTagList(val)
-    choseTagId.value = 0
   }
+  choseTagId.value = 0
+
   getBlogListByType()
 }
 
@@ -185,6 +186,16 @@ const getBlogListByType = () => {
   blogList.value.length = 0
   GetList(filters)
 }
+
+$sub('click-card-tag', (tag: { typeId: number; id: number; name: string }) => {
+  choseTagId.value = tag.id
+  navTypeId.value = tag.typeId
+
+  if (navTypeId.value != 0) {
+    GetTagList(navTypeId.value)
+  }
+  getBlogListByType()
+})
 
 onMounted(() => {
   onload()

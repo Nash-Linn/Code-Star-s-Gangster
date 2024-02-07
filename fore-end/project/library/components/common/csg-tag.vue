@@ -1,7 +1,7 @@
 <template>
   <span
     class="csg-tag-wrap"
-    :class="sizeStyle"
+    :class="[sizeStyle, hoverColor ? 'hoverStyle' : '']"
     :style="`color:${color};
              border-color:${borderColor};
              background-color:${backgroundColor};`"
@@ -37,6 +37,7 @@ interface Props {
   borderColor?: string
   backgroundColor?: string
   size?: string
+  hoverColor?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -93,6 +94,13 @@ const handleClose = () => {
   align-items: center;
   padding: 0 5px;
   cursor: pointer;
+  user-select: none;
+}
+
+.hoverStyle {
+  &:hover {
+    background-color: v-bind(hoverColor);
+  }
 }
 
 .close-icon-wrap {

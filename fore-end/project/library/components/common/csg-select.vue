@@ -1,5 +1,5 @@
 <template>
-  <csg-popover padding="0" :visible="popoverVisible">
+  <csg-popover padding="0" :visible="popoverVisible" v-click-outside="handleClickInputOut">
     <template #reference>
       <div
         :class="inputStyle"
@@ -14,8 +14,7 @@
           v-model="inputValue"
           :placeholder="props.placeholder"
           @input="handleInput"
-          @click="handleClickInput"
-          v-click-outside="handleClickInputOut"
+          @focus="handleClickInput"
         />
 
         <span v-if="props.label" class="csg-select-label">{{ props.label }}</span>
@@ -40,7 +39,12 @@
                 />
               </svg>
             </i>
-            <i v-show="!showClose" class="arrows-icon">
+            <i
+              v-show="!showClose"
+              class="arrows-icon"
+              :class="[popoverVisible ? 'arrows-icon-up' : '']"
+              @click="handleClickArrow"
+            >
               <svg
                 class="icon"
                 height="14"
@@ -72,31 +76,30 @@
 </template>
 <script setup lang="ts">
 import { isEmpty } from '@/utils/validate'
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 
 const emits = defineEmits(['update:modelValue', 'on-change'])
 interface Props {
-  modelValue: any
-  options: any[]
-  size?: string
-  type?: string
-  label?: string
-  formId?: string
-  required?: boolean
-  placeholder?: string
-  filter?: boolean
-  labelName?: string
-  valueName?: string
+  modelValue: any // 绑定的值
+  options: any[] // 下拉框的选项
+  size?: string // 输入框的大小
+  label?: string // 输入框前的标签
+  required?: boolean // 是否必填
+  placeholder?: string // 输入框的提示文字
+  filter?: boolean // 是否开启过滤
+  labelName?: string // 对应 options 中的 label键名
+  valueName?: string // 对应 options 中的 value键名
+  clearable?: boolean // 是否显示清空按钮
 }
 
 const props = withDefaults(defineProps<Props>(), {
   size: 'normal',
-  type: 'text',
   required: false,
   placeholder: ' ',
   filter: false,
   labelName: 'label',
-  valueName: 'value'
+  valueName: 'value',
+  clearable: false
 })
 
 const inputStyle = computed(() => {
@@ -141,7 +144,7 @@ const handleMouseleave = () => {
 }
 
 const showClose = computed(() => {
-  return mouseenter.value && !isEmpty(value.value)
+  return props.clearable && mouseenter.value && !isEmpty(value.value)
 })
 
 // 对应 labelName 的值
@@ -195,7 +198,13 @@ const selectRef = ref()
 const handleChose = (option: any) => {
   inputValue.value = option[props.labelName]
   value.value = option[props.valueName]
-  popoverVisible.value = false
+  selectRef.value.focus()
+
+  nextTick(() => {
+    popoverVisible.value = false
+    selectRef.value.blur()
+  })
+
   emits('on-change', {
     label: option[props.labelName],
     value: option[props.valueName]
@@ -218,13 +227,14 @@ const handleInput = (val: any) => {
 }
 
 const handleClear = () => {
-  value.value = ''
-  inputValue.value = ''
+  value.value = null
+  inputValue.value = null
+  selectRef.value.focus()
 }
 
-onMounted(() => {
-  // matchValue(value.value)
-})
+const handleClickArrow = () => {
+  popoverVisible.value = !popoverVisible.value
+}
 </script>
 <style lang="less" scoped>
 .size-big {
@@ -294,17 +304,6 @@ onMounted(() => {
   .csg-select-inner:not(:placeholder-shown),
   .csg-select-inner:focus {
     border-color: @base-color;
-  }
-
-  // 去除 input 类型为 number 时 自带的 上下箭头
-  // 谷歌
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none !important;
-  }
-  // //火狐
-  input[type='number'] {
-    -moz-appearance: textfield;
   }
 }
 
@@ -378,7 +377,8 @@ onMounted(() => {
   }
 }
 
-.csg-select-inner:focus ~ .suffix-icon .arrows-icon {
-  transform: rotateZ(0);
+.csg-select-inner:focus ~ .suffix-icon .arrows-icon,
+.arrows-icon-up {
+  transform: rotateZ(0) !important;
 }
 </style>

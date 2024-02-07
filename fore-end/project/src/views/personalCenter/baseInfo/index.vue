@@ -13,8 +13,8 @@
 
         <template v-if="isEdit">
           <csg-forms ref="formRef" :model="baseInfo" :rules="ruleValidate">
-            <csg-form-item label="昵称">
-              <csg-input formId="username" v-model="baseInfo.username" required />
+            <csg-form-item label="昵称" formId="username">
+              <csg-input v-model="baseInfo.username" required />
             </csg-form-item>
             <csg-form-item label="简介">
               <csg-textarea v-model="baseInfo.intro" />
@@ -73,7 +73,12 @@ const handleClickEdit = () => {
   isEdit.value = true
 }
 
+const formRef = ref()
 const handleClickFinish = () => {
+  if (!formRef.value.verify()) {
+    return false
+  }
+
   let data = {
     username: baseInfo.username,
     intro: baseInfo.intro

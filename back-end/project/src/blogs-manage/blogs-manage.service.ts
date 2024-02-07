@@ -177,13 +177,13 @@ export class BlogsManageService {
       label: null,
       value: null,
     };
-    if (query.tagId == 0 || query.tagId === undefined || query.tagId === null) {
+    if (query.tagId == 0 || query.typeId == 0) {
       tagIdQb = this.blogTags
         .createQueryBuilder('blogTags')
         .select(['blogTags.id'])
         .where('blogTags.typeId = :typeId', { typeId: query.typeId });
 
-      if (query.typeId == 0 || query.typeId === undefined) {
+      if (query.typeId == 0) {
         tagIdQb = this.blogTags
           .createQueryBuilder('blogTags')
           .select(['blogTags.id']);

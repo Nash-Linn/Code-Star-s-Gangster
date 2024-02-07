@@ -35,7 +35,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed, inject } from 'vue'
 import { encryptcode } from '@/utils/encryp'
-import { isBlank } from '@/utils/validate'
 import { create } from '@/api/user'
 import { useUserStore } from '@/stores/modules/user'
 

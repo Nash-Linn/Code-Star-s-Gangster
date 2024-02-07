@@ -35,11 +35,13 @@
                     placeholder="选择或输入标签分类"
                     label-name="name"
                     value-name="id"
+                    clearable
                     @on-change="handleSelectTagTypeChange"
+                    required
                   />
                 </csg-form-item>
                 <csg-form-item formId="tag">
-                  <csg-input v-model="newTagInfo.tag" placeholder="输入标签名" />
+                  <csg-input v-model="newTagInfo.tag" placeholder="输入标签名" required />
                 </csg-form-item>
               </csg-forms>
 

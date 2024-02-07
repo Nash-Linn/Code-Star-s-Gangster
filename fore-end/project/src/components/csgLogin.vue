@@ -28,7 +28,7 @@ import { reactive } from 'vue'
 import { isBlank } from '@/utils/validate'
 import { encryptcode } from '@/utils/encryp'
 import { useUserStore } from '@/stores/modules/user'
-import { ref, inject, computed } from 'vue'
+import { inject, computed } from 'vue'
 
 const $csgMessage: any = inject('$csgMessage')
 

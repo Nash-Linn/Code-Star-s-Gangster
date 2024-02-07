@@ -23,6 +23,8 @@
               v-for="(item, index) in props.data.tags"
               :key="index"
               size="small"
+              hoverColor="rgba(78, 210, 210,0.4)"
+              @click.stop="handleClickTag(item)"
               >{{ item.name }}</csg-tag
             >
           </div>
@@ -35,10 +37,12 @@
   </csg-card>
 </template>
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { baseURL } from '@/config'
 import { parseTime } from '@/utils/index'
+
+const $pub = inject('$pub') as any
 
 const router = useRouter()
 
@@ -67,6 +71,10 @@ const imgUrl = computed(() => {
 
 const handleClickCard = () => {
   router.push(`/blogDetail/${props.data.id}`)
+}
+
+const handleClickTag = (tag: any) => {
+  $pub('click-card-tag', tag)
 }
 </script>
 <style scoped lang="less">

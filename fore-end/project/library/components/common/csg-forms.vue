@@ -35,7 +35,7 @@ const verify = () => {
   for (let key in props.rules) {
     let domwrap = document.querySelector(`.csg-from-item.${key} div`) as HTMLElement
     let failMsgDom = document.querySelector(`.csg-from-item.${key} .fail-msg`) as HTMLElement
-    let dom = document.querySelector(`.csg-from-item.${key} .form-element`) as HTMLElement
+    let dom = document.querySelector(`.csg-from-item.${key} .form-element`) as HTMLFormElement
     let rule: Rule[] = props.rules[key]
 
     for (let item of rule) {
@@ -55,23 +55,23 @@ const verify = () => {
             item.validator!((props.model as Model)[key], callback)
           }
         }
+        dom.removeEventListener(item.trigger, eventValidator)
         eventValidator()
         dom.addEventListener(item.trigger, eventValidator)
       }
 
       if (item.required) {
         let eventRequired = function () {
-          setTimeout(() => {
-            if (isEmpty((props.model as Model)[key])) {
-              domwrap?.setAttribute('failCheck', 'true')
-              failMsgDom.innerHTML = item.message
-              requiredFlag = false
-            } else {
-              domwrap?.setAttribute('failCheck', 'false')
-              failMsgDom.innerHTML = ''
-            }
-          }, 200)
+          if (isEmpty((props.model as Model)[key])) {
+            domwrap?.setAttribute('failCheck', 'true')
+            failMsgDom.innerHTML = item.message
+            requiredFlag = false
+          } else {
+            domwrap?.setAttribute('failCheck', 'false')
+            failMsgDom.innerHTML = ''
+          }
         }
+        dom.removeEventListener(item.trigger, eventRequired)
         eventRequired()
         dom.addEventListener(item.trigger, eventRequired)
       }

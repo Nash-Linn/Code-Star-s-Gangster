@@ -55,6 +55,7 @@ const Routes =  [
         component: ()=>import('@/views/personalCenter/contentManage/index.vue'),
         meta:{
           title:'内容管理',
+          keepAlive:true
         }
       }
     ]
