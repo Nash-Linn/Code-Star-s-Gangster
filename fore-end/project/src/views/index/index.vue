@@ -38,9 +38,9 @@
 import csgBlogCard from '@/components/csgBlogCard.vue'
 import csgLeftNavBar from '@/components/csgLeftNavBar.vue'
 
-import { onMounted, ref, reactive, inject, computed, type Ref } from 'vue'
+import { onMounted, ref, reactive, inject, computed, type Ref, onActivated } from 'vue'
 import { getList } from '@/api/blogsManage/blogsManage'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import { useBlogStore } from '@/stores/modules/blog'
 import { tag } from '@/api/tagManage/tagManage'
@@ -48,6 +48,7 @@ import { tag } from '@/api/tagManage/tagManage'
 const blogStore = useBlogStore()
 
 const route = useRoute()
+const router = useRouter()
 
 const indexWrapRef = ref()
 
@@ -79,6 +80,7 @@ const blogList: any = ref([])
 
 const GetList = (data: Filters) => {
   loading.value = true
+  data.keyword = data.keyword ? data.keyword.trim() : ''
   getList(data)
     .then((res) => {
       let data = res.data.data
@@ -116,6 +118,15 @@ const filters = reactive<Filters>({
   tagId: null,
   typeId: null
 })
+
+const filterInit = () => {
+  filters.page = 1
+  filters.pageSize = 10
+  filters.keyword = ''
+  filters.tagId = null
+  filters.typeId = null
+}
+
 //显示加载更多
 const showMore = ref(false)
 const loading = ref(false)
@@ -127,16 +138,11 @@ const handleLoadMore = () => {
   GetList(filters)
 }
 const onload = () => {
-  if (route.query && route.query.isIndex === 'false') {
-    filters.keyword = route.query.filter as string
-    GetList(filters)
-  } else {
-    GetList({
-      page: 1,
-      pageSize: 10,
-      keyword: ''
-    })
-  }
+  GetList({
+    page: 1,
+    pageSize: 10,
+    keyword: ''
+  })
   wrapHeight.value = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0
   window.onresize = () => {
     wrapHeight.value = indexWrapRef.value ? indexWrapRef.value?.clientHeight : 0
@@ -155,6 +161,8 @@ const handleNavTypeChange = (val: number) => {
   if (val != 0) {
     GetTagList(val)
   }
+
+  filters.keyword = ''
   choseTagId.value = 0
 
   getBlogListByType()
@@ -199,6 +207,22 @@ $sub('click-card-tag', (tag: { typeId: number; id: number; name: string }) => {
 
 onMounted(() => {
   onload()
+})
+
+const onActivedload = async () => {
+  if (route.query && route.query.isIndex === 'false') {
+    blogList.value.length = 0
+    choseTagId.value = 0
+    navTypeId.value = 0
+    filterInit()
+    filters.keyword = route.query.filter as string
+    await GetList(filters)
+    router.push('/')
+  }
+}
+
+onActivated(() => {
+  onActivedload()
 })
 </script>
 <style lang="less" scoped>

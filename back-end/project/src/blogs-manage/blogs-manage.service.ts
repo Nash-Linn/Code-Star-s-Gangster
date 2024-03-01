@@ -253,8 +253,10 @@ export class BlogsManageService {
   async getBlogList(query: GetBlogQuery) {
     let data;
     if (
-      (query.typeId === null || query.typeId === undefined) &&
-      (query.tagId === null || query.tagId === undefined)
+      (query.typeId === null ||
+        query.typeId === undefined ||
+        query.typeId == 0) &&
+      (query.tagId === null || query.tagId === undefined || query.tagId == 0)
     ) {
       data = await this.getBlogListByKeyword(query);
     } else {

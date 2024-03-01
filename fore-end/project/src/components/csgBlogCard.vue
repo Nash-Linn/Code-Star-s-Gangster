@@ -65,7 +65,6 @@ const imgUrl = computed(() => {
   if (!props.data.coverUrl) {
     return ''
   }
-
   return baseURL + '/blogsManage/cover/' + props.data.coverUrl
 })
 

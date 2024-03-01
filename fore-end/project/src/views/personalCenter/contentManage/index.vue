@@ -68,6 +68,12 @@ const filters = reactive({
   keyword: ''
 })
 
+const filtersInit = () => {
+  filters.page = 1
+  filters.pageSize = 10
+  filters.keyword = ''
+}
+
 const handleSearch = () => {
   filters.page = 1
   blogList.value.length = 0
@@ -141,6 +147,7 @@ const DeleteBlog = (id: string) => {
 }
 
 const onload = () => {
+  filtersInit()
   blogList.value = []
   GetMyBlogList(filters)
   contentManageHeight.value = contentManageRef.value ? contentManageRef.value?.clientHeight : 0

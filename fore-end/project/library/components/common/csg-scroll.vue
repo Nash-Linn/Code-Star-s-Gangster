@@ -224,8 +224,13 @@ const iframeDocumentHandle = () => {
   let iframe = document.getElementsByTagName('iframe')
   if (iframe) {
     for (let i = 0; i < iframe.length; i++) {
-      let iframeDocument = iframe[i].contentWindow?.document
-      iframeDocument?.addEventListener('mouseup', mouseUpDocumentHandler, false)
+      // 获取 iframe 的 document 可能会产生报错 无法获取
+      try {
+        let iframeDocument = iframe[i].contentWindow?.document
+        iframeDocument?.addEventListener('mouseup', mouseUpDocumentHandler, false)
+      } catch (error) {
+        //
+      }
     }
   }
 }
