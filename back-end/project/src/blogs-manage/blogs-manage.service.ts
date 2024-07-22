@@ -9,6 +9,7 @@ import { getFileFromMinio, putFileToMinio } from 'src/utils/minio';
 import { TagManageService } from 'src/tag-manage/tag-manage.service';
 import { BlogTags } from 'src/tag-manage/entities/blog-tags.entity';
 import { MergeBlogsTags } from 'src/tag-manage/entities/merge-blogs-tags.entity';
+import env from 'src/config/env'
 
 interface GetBlogQuery {
   keyword: string;
@@ -335,7 +336,30 @@ export class BlogsManageService {
       .getRawOne();
 
     const tags = await this.tagManageService.getBlogTag(data.id);
+    data.content = this.dealHtmlImgSrc(data.content)
     data.tags = tags;
     return data;
+  }
+
+
+  /**
+   *  找到 img 标签 替换掉 其中的 src
+   */
+   dealHtmlImgSrc(htmlString:string):string{
+    const reg = /<img.*?src="(.*?)".*?alt="(.*?)".*?>/g
+    htmlString = htmlString.replace(reg, (match, p1,p2) => {
+      // 匹配 p1 中域名加端口部分
+      const reg = /http:\/\/(.*?):(\d+)/
+      let matchResult  = ''
+      if(p2){
+        matchResult = `${env.baseURL}${p2}`
+      }else{
+        matchResult = p1.replace(reg, (match, p1) => {
+          return match.replace(p1, env.ip)
+        })
+      }
+      return match.replace(p1, matchResult)
+    })
+    return htmlString
   }
 }
