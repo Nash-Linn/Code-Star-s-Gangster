@@ -195,7 +195,7 @@ editorConfig.MENU_CONF!.uploadImage = {
   customInsert(res: any, insertFn: InsertFnType) {
     let { url, alt, href } = res.data.data
     url = baseURL + `/blogsManage/image/${userStore.getUsercode}/` + url
-
+    alt = `/blogsManage/image/${userStore.getUsercode}/` + url
     insertFn(url, alt, href)
   }
 }

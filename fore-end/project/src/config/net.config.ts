@@ -20,7 +20,8 @@ function evnFunc():string {
       break
     case 'produce':
       // baseUrl = 'http://101.34.111.220:8080' 
-      baseUrl = 'http://api.csgblog.xyz' 
+      baseUrl = 'http://106.15.64.123:8080' 
+      // baseUrl = 'http://api.csgblog.xyz' 
       break
     default:
       baseUrl = 'http://localhost:8080' 

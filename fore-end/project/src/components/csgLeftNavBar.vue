@@ -59,7 +59,8 @@ interface TypeEnum {
 
 const TagType = () => {
   tagType().then((res) => {
-    typeList.value = res.data
+    if (!res) return
+    typeList.value = Array.isArray(res.data) ? res.data : []
     typeList.value.unshift({
       id: 0,
       name: '全部'

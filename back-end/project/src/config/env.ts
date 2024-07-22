@@ -17,7 +17,8 @@ function envFunc(evn): Env {
       break;
     case 'pro':
       // ip = '101.34.111.220';
-      ip = '123.249.17.37';
+      // ip = '123.249.17.37';
+      ip = '106.15.64.123';
       baseUrl = `http://${ip}:8080`;
       staticDir = '/code_star_gangster/static';
       break;

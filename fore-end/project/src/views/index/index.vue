@@ -30,7 +30,7 @@
       </div>
     </div>
     <footer class="footer">
-      ©csgblog.xyz <span class="icp" @click="goToICP">浙ICP备2023016699号-1</span>
+      ©csgblog.online <span class="icp" @click="goToICP">浙ICP备2023016699号-2</span>
     </footer>
   </div>
 </template>
