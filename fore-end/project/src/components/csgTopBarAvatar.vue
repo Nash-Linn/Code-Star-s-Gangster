@@ -30,8 +30,12 @@
     </csg-popover>
 
     <teleport to="body">
-      <csgLogin v-model="loginDialogVisible" />
-      <csgRegister v-model="registerDialogVisible" />
+      <transition name="slide-fade" appear>
+        <csgLogin v-model="loginDialogVisible" />
+      </transition>
+      <transition name="slide-fade" appear>
+        <csgRegister v-model="registerDialogVisible" />
+      </transition>
     </teleport>
   </div>
 </template>
@@ -136,5 +140,19 @@ const handleLogout = () => {
     padding-left: 0px !important;
     padding-right: 0px !important;
   }
+}
+
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(50px);
+  opacity: 0;
 }
 </style>

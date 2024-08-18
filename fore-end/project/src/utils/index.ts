@@ -21,10 +21,10 @@ export function parseTime(time:any, cFormat?:string):string {
     }
     if (typeof time === 'number' && time.toString().length === 10) {
       time = time * 1000
-    }
+    } 
     date = new Date(time)
   }
-  const formatObj:any = {
+  const formatObj:any = { 
     y: date.getFullYear(),
     m: date.getMonth() + 1,
     d: date.getDate(),

@@ -9,7 +9,8 @@
             <div class="des">Code Star's Gangster</div>
           </div>
         </div>
-        <router-link class="left-item" to="/">博客</router-link>
+        <router-link class="left-item" to="/">首页</router-link>
+        <router-link class="left-item" to="/blog">博客</router-link>
         <router-link class="left-item" to="/about">关于</router-link>
       </div>
       <div class="center">
@@ -78,9 +79,9 @@ const handleClickLogo = () => {
 
     align-items: center;
     .left {
-      width: 300px;
       display: flex;
       flex-shrink: 0;
+      flex-grow: 1;
       align-items: center;
 
       .logo {

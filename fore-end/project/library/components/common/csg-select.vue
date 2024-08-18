@@ -1,5 +1,5 @@
 <template>
-  <csg-popover padding="0" :visible="popoverVisible" v-click-outside="handleClickInputOut">
+  <csg-popover padding="0" :visible="true" v-click-outside="handleClickInputOut">
     <template #reference>
       <div
         :class="inputStyle"
@@ -176,6 +176,25 @@ watch(
 )
 
 const popoverVisible = ref(false)
+
+const optionsRef = ref()
+watch(
+  () => popoverVisible.value,
+  (val) => {
+    if (val) {
+      optionsRef.value.style.transition = 'none'
+      optionsRef.value.style.height = 'auto'
+      const height = optionsRef.value.offsetHeight
+      optionsRef.value.style.height = 0
+      optionsRef.value.offsetHeight
+      optionsRef.value.style.transition = 'height 0.5s'
+      optionsRef.value.style.height = height + 'px'
+    } else {
+      optionsRef.value.style.height = 0
+      optionsRef.value.style.transition = 'height 0.5s'
+    }
+  }
+)
 
 const handleClickInput = () => {
   popoverVisible.value = true
@@ -380,5 +399,10 @@ const handleClickArrow = () => {
 .csg-select-inner:focus ~ .suffix-icon .arrows-icon,
 .arrows-icon-up {
   transform: rotateZ(0) !important;
+}
+
+.options-wrap {
+  height: 0;
+  overflow: hidden;
 }
 </style>

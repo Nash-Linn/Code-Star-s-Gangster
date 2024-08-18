@@ -11,7 +11,7 @@ const statusName = 'code'
 const messageName = 'msg'
 
 function evnFunc():string {
-  const evn:string = 'dev'
+  const evn:string = 'produce'
   let baseUrl:string
   switch (evn) {
     case 'dev':

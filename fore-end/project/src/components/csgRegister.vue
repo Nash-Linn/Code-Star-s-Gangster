@@ -1,5 +1,5 @@
 <template>
-  <csg-dialog v-model="dialogVisible">
+  <csg-dialog v-model="dialogVisible" mask>
     <template #title>
       <div>注册</div>
     </template>

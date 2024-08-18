@@ -1,5 +1,11 @@
 <template>
-  <div v-if="dialogVisible" class="csg-dialog-wrap" @click.self="handleClose">
+  <div
+    v-if="dialogVisible"
+    class="csg-dialog-wrap"
+    :class="[!props.mask ? 'no-mask' : '']"
+    :style="`background-color:${props.maskColor};`"
+    @click.self="handleClose"
+  >
     <div class="csg-dialog" :style="`width:${props.width};`">
       <header class="csg-dialog-header">
         <slot name="title">
@@ -43,6 +49,8 @@ interface Props {
   title?: string
   width?: string
   footer?: boolean
+  mask?: boolean
+  maskColor?: string
 }
 
 const emits = defineEmits(['update:modelValue', 'on-cancel', 'on-confirm'])
@@ -50,7 +58,9 @@ const emits = defineEmits(['update:modelValue', 'on-cancel', 'on-confirm'])
 const props = withDefaults(defineProps<Props>(), {
   modelValue: false,
   title: '标题',
-  footer: false
+  footer: false,
+  mask: false,
+  maskColor: 'rgba(0, 0, 0, 0.5)'
 })
 
 const dialogVisible = computed({
@@ -81,8 +91,13 @@ const handleConfirm = () => {
   top: 0;
   left: 0;
   z-index: 9999;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.5);
 }
+
+.no-mask {
+  background-color: transparent !important;
+}
+
 .csg-dialog {
   position: absolute;
   z-index: 9999;

@@ -20,7 +20,8 @@
     "paths": {  //模块名到基于 baseUrl的路径映射的列表
       "@/*": ["./src/*"],
       "@lib/*": ["./library/*"],
-    }
+    },
+    "ignoreDeprecations": "5.0" // 忽略弃用警告
   },
   //指定一个文件glob匹配模式列表
   "include": [

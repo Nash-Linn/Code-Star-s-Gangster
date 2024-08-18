@@ -18,7 +18,7 @@
     </div>
     <!--滚动条-->
     <div
-      v-show="showScrollBar"
+      v-show="showScrollBarComputed"
       :class="['scroll-bar-wrap', props.autoHide ? 'autoHide' : '']"
       :style="scrollWrapStyle"
       @mousedown.prevent.stop="clickBarWrapHandler"
@@ -40,6 +40,8 @@ interface Props {
   height?: number
   // 速度
   speed?: number //0-5
+  //显示滚动条
+  showScrollBar?: boolean
   //自动隐藏
   autoHide?: boolean
   //滚动条宽度
@@ -60,6 +62,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   height: 100,
   speed: 0,
+  showScrollBar: true,
   autoHide: true,
   barWidth: 6,
   radius: 10,
@@ -108,8 +111,8 @@ const scrollBarStyle = computed(() => {
 })
 
 //滚动条显示
-const showScrollBar = computed(() => {
-  return domClientHeight.value > props.height
+const showScrollBarComputed = computed(() => {
+  return domClientHeight.value > props.height && props.showScrollBar
 })
 
 //  滚动条高度
