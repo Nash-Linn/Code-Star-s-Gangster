@@ -215,14 +215,14 @@ onMounted(() => {
 })
 
 const onActivedload = async () => {
-  if (route.query && route.query.isIndex === 'false') {
+  if (route.query && route.query.isBlog === 'false') {
     blogList.value.length = 0
     choseTagId.value = 0
     navTypeId.value = 0
     filterInit()
     filters.keyword = route.query.filter as string
     await GetList(filters)
-    router.push('/')
+    router.push('/Blog')
   }
 }
 

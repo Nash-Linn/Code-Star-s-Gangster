@@ -134,14 +134,15 @@ onMounted(() => {
   height: 100%;
   background-color: #fff;
   border-radius: @base-border-radius;
-  padding: @base-padding;
 }
 .title {
   font-size: @title-font-size;
   font-weight: bold;
   padding-bottom: 10px;
+  padding: @base-padding;
 }
 .menu-item {
+  padding: 0 @base-padding;
   padding-bottom: 10px;
   color: @base-color;
   cursor: pointer;

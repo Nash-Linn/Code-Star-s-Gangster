@@ -17,15 +17,15 @@ const router = useRouter()
 const searchKey = ref('')
 const $pub = inject('$pub')
 const handleSearch = () => {
-  let isIndex = route.name === 'Index'
+  let isBlog = route.name === 'Blog'
 
-  if (isIndex) {
+  if (isBlog) {
     $pub('topbar-search', searchKey.value)
   } else {
     router.push({
-      name: 'Index',
+      name: 'Blog',
       query: {
-        isIndex,
+        isBlog,
         filter: searchKey.value
       }
     })
